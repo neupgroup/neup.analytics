@@ -13,6 +13,7 @@ import {
   Settings,
   BarChart,
   FileText,
+  Camera,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -23,6 +24,7 @@ const navItems = [
   { href: '/heatmaps', label: 'Heatmaps', icon: Map },
   { href: '/replays', label: 'Replays', icon: PlaySquare },
   { href: '/pages', label: 'Pages', icon: FileText },
+  { href: '/snapshots', label: 'Snapshots', icon: Camera },
   { href: '/users', label: 'Users', icon: Users },
   { href: '/live', label: 'Live View', icon: Eye },
   { href: '/reports', label: 'Reports', icon: BarChart },

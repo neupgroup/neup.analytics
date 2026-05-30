@@ -14,6 +14,31 @@ function getPagePathFromUrl(value: string) {
   }
 }
 
+function addPathVariants(candidates: Set<string>, value: string | null | undefined) {
+  if (!value) return;
+
+  const trimmed = value.trim();
+  if (!trimmed) return;
+
+  candidates.add(trimmed);
+
+  const parsedPath = getPagePathFromUrl(trimmed);
+  if (parsedPath) {
+    candidates.add(parsedPath);
+  }
+
+  const withoutHash = (parsedPath ?? trimmed).split('#')[0];
+  if (withoutHash) {
+    candidates.add(withoutHash);
+  }
+
+  if (withoutHash.length > 1 && withoutHash.endsWith('/')) {
+    candidates.add(withoutHash.slice(0, -1));
+  } else if (withoutHash && !withoutHash.includes('?')) {
+    candidates.add(`${withoutHash}/`);
+  }
+}
+
 function getSnapshotPagePath(details: unknown) {
   if (!details || typeof details !== 'object' || Array.isArray(details)) {
     return null;
@@ -23,37 +48,66 @@ function getSnapshotPagePath(details: unknown) {
   return typeof pagePath === 'string' ? pagePath : null;
 }
 
-function snapshotMatchesPage(snapshot: { pageUrl: string; details: unknown }, pagePath: string) {
-  const snapshotPath =
-    getSnapshotPagePath(snapshot.details) ?? getPagePathFromUrl(snapshot.pageUrl);
+function getPageCandidates(value: string, details?: unknown) {
+  const candidates = new Set<string>();
+  addPathVariants(candidates, value);
+  addPathVariants(candidates, getSnapshotPagePath(details));
+  return candidates;
+}
 
-  return snapshotPath === pagePath;
+function snapshotMatchesPage(snapshot: { pageUrl: string; details: unknown }, pagePath: string) {
+  const replayCandidates = getPageCandidates(pagePath);
+  const snapshotCandidates = getPageCandidates(snapshot.pageUrl, snapshot.details);
+
+  for (const candidate of replayCandidates) {
+    if (snapshotCandidates.has(candidate)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function getUtcDayBounds(value: Date) {
+  const start = new Date(
+    Date.UTC(value.getUTCFullYear(), value.getUTCMonth(), value.getUTCDate())
+  );
+  const end = new Date(start);
+  end.setUTCDate(end.getUTCDate() + 1);
+
+  return { start, end };
+}
+
+function getDistanceFromReplay(snapshotCreatedOn: Date, replayCreatedAt: Date) {
+  return Math.abs(snapshotCreatedOn.getTime() - replayCreatedAt.getTime());
 }
 
 async function findSnapshotForReplay(pagePath: string, createdAt: Date) {
-  const snapshotsBeforeReplay = await prisma.snapshotWeb.findMany({
+  const { start, end } = getUtcDayBounds(createdAt);
+  const snapshotsFromReplayDay = await prisma.snapshotWeb.findMany({
     where: {
       createdOn: {
-        lte: createdAt,
+        gte: start,
+        lt: end,
       },
     },
-    orderBy: { createdOn: 'desc' },
-    take: 250,
+    orderBy: { createdOn: 'asc' },
   });
 
-  const matchingSnapshot =
-    snapshotsBeforeReplay.find((snapshot) => snapshotMatchesPage(snapshot, pagePath)) ?? null;
+  const matchingSnapshots = snapshotsFromReplayDay.filter((snapshot) =>
+    snapshotMatchesPage(snapshot, pagePath)
+  );
 
-  if (matchingSnapshot) {
-    return matchingSnapshot;
+  if (matchingSnapshots.length === 0) {
+    return null;
   }
 
-  const latestSnapshots = await prisma.snapshotWeb.findMany({
-    orderBy: { createdOn: 'desc' },
-    take: 250,
-  });
-
-  return latestSnapshots.find((snapshot) => snapshotMatchesPage(snapshot, pagePath)) ?? null;
+  return matchingSnapshots.reduce((closest, snapshot) =>
+    getDistanceFromReplay(snapshot.createdOn, createdAt) <
+    getDistanceFromReplay(closest.createdOn, createdAt)
+      ? snapshot
+      : closest
+  );
 }
 
 export async function GET(

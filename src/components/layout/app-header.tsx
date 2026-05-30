@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Search, PanelLeft, Bot, LineChart, GitFork, Map, PlaySquare, Users, Eye } from 'lucide-react';
+import { Search, PanelLeft, Bot, LineChart, GitFork, Map, PlaySquare, Users, Eye, Camera } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +23,7 @@ const navItems = [
   { href: '/journeys', label: 'Journeys', icon: GitFork },
   { href: '/heatmaps', label: 'Heatmaps', icon: Map },
   { href: '/replays', label: 'Replays', icon: PlaySquare },
+  { href: '/snapshots', label: 'Snapshots', icon: Camera },
   { href: '/users', label: 'Users', icon: Users },
   { href: '/live', label: 'Live View', icon: Eye },
 ];

@@ -12,6 +12,7 @@ import {
   Eye,
   Settings,
   Bot,
+  Camera,
 } from 'lucide-react';
 import {
   Tooltip,
@@ -28,6 +29,7 @@ const navItems = [
   { href: '/journeys', icon: GitFork, label: 'Journeys' },
   { href: '/heatmaps', icon: Map, label: 'Heatmaps' },
   { href: '/replays', icon: PlaySquare, label: 'Replays' },
+  { href: '/snapshots', icon: Camera, label: 'Snapshots' },
   { href: '/users', icon: Users, label: 'Users' },
   { href: '/live', icon: Eye, label: 'Live View' },
   { href: '/reports', icon: LineChart, label: 'Reports' },
