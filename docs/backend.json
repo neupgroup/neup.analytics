@@ -1,0 +1,511 @@
+{
+  "entities": {
+    "Website": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Website",
+      "type": "object",
+      "description": "Represents a website being tracked by Neup.Analytics.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Website entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the website."
+        },
+        "domain": {
+          "type": "string",
+          "description": "The domain name of the website."
+        },
+        "accountId": {
+          "type": "string",
+          "description": "Reference to Account. (Relationship: Account 1:N Website)"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "domain",
+        "accountId"
+      ]
+    },
+    "Account": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Account",
+      "type": "object",
+      "description": "Represents a user account in Neup.Analytics.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Account entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the account."
+        },
+        "email": {
+          "type": "string",
+          "description": "The email address of the account owner.",
+          "format": "email"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "email"
+      ]
+    },
+    "User": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "User",
+        "type": "object",
+        "description": "Represents a user being tracked, can be anonymous or authenticated.",
+        "properties": {
+            "id": { "type": "string", "description": "Unique identifier for the user." },
+            "createdAt": { "type": "string", "format": "date-time" },
+            "lastSeen": { "type": "string", "format": "date-time" },
+            "page": { "type": "string" },
+            "isLive": { "type": "boolean" },
+            "lastInteraction": { "type": "object" }
+        }
+    },
+    "Event": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Event",
+      "type": "object",
+      "description": "Represents an event tracked on a website.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Event entity."
+        },
+        "websiteId": {
+          "type": "string",
+          "description": "Reference to Website. (Relationship: Website 1:N Event)"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Identifier for the user who triggered the event (can be anonymous)."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the event."
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "The timestamp of when the event occurred.",
+          "format": "date-time"
+        },
+        "properties": {
+          "type": "string",
+          "description": "JSON string containing additional properties for the event.",
+          "format": "json-string"
+        }
+      },
+      "required": [
+        "id",
+        "websiteId",
+        "userId",
+        "name",
+        "timestamp"
+      ]
+    },
+    "Funnel": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Funnel",
+      "type": "object",
+      "description": "Represents a funnel defined for tracking user conversion.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Funnel entity."
+        },
+        "websiteId": {
+          "type": "string",
+          "description": "Reference to Website. (Relationship: Website 1:N Funnel)"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the funnel."
+        },
+        "steps": {
+          "type": "array",
+          "description": "An array of event names representing the steps in the funnel.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "id",
+        "websiteId",
+        "name",
+        "steps"
+      ]
+    },
+    "Session": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Session",
+      "type": "object",
+      "description": "Represents a user session on a website.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Session entity."
+        },
+        "websiteId": {
+          "type": "string",
+          "description": "Reference to Website. (Relationship: Website 1:N Session)"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Identifier for the user associated with the session (can be anonymous)."
+        },
+        "startTime": {
+          "type": "string",
+          "description": "The timestamp of when the session started.",
+          "format": "date-time"
+        },
+        "endTime": {
+          "type": "string",
+          "description": "The timestamp of when the session ended.",
+          "format": "date-time"
+        },
+        "duration": {
+          "type": "number",
+          "description": "The duration of the session in seconds."
+        }
+      },
+      "required": [
+        "id",
+        "websiteId",
+        "userId",
+        "startTime"
+      ]
+    },
+    "UserAnalysis": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "UserAnalysis",
+      "type": "object",
+      "description": "Represents analyzed user data based on various factors.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the UserAnalysis entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Identifier for the user being analyzed (can be anonymous)."
+        },
+        "websiteId": {
+          "type": "string",
+          "description": "Reference to Website. (Relationship: Website 1:N UserAnalysis)"
+        },
+        "gender": {
+          "type": "string",
+          "description": "Estimated gender of the user."
+        },
+        "age": {
+          "type": "number",
+          "description": "Estimated age of the user."
+        },
+        "locationGeo": {
+          "type": "string",
+          "description": "Geographic location of the user based on IP address (if available)."
+        },
+        "device": {
+          "type": "string",
+          "description": "Type of device used by the user (e.g., mobile, desktop)."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "websiteId"
+      ]
+    },
+    "Page": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Page",
+      "type": "object",
+      "description": "Represents the content of a webpage at a specific point in time for session replay.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Page entity."
+        },
+        "site_id": {
+          "type": "string",
+          "description": "Identifier for the site this page belongs to."
+        },
+        "page_path": {
+          "type": "string",
+          "description": "The URL path of the page."
+        },
+        "recorded_on": {
+          "type": "string",
+          "description": "The timestamp of when the page content was recorded.",
+          "format": "date-time"
+        },
+        "content": {
+          "type": "string",
+          "description": "The full HTML content of the page."
+        },
+        "version": {
+          "type": "number",
+          "description": "The version number of this page recording."
+        }
+      },
+      "required": [
+        "id",
+        "site_id",
+        "page_path",
+        "recorded_on",
+        "content",
+        "version"
+      ]
+    },
+    "Interaction": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Interaction",
+      "type": "object",
+      "description": "Represents a user interaction session recorded on a page.",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "sessionId": {
+          "type": "string"
+        },
+        "pageId": {
+            "type": "string"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "window": {
+          "type": "object",
+          "properties": {
+            "width": {
+              "type": "number"
+            },
+            "height": {
+              "type": "number"
+            }
+          }
+        },
+        "page": {
+          "type": "string"
+        },
+        "userAgent": {
+            "type": "string"
+        },
+        "ip": {
+            "type": "string"
+        },
+        "location": {
+            "type": "object",
+            "properties": {
+                "city": { "type": "string" },
+                "region": { "type": "string" },
+                "country": { "type": "string" },
+                "latitude": { "type": "number" },
+                "longitude": { "type": "number" }
+            }
+        }
+      }
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/accounts/{accountId}",
+        "definition": {
+          "entityName": "account",
+          "schema": {
+            "$ref": "#/backend/entities/Account"
+          },
+          "description": "Stores account information. Account IDs are used as document IDs.",
+          "params": [
+            {
+              "name": "accountId",
+              "description": "The unique identifier for the account."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}",
+        "definition": {
+            "entityName": "User",
+            "schema": { "$ref": "#/backend/entities/User" },
+            "description": "Stores user tracking information for live view."
+        }
+      },
+      {
+        "path": "/accounts/{accountId}/websites/{websiteId}",
+        "definition": {
+          "entityName": "website",
+          "schema": {
+            "$ref": "#/backend/entities/Website"
+          },
+          "description": "Stores website information associated with an account. Includes denormalized 'accountId' for authorization independence.",
+          "params": [
+            {
+              "name": "accountId",
+              "description": "The unique identifier for the account."
+            },
+            {
+              "name": "websiteId",
+              "description": "The unique identifier for the website."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/accounts/{accountId}/websites/{websiteId}/events/{eventId}",
+        "definition": {
+          "entityName": "event",
+          "schema": {
+            "$ref": "#/backend/entities/Event"
+          },
+          "description": "Stores events associated with a website. Includes denormalized 'websiteId' for authorization independence.",
+          "params": [
+            {
+              "name": "accountId",
+              "description": "The unique identifier for the account."
+            },
+            {
+              "name": "websiteId",
+              "description": "The unique identifier for the website."
+            },
+            {
+              "name": "eventId",
+              "description": "The unique identifier for the event."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/accounts/{accountId}/websites/{websiteId}/funnels/{funnelId}",
+        "definition": {
+          "entityName": "funnel",
+          "schema": {
+            "$ref": "#/backend/entities/Funnel"
+          },
+          "description": "Stores funnels defined for a website. Includes denormalized 'websiteId' for authorization independence.",
+          "params": [
+            {
+              "name": "accountId",
+              "description": "The unique identifier for the account."
+            },
+            {
+              "name": "websiteId",
+              "description": "The unique identifier for the website."
+            },
+            {
+              "name": "funnelId",
+              "description": "The unique identifier for the funnel."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/accounts/{accountId}/websites/{websiteId}/sessions/{sessionId}",
+        "definition": {
+          "entityName": "session",
+          "schema": {
+            "$ref": "#/backend/entities/Session"
+          },
+          "description": "Stores sessions recorded for a website. Includes denormalized 'websiteId' for authorization independence.",
+          "params": [
+            {
+              "name": "accountId",
+              "description": "The unique identifier for the account."
+            },
+            {
+              "name": "websiteId",
+              "description": "The unique identifier for the website."
+            },
+            {
+              "name": "sessionId",
+              "description": "The unique identifier for the session."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/accounts/{accountId}/websites/{websiteId}/user_analyses/{userAnalysisId}",
+        "definition": {
+          "entityName": "UserAnalysis",
+          "schema": {
+            "$ref": "#/backend/entities/UserAnalysis"
+          },
+          "description": "Stores user analysis data for a website. Includes denormalized 'websiteId' for authorization independence.",
+          "params": [
+            {
+              "name": "accountId",
+              "description": "The unique identifier for the account."
+            },
+            {
+              "name": "websiteId",
+              "description": "The unique identifier for the website."
+            },
+            {
+              "name": "userAnalysisId",
+              "description": "The unique identifier for the user analysis."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/interactions/{interactionId}",
+        "definition": {
+          "entityName": "Interaction",
+          "schema": {
+            "$ref": "#/backend/entities/Interaction"
+          },
+          "description": "Stores recorded user interaction sessions.",
+          "params": [
+            {
+              "name": "interactionId",
+              "description": "The unique identifier for the interaction session."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/pages/{pageId}",
+        "definition": {
+          "entityName": "Page",
+          "schema": {
+            "$ref": "#/backend/entities/Page"
+          },
+          "description": "Stores HTML snapshots of pages for session replays.",
+          "params": [
+            {
+              "name": "pageId",
+              "description": "The unique identifier for the page snapshot."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The Firestore structure is designed to align with Neup.Analytics' core features, focusing on scalability, security, and ease of debugging. It prioritizes 'Authorization Independence' by denormalizing relevant authorization data to avoid costly and complex `get()` calls in security rules. It employs 'Structural Segregation' by separating data with different access requirements into distinct collections, and uses consistent 'Access Modeling' patterns, primarily path-based ownership and membership maps. This approach enhances security, simplifies rule definitions, and supports efficient `list` operations (QAPs). Account and Website relationship is handled via subcollections. Each subcollection denormalizes necessary information from the parent to maintain authorization independence. Added 'interactions', 'pages', and 'users' collections to support session replay and live view functionality."
+  }
+}
+    

@@ -1,0 +1,94 @@
+// Prisma schema for the relational PostgreSQL analytics model.
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum InteractionEventType {
+  mousemove
+  click
+  scroll
+  touch
+  input
+  keydown
+}
+
+model PageSnapshot {
+  id          String        @id @default(cuid())
+  pagePath    String
+  siteId      String
+  content     String
+  version     Int           @default(1)
+  recordedOn  DateTime      @default(now())
+  interactions Interaction[]
+
+  @@index([pagePath])
+  @@index([siteId])
+}
+
+model User {
+  id              String        @id @default(cuid())
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  lastSeen        DateTime?
+  pagePath        String?
+  isLive          Boolean       @default(false)
+  lastInteraction Json?
+  interactions    Interaction[]
+
+  @@index([isLive])
+}
+
+model Interaction {
+  id            String             @id @default(cuid())
+  createdAt     DateTime           @default(now())
+  user          User?              @relation(fields: [userId], references: [id])
+  userId        String?
+  page          PageSnapshot?      @relation(fields: [pageId], references: [id])
+  pageId        String?
+  pagePath      String
+  windowWidth   Int
+  windowHeight  Int
+  userAgent     String?
+  ip            String?
+  city          String?
+  region        String?
+  country       String?
+  latitude      Float?
+  longitude     Float?
+  events        InteractionEvent[]
+
+  @@index([createdAt])
+  @@index([pageId])
+  @@index([userId])
+}
+
+model InteractionEvent {
+  id            String               @id @default(cuid())
+  interaction   Interaction          @relation(fields: [interactionId], references: [id])
+  interactionId String
+  type          InteractionEventType
+  x             Int?
+  y             Int?
+  scrollX       Int?
+  scrollY       Int?
+  element       String?
+  value         String?
+  key           String?
+  timestamp     Int
+
+  @@index([interactionId])
+}
+
+model Application {
+  id      String   @id @default(cuid())
+  name    String
+  sites   String[]
+  details String?
+}
