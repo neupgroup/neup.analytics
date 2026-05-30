@@ -1,7 +1,8 @@
 'use client';
 
+import Link from 'next/link';
 import { FormEvent, useCallback, useEffect, useState } from 'react';
-import { Camera, ExternalLink, FileText, Loader2, RefreshCw } from 'lucide-react';
+import { Camera, ExternalLink, Eye, FileText, Loader2, RefreshCw } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -177,6 +178,7 @@ export default function SnapshotsPage() {
                       <>
                         <iframe
                           srcDoc={snapshot.data}
+                          title={snapshot.details?.title || snapshot.pageUrl || 'Snapshot preview'}
                           className="h-[160px] w-[256px] origin-top-left scale-50"
                           sandbox="allow-scripts allow-same-origin"
                           scrolling="no"
@@ -201,12 +203,20 @@ export default function SnapshotsPage() {
                     </p>
                   </div>
 
-                  <Button asChild variant="outline" size="sm" className="w-full shrink-0 sm:w-auto">
-                    <a href={snapshot.pageUrl} target="_blank" rel="noreferrer">
-                      Open
-                      <ExternalLink className="ml-2 h-4 w-4" />
-                    </a>
-                  </Button>
+                  <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto">
+                    <Button asChild variant="outline" size="sm" className="w-full">
+                      <Link href={`/snapshots/${snapshot.id}`}>
+                        View
+                        <Eye className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                    <Button asChild variant="ghost" size="sm" className="w-full">
+                      <a href={snapshot.pageUrl} target="_blank" rel="noreferrer">
+                        Open site
+                        <ExternalLink className="ml-2 h-4 w-4" />
+                      </a>
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>
