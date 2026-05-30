@@ -11,6 +11,19 @@ export async function GET(request: Request) {
     orderBy: { createdAt: 'desc' },
     skip: offset,
     take: limit,
+    select: {
+      id: true,
+      createdAt: true,
+      userId: true,
+      pagePath: true,
+      windowWidth: true,
+      windowHeight: true,
+      _count: {
+        select: {
+          events: true,
+        },
+      },
+    },
   });
 
   const total = await prisma.interaction.count();

@@ -1,5 +1,12 @@
 (function () {
   try {
+    var SESSION_ID_KEY = 'session_id';
+    var SESSION_STARTED_AT_KEY = 'session_started_at';
+    var EVENT_BUFFER_KEY = 'session_event_buffer';
+    var FLUSH_TIMER_KEY = 'session_flush_timer';
+    var INITIAL_FLUSH_INTERVAL_MS = 5000;
+    var LONG_FLUSH_INTERVAL_MS = 30000;
+
     var script = document.currentScript;
     if (!script) {
       // Fallback: find the last script with sdk.js in src
@@ -17,6 +24,61 @@
     var collect = collectAttr ? collectAttr.split(',').map(function (s) { return s.trim(); }) : ['pageview'];
 
     if (!siteId) return;
+
+    function uuid() {
+      if (window.crypto && window.crypto.randomUUID) {
+        return window.crypto.randomUUID();
+      }
+
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0;
+        var v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
+    function safeSessionStorageGet(key) {
+      try { return window.sessionStorage.getItem(key); } catch (e) { return null; }
+    }
+
+    function safeSessionStorageSet(key, value) {
+      try { window.sessionStorage.setItem(key, value); } catch (e) {}
+    }
+
+    function safeSessionStorageRemove(key) {
+      try { window.sessionStorage.removeItem(key); } catch (e) {}
+    }
+
+    var sessionId = safeSessionStorageGet(SESSION_ID_KEY);
+    if (!sessionId) {
+      sessionId = uuid();
+      safeSessionStorageSet(SESSION_ID_KEY, sessionId);
+    }
+
+    var sessionStartedAt = Number(safeSessionStorageGet(SESSION_STARTED_AT_KEY) || Date.now());
+    if (!safeSessionStorageGet(SESSION_STARTED_AT_KEY)) {
+      safeSessionStorageSet(SESSION_STARTED_AT_KEY, String(sessionStartedAt));
+    }
+
+    var eventBuffer = [];
+    try {
+      eventBuffer = JSON.parse(safeSessionStorageGet(EVENT_BUFFER_KEY) || '[]') || [];
+    } catch (e) {
+      eventBuffer = [];
+    }
+
+    function persistBuffer() {
+      safeSessionStorageSet(EVENT_BUFFER_KEY, JSON.stringify(eventBuffer));
+    }
+
+    function clearBuffer() {
+      eventBuffer = [];
+      safeSessionStorageRemove(EVENT_BUFFER_KEY);
+    }
+
+    function getElapsedMs() {
+      return Math.max(0, Date.now() - sessionStartedAt);
+    }
 
     // Derive analytics origin from the script src so we send to the analytics app, not the host page
     var analyticsOrigin = (script && script.src) ? (new URL(script.src)).origin : window.location.origin;
@@ -50,6 +112,7 @@
     function makeBasePayload() {
       return {
         siteId: siteId,
+        sessionId: sessionId,
         pagePath: location.pathname + location.search + location.hash,
         content: '', // not capturing full DOM by default for privacy and size
         window: { width: window.innerWidth, height: window.innerHeight },
@@ -58,12 +121,54 @@
       };
     }
 
-    // send initial pageview
-    if (collect.indexOf('pageview') !== -1) {
+    function buildBatchPayload(includeHeartbeat) {
       var payload = makeBasePayload();
-      payload.events.push({ type: 'pageview', ts: Date.now() });
-      send(payload);
+      payload.events = eventBuffer.slice();
+
+      if (includeHeartbeat) {
+        payload.events.push({
+          type: 'heartbeat',
+          ts: Date.now(),
+          elapsedMs: getElapsedMs(),
+        });
+      }
+
+      return payload;
     }
+
+    function flush(includeHeartbeat) {
+      var payload = buildBatchPayload(includeHeartbeat !== false);
+      if (!payload.events.length) return;
+      send(payload);
+      clearBuffer();
+    }
+
+    function enqueue(event) {
+      eventBuffer.push(event);
+      persistBuffer();
+    }
+
+    function scheduleNextFlush() {
+      if (safeSessionStorageGet(FLUSH_TIMER_KEY)) {
+        safeSessionStorageRemove(FLUSH_TIMER_KEY);
+      }
+
+      var nextDelay = getElapsedMs() < LONG_FLUSH_INTERVAL_MS ? INITIAL_FLUSH_INTERVAL_MS : LONG_FLUSH_INTERVAL_MS;
+      var timerId = window.setTimeout(function () {
+        flush(true);
+        scheduleNextFlush();
+      }, nextDelay);
+
+      safeSessionStorageSet(FLUSH_TIMER_KEY, String(timerId));
+    }
+
+    // Send the first session packet immediately so the session exists on arrival.
+    if (collect.indexOf('pageview') !== -1) {
+      enqueue({ type: 'pageview', ts: Date.now(), elapsedMs: 0 });
+    }
+    flush(true);
+
+    scheduleNextFlush();
 
     // clicks
     if (collect.indexOf('clicks') !== -1) {
@@ -75,24 +180,16 @@
           else if (t && t.className) selector = t.tagName.toLowerCase() + '.' + t.className.toString().split(' ').join('.');
           else if (t) selector = t.tagName && t.tagName.toLowerCase();
 
-          var p = makeBasePayload();
-          p.events.push({ type: 'click', ts: Date.now(), x: e.clientX, y: e.clientY, selector: selector });
-          send(p);
+          enqueue({ type: 'click', ts: Date.now(), x: e.clientX, y: e.clientY, selector: selector, elapsedMs: getElapsedMs() });
         } catch (err) {}
       }, true);
     }
 
     // scroll
     if (collect.indexOf('scrolls') !== -1 || collect.indexOf('scroll') !== -1) {
-      var last = 0;
       window.addEventListener('scroll', function () {
-        var now = Date.now();
-        if (now - last < 1000) return; // throttle
-        last = now;
         try {
-          var p = makeBasePayload();
-          p.events.push({ type: 'scroll', ts: Date.now(), scrollY: window.scrollY, scrollX: window.scrollX });
-          send(p);
+          enqueue({ type: 'scroll', ts: Date.now(), scrollY: window.scrollY, scrollX: window.scrollX, elapsedMs: getElapsedMs() });
         } catch (err) {}
       }, { passive: true });
     }
@@ -101,17 +198,13 @@
     if (collect.indexOf('errors') !== -1) {
       window.addEventListener('error', function (ev) {
         try {
-          var p = makeBasePayload();
-          p.events.push({ type: 'error', ts: Date.now(), message: ev.message, filename: ev.filename, lineno: ev.lineno, colno: ev.colno });
-          send(p);
+          enqueue({ type: 'error', ts: Date.now(), message: ev.message, filename: ev.filename, lineno: ev.lineno, colno: ev.colno, elapsedMs: getElapsedMs() });
         } catch (err) {}
       });
 
       window.addEventListener('unhandledrejection', function (ev) {
         try {
-          var p = makeBasePayload();
-          p.events.push({ type: 'unhandledrejection', ts: Date.now(), reason: (ev && ev.reason && (ev.reason.message || String(ev.reason))) || String(ev) });
-          send(p);
+          enqueue({ type: 'unhandledrejection', ts: Date.now(), reason: (ev && ev.reason && (ev.reason.message || String(ev.reason))) || String(ev), elapsedMs: getElapsedMs() });
         } catch (err) {}
       });
     }
@@ -120,8 +213,29 @@
     window.neupAnalytics = window.neupAnalytics || {};
     window.neupAnalytics.siteId = siteId;
     window.neupAnalytics.collect = collect;
-    window.neupAnalytics.pageview = function () { if (collect.indexOf('pageview') !== -1) { var p = makeBasePayload(); p.events.push({ type: 'pageview', ts: Date.now() }); send(p); } };
-    window.neupAnalytics.track = function (event) { try { var p = makeBasePayload(); p.events.push(event); send(p); } catch (e) {} };
+    window.neupAnalytics.sessionId = sessionId;
+    window.neupAnalytics.pageview = function () {
+      if (collect.indexOf('pageview') !== -1) {
+        enqueue({ type: 'pageview', ts: Date.now(), elapsedMs: getElapsedMs() });
+        flush(true);
+      }
+    };
+    window.neupAnalytics.track = function (event) {
+      try {
+        enqueue(Object.assign({ ts: Date.now(), elapsedMs: getElapsedMs() }, event));
+      } catch (e) {}
+    };
+    window.neupAnalytics.flush = function () {
+      flush(true);
+    };
+
+    window.addEventListener('pagehide', function () {
+      flush(true);
+    });
+
+    window.addEventListener('beforeunload', function () {
+      flush(true);
+    });
   } catch (e) {
     // Do not throw in host pages
     console.error('neup.sdk error', e);

@@ -36,10 +36,12 @@ type InteractionEvent =
 type Interaction = {
   id: string;
   createdAt: string;
-  userId: string;
-  page: string;
+  userId: string | null;
+  pagePath: string;
+  page?: { pagePath?: string } | null;
   pageId?: string | null;
-  window: { width: number; height: number };
+  windowWidth: number;
+  windowHeight: number;
   events: InteractionEvent[];
 };
 
@@ -106,23 +108,25 @@ export default function ReplayDetailPage({ params }: { params: { id: string } })
     };
     fetchReplay();
   }, [id]);
+
+  useEffect(() => {
     const calculateScale = () => {
       if (replayContainerRef.current && interaction) {
         const containerWidth = replayContainerRef.current.offsetWidth;
         const containerHeight = replayContainerRef.current.offsetHeight;
-        
-        const recordingWidth = interaction.window.width;
-        const recordingHeight = interaction.window.height;
-    // if (!firestore || !interaction?.pageId) return null;
-    // return null;
+
+        const recordingWidth = interaction.windowWidth;
+        const recordingHeight = interaction.windowHeight;
+
+        const scaleX = containerWidth / recordingWidth;
         const scaleY = containerHeight / recordingHeight;
-        
-        const scale = Math.min(scaleX, scaleY, 1); // Don't scale up
-        
+
+        const scale = Math.min(scaleX, scaleY, 1);
+
         setScaledDimensions({
           width: recordingWidth * scale,
           height: recordingHeight * scale,
-          scale: scale,
+          scale,
         });
       }
     };
@@ -291,7 +295,7 @@ export default function ReplayDetailPage({ params }: { params: { id: string } })
       {interaction && (
         <div className="flex flex-col gap-8">
           <div className="space-y-4">
-            <h2 className="font-bold text-xl mb-2">{interaction.page}</h2>
+            <h2 className="font-bold text-xl mb-2">{interaction.page?.pagePath ?? interaction.pagePath}</h2>
             <div
               id="replay-container"
               ref={replayContainerRef}
@@ -317,8 +321,8 @@ export default function ReplayDetailPage({ params }: { params: { id: string } })
                         scrolling="no"
                         id="replay-iframe"
                         style={{
-                          width: `${interaction.window.width}px`,
-                          height: `${interaction.window.height}px`,
+                          width: `${interaction.windowWidth}px`,
+                          height: `${interaction.windowHeight}px`,
                           transform: `scale(${scaledDimensions.scale})`,
                           transformOrigin: 'top left',
                         }}
@@ -328,8 +332,8 @@ export default function ReplayDetailPage({ params }: { params: { id: string } })
                         className="absolute inset-0 pointer-events-none"
                         id="replay-overlay"
                         style={{
-                          width: `${interaction.window.width}px`,
-                          height: `${interaction.window.height}px`,
+                          width: `${interaction.windowWidth}px`,
+                          height: `${interaction.windowHeight}px`,
                           transform: `scale(${scaledDimensions.scale})`,
                           transformOrigin: 'top left',
                         }}
@@ -389,10 +393,10 @@ export default function ReplayDetailPage({ params }: { params: { id: string } })
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                {getDeviceIcon(interaction.window.width)}
+                {getDeviceIcon(interaction.windowWidth)}
                 <strong>Window:</strong>
                 <span className="ml-auto">
-                  {interaction.window.width} x {interaction.window.height}px
+                  {interaction.windowWidth} x {interaction.windowHeight}px
                 </span>
               </div>
               <div className="flex items-center gap-2">

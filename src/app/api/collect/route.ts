@@ -115,6 +115,7 @@ export async function POST(request: NextRequest) {
     const resolvedSiteId = String(
       request.nextUrl.searchParams.get('siteId') ?? body.siteId ?? ''
     ).trim();
+    const sessionId = String(body.sessionId ?? request.nextUrl.searchParams.get('sessionId') ?? '').trim();
 
     const now = new Date();
     const requestOrigin = getRequestOrigin(request);
@@ -122,6 +123,10 @@ export async function POST(request: NextRequest) {
 
     if (!resolvedSiteId) {
       return withCors({ error: 'siteId is required.' }, 400, requestOrigin);
+    }
+
+    if (!sessionId) {
+      return withCors({ error: 'sessionId is required.' }, 400, requestOrigin);
     }
 
     const application = await prisma.application.findUnique({
@@ -140,6 +145,18 @@ export async function POST(request: NextRequest) {
     if (!isAllowed) {
       return withCors({ error: 'Origin is not allowed for this property.' }, 403, requestOrigin);
     }
+
+    const interactionEvents = (body.events || []).map((e: any) => ({
+      type: e.type,
+      x: e.x ?? null,
+      y: e.y ?? null,
+      element: e.element ?? null,
+      value: e.value ?? null,
+      key: e.key ?? null,
+      scrollX: e.scrollX ?? null,
+      scrollY: e.scrollY ?? null,
+      timestamp: normalizeTimestamp(e.timestamp),
+    }));
 
     // Upsert user if provided
     let userId: string | undefined = undefined;
@@ -177,8 +194,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Create interaction with nested events
-    const created = await prisma.interaction.create({
-      data: {
+    const created = await prisma.interaction.upsert({
+      where: { id: sessionId },
+      create: {
+        id: sessionId,
         userId: userId ?? null,
         pageId: pageId ?? null,
         pagePath: pagePath ?? body.page?.url ?? '',
@@ -192,17 +211,24 @@ export async function POST(request: NextRequest) {
         latitude: body.latitude ?? null,
         longitude: body.longitude ?? null,
         events: {
-          create: (body.events || []).map((e: any) => ({
-            type: e.type,
-            x: e.x ?? null,
-            y: e.y ?? null,
-            element: e.element ?? null,
-            value: e.value ?? null,
-            key: e.key ?? null,
-            scrollX: e.scrollX ?? null,
-            scrollY: e.scrollY ?? null,
-            timestamp: normalizeTimestamp(e.timestamp),
-          })),
+          create: interactionEvents,
+        },
+      },
+      update: {
+        userId: userId ?? null,
+        pageId: pageId ?? null,
+        pagePath: pagePath ?? body.page?.url ?? '',
+        windowWidth: body.window?.width ?? body.device?.viewport?.width ?? 0,
+        windowHeight: body.window?.height ?? body.device?.viewport?.height ?? 0,
+        userAgent: body.userAgent ?? null,
+        ip: body.ip ?? null,
+        city: body.city ?? null,
+        region: body.region ?? null,
+        country: body.country ?? null,
+        latitude: body.latitude ?? null,
+        longitude: body.longitude ?? null,
+        events: {
+          create: interactionEvents,
         },
       },
     });

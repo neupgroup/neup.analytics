@@ -12,6 +12,7 @@ datasource db {
 
 enum InteractionEventType {
   pageview
+  heartbeat
   mousemove
   click
   scroll

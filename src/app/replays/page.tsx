@@ -13,10 +13,11 @@ import { Button } from "@/components/ui/button";
 type Interaction = {
   id: string;
   createdAt: string;
-  userId: string;
-  page: string;
-  window: { width: number; height: number };
-  events: any[];
+  userId: string | null;
+  pagePath: string;
+  windowWidth: number;
+  windowHeight: number;
+  _count: { events: number };
 };
 
 const REPLAYS_PER_PAGE = 10;
@@ -104,19 +105,19 @@ export default function ReplaysPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted">
-                      {interaction.window.width > 768
+                      {interaction.windowWidth > 768
                         ? <Laptop className="h-5 w-5 text-muted-foreground" />
                         : <Smartphone className="h-5 w-5 text-muted-foreground" />}
                     </div>
                     <div>
-                      <p className="font-semibold">{interaction.page}</p>
-                      <p className="text-sm text-muted-foreground">{interaction.events.length} interactions</p>
+                      <p className="font-semibold">{interaction.pagePath}</p>
+                      <p className="text-sm text-muted-foreground">{interaction._count.events} interactions</p>
                     </div>
                   </div>
                   <div className="text-right text-sm text-muted-foreground">
                     <div className="flex items-center gap-2">
                       <User className="h-4 w-4" />
-                      <span>{interaction.userId === 'anonymous' ? 'Anonymous' : interaction.userId.substring(0,6)}</span>
+                      <span>{interaction.userId === 'anonymous' || !interaction.userId ? 'Anonymous' : interaction.userId.substring(0,6)}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Clock className="h-4 w-4" />
