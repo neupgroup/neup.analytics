@@ -2,8 +2,11 @@ import { prisma } from '@/lib/db';
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-export default async function LogDetailPage({ params }: { params: { id: string } }) {
-  const id = params.id;
+export default async function LogDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
+  if (!id) return notFound();
+
   const interaction = await prisma.interaction.findUnique({
     where: { id },
     include: { events: true },
