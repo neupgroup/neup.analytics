@@ -50,6 +50,29 @@ function isAllowedSite(site: string, requestOrigin: string | null, referer: stri
   }
 }
 
+function getDayStart(value: Date) {
+  return new Date(Date.UTC(value.getUTCFullYear(), value.getUTCMonth(), value.getUTCDate()));
+}
+
+function getPagePathFromUrl(value: string | null) {
+  if (!value) return null;
+
+  try {
+    const url = new URL(value);
+    return `${url.pathname}${url.search}${url.hash}`;
+  } catch {
+    return null;
+  }
+}
+
+function getPlainObject(value: unknown): Record<string, unknown> {
+  if (value && typeof value === 'object' && !Array.isArray(value)) {
+    return value as Record<string, unknown>;
+  }
+
+  return {};
+}
+
 function getCorsHeaders(origin: string | null) {
   const sanitizedOrigin = typeof origin === 'string' ? origin.trim() : null;
 
@@ -184,7 +207,17 @@ export async function POST(request: NextRequest) {
 
     // Find or create page snapshot
     let pageId: string | undefined = undefined;
-    const pagePath = body.pagePath ?? body.page?.path ?? null;
+    const pageUrl = String(
+      body.snapshot?.pageUrl ?? body.pageUrl ?? body.page?.url ?? referer ?? ''
+    ).trim();
+    const snapshotData =
+      typeof body.snapshot?.data === 'string' && body.snapshot.data.trim()
+        ? body.snapshot.data
+        : typeof body.content === 'string'
+          ? body.content
+          : '';
+    const pagePath =
+      body.pagePath ?? body.page?.path ?? getPagePathFromUrl(pageUrl) ?? null;
 
     if (pagePath) {
       const existing = await prisma.pageSnapshot.findFirst({
@@ -192,11 +225,21 @@ export async function POST(request: NextRequest) {
       });
       if (existing) {
         pageId = existing.id;
+        if (snapshotData && !existing.content) {
+          await prisma.pageSnapshot.update({
+            where: { id: existing.id },
+            data: {
+              content: snapshotData,
+              recordedOn: now,
+              version: existing.version + 1,
+            },
+          });
+        }
       } else {
         const created = await prisma.pageSnapshot.create({
           data: {
             pagePath,
-            content: body.content || '',
+            content: snapshotData,
             recordedOn: now,
             version: body.version ?? 1,
             siteId: resolvedSiteId,
@@ -245,6 +288,40 @@ export async function POST(request: NextRequest) {
         },
       },
     });
+
+    if (pageUrl && snapshotData) {
+      const dayStart = getDayStart(now);
+      const existingDailySnapshot = await prisma.snapshotWeb.findFirst({
+        where: {
+          pageUrl,
+          createdOn: {
+            gte: dayStart,
+          },
+        },
+        select: { id: true },
+      });
+
+      if (!existingDailySnapshot) {
+        const snapshotDetails = {
+          ...getPlainObject(body.snapshot?.details),
+          siteId: resolvedSiteId,
+          sessionId: created.id,
+          pagePath: pagePath ?? getPagePathFromUrl(pageUrl),
+          userAgent: body.userAgent ?? null,
+          window: body.window ?? body.device?.viewport ?? null,
+        };
+
+        await prisma.snapshotWeb.create({
+          data: {
+            sessionId: created.id,
+            pageUrl,
+            data: snapshotData,
+            details: snapshotDetails,
+            createdOn: now,
+          },
+        });
+      }
+    }
 
     return withCors({ id: created.id }, 201, requestOrigin);
   } catch (err: any) {

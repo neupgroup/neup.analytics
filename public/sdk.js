@@ -3,6 +3,7 @@
     var SESSION_ID_KEY = 'session_id';
     var SESSION_STARTED_AT_KEY = 'session_started_at';
     var EVENT_BUFFER_KEY = 'session_event_buffer';
+    var SNAPSHOT_CAPTURED_PREFIX = 'snapshot_web_captured_at:';
     var FIRST_WINDOW_INTERVAL_MS = 5000;
     var MAX_WINDOW_MS = 30000;
     var SCROLL_SAMPLE_INTERVAL_MS = 500;
@@ -52,6 +53,14 @@
       try { window.sessionStorage.removeItem(key); } catch (e) {}
     }
 
+    function safeLocalStorageGet(key) {
+      try { return window.localStorage.getItem(key); } catch (e) { return null; }
+    }
+
+    function safeLocalStorageSet(key, value) {
+      try { window.localStorage.setItem(key, value); } catch (e) {}
+    }
+
     var sessionId = safeSessionStorageGet(SESSION_ID_KEY);
     if (!sessionId) {
       sessionId = uuid();
@@ -81,14 +90,17 @@
     // Derive analytics origin from the script src so we send to the analytics app, not the host page
     var analyticsOrigin = (script && script.src) ? (new URL(script.src)).origin : window.location.origin;
     var endpoint = (new URL('/api/collect', analyticsOrigin)).toString() + '?siteId=' + encodeURIComponent(siteId);
+    var pageUrl = window.location.href;
+    var snapshotSentThisPage = false;
 
     function send(payload) {
       try {
         var body = JSON.stringify(payload);
         if (navigator.sendBeacon) {
           var blob = new Blob([body], { type: 'application/json' });
-          navigator.sendBeacon(endpoint, blob);
-          return;
+          if (navigator.sendBeacon(endpoint, blob)) {
+            return;
+          }
         }
       } catch (e) {
         // fallthrough
@@ -107,12 +119,38 @@
       } catch (e) {}
     }
 
+    function getSnapshotStorageKey() {
+      return SNAPSHOT_CAPTURED_PREFIX + siteId + ':' + pageUrl.split('#')[0];
+    }
+
+    function shouldCaptureSnapshot() {
+      var lastCapturedAt = Number(safeLocalStorageGet(getSnapshotStorageKey()) || 0);
+      var oneDayMs = 24 * 60 * 60 * 1000;
+      return !lastCapturedAt || Date.now() - lastCapturedAt >= oneDayMs;
+    }
+
+    function captureSnapshotData() {
+      try {
+        var clone = document.documentElement.cloneNode(true);
+        var head = clone.querySelector('head');
+        if (head && !head.querySelector('base')) {
+          var base = document.createElement('base');
+          base.setAttribute('href', window.location.href);
+          head.insertBefore(base, head.firstChild);
+        }
+        return '<!doctype html>\n' + clone.outerHTML;
+      } catch (e) {
+        return '';
+      }
+    }
+
     function makeBasePayload() {
       return {
         siteId: siteId,
         sessionId: sessionId,
         pagePath: location.pathname + location.search + location.hash,
-        content: '', // not capturing full DOM by default for privacy and size
+        pageUrl: pageUrl,
+        content: '',
         window: { width: window.innerWidth, height: window.innerHeight },
         userAgent: navigator.userAgent,
         events: [],
@@ -134,6 +172,32 @@
       }
 
       return payload;
+    }
+
+    function sendDailySnapshot() {
+      if (snapshotSentThisPage || !shouldCaptureSnapshot()) return;
+
+      var data = captureSnapshotData();
+      if (!data) return;
+
+      snapshotSentThisPage = true;
+      safeLocalStorageSet(getSnapshotStorageKey(), String(Date.now()));
+
+      var payload = makeBasePayload();
+      payload.snapshot = {
+        pageUrl: pageUrl,
+        data: data,
+        details: {
+          title: document.title || '',
+          siteId: siteId,
+          pagePath: location.pathname + location.search + location.hash,
+          capturedAt: new Date().toISOString(),
+          viewport: { width: window.innerWidth, height: window.innerHeight },
+        },
+      };
+      payload.content = data;
+
+      send(payload);
     }
 
     function flush(includeHeartbeat) {
@@ -179,6 +243,14 @@
     flush(true);
 
     scheduleNextFlush();
+
+    if (document.readyState === 'complete') {
+      window.setTimeout(sendDailySnapshot, 0);
+    } else {
+      window.addEventListener('load', function () {
+        window.setTimeout(sendDailySnapshot, 0);
+      }, { once: true });
+    }
 
     // clicks
     if (collect.indexOf('clicks') !== -1) {

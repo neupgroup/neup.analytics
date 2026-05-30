@@ -70,10 +70,26 @@ model Interaction {
   latitude      Float?
   longitude     Float?
   events        InteractionEvent[]
+  snapshotWebs  SnapshotWeb[]
 
   @@index([createdAt])
   @@index([pageId])
   @@index([userId])
+}
+
+model SnapshotWeb {
+  id        String       @id @default(cuid())
+  session   Interaction? @relation(fields: [sessionId], references: [id])
+  sessionId String?      @map("session_id")
+  pageUrl   String
+  data      String
+  details   Json?
+  createdOn DateTime     @default(now()) @map("created_on")
+
+  @@index([createdOn])
+  @@index([pageUrl])
+  @@index([sessionId])
+  @@map("snapshotWeb")
 }
 
 model InteractionEvent {
