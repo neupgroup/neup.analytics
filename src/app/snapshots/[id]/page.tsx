@@ -137,7 +137,7 @@ export default function SnapshotDetailPage() {
                     srcDoc={snapshot.data}
                     title={snapshot.details?.title || snapshot.pageUrl || 'Snapshot viewer'}
                     className="h-[75vh] w-full border-0 bg-white"
-                    sandbox="allow-scripts allow-same-origin"
+                    sandbox=""
                   />
                 ) : (
                   <div className="flex min-h-[50vh] items-center justify-center text-center text-sm text-muted-foreground">

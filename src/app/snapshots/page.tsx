@@ -180,7 +180,7 @@ export default function SnapshotsPage() {
                           srcDoc={snapshot.data}
                           title={snapshot.details?.title || snapshot.pageUrl || 'Snapshot preview'}
                           className="h-[160px] w-[256px] origin-top-left scale-50"
-                          sandbox="allow-scripts allow-same-origin"
+                          sandbox=""
                           scrolling="no"
                         />
                         <div className="absolute inset-0 bg-transparent" title="Snapshot preview" />
