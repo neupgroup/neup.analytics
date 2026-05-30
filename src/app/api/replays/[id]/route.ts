@@ -7,10 +7,12 @@ interface Params {
 
 export async function GET(
   request: Request,
-  { params }: { params: Params }
+  { params }: { params: Promise<Params> }
 ) {
+  const { id } = await params;
+
   const interaction = await prisma.interaction.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       events: true,
       page: true,

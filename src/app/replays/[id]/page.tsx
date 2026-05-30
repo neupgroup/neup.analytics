@@ -1,7 +1,10 @@
 'use client';
 
-import { useEffect, useState, useRef, useCallback, use } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   Card,
   CardContent,
@@ -64,8 +67,9 @@ const ReplayLoader = () => (
   </div>
 );
 
-export default function ReplayDetailPage({ params }: { params: { id: string } }) {
-  const { id } = use(Promise.resolve(params));
+export default function ReplayDetailPage() {
+  const params = useParams<{ id: string }>();
+  const id = params.id;
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackProgress, setPlaybackProgress] = useState(0);
@@ -387,7 +391,7 @@ export default function ReplayDetailPage({ params }: { params: { id: string } })
                 <User className="h-4 w-4 text-muted-foreground" />
                 <strong>User:</strong>
                 <span className="ml-auto">
-                  {interaction.userId === 'anonymous'
+                  {!interaction.userId || interaction.userId === 'anonymous'
                     ? 'Anonymous'
                     : interaction.userId.substring(0, 6)}
                 </span>

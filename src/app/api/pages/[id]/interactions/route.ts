@@ -7,10 +7,12 @@ interface Params {
 
 export async function GET(
   request: Request,
-  { params }: { params: Params }
+  { params }: { params: Promise<Params> }
 ) {
+  const { id } = await params;
+
   const interactions = await prisma.interaction.findMany({
-    where: { pageId: params.id },
+    where: { pageId: id },
     orderBy: { createdAt: 'desc' },
     include: {
       events: true,

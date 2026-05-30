@@ -7,10 +7,12 @@ interface Params {
 
 export async function GET(
   request: Request,
-  { params }: { params: Params }
+  { params }: { params: Promise<Params> }
 ) {
+  const { id } = await params;
+
   const page = await prisma.pageSnapshot.findUnique({
-    where: { id: params.id },
+    where: { id },
   });
 
   if (!page) {
@@ -18,7 +20,7 @@ export async function GET(
   }
 
   const interactionsCount = await prisma.interaction.count({
-    where: { pageId: params.id },
+    where: { pageId: id },
   });
 
   return NextResponse.json({
