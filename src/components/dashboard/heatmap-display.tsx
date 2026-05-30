@@ -10,26 +10,55 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 
 type InteractionEvent =
-  | { type: 'mousemove'; x: number; y: number; timestamp: number }
-  | { type: 'click'; x: number; y: number; element: string; timestamp: number }
-  | { type: 'scroll'; scrollX: number; scrollY: number; timestamp: number };
+  | { type: 'mousemove'; x?: number | null; y?: number | null; timestamp: number }
+  | { type: 'click'; x?: number | null; y?: number | null; element?: string | null; timestamp: number }
+  | { type: 'scroll'; scrollX?: number | null; scrollY?: number | null; timestamp: number }
+  | { type: string; timestamp: number };
 
 type Interaction = {
-    id: string;
-    createdAt: string;
-  userId: string;
-  page: string;
-  pageId: string;
-  window: { width: number; height: number };
+  id: string;
+  createdAt: string;
+  userId?: string | null;
+  pageId?: string | null;
+  pagePath?: string;
+  windowWidth?: number | null;
+  windowHeight?: number | null;
+  window?: { width?: number | null; height?: number | null } | null;
   events: InteractionEvent[];
 };
 
 type Page = {
   id: string;
-    id: string;
-    content: string;
-    pagePath: string;
+  content: string;
+  pagePath: string;
 };
+
+function getInteractionWindow(interaction: Interaction) {
+    const width = interaction.windowWidth ?? interaction.window?.width ?? 0;
+    const height = interaction.windowHeight ?? interaction.window?.height ?? 0;
+
+    return {
+        width: Number.isFinite(width) && width > 0 ? width : 1920,
+        height: Number.isFinite(height) && height > 0 ? height : 1080,
+    };
+}
+
+function getEventPoint(event: InteractionEvent) {
+    const x = 'x' in event ? event.x : null;
+    const y = 'y' in event ? event.y : null;
+
+    if (typeof x !== 'number' || typeof y !== 'number' || !Number.isFinite(x) || !Number.isFinite(y)) {
+        return null;
+    }
+
+    return { x, y };
+}
+
+function getScrollY(event: InteractionEvent) {
+    const scrollY = 'scrollY' in event ? event.scrollY : null;
+
+    return typeof scrollY === 'number' && Number.isFinite(scrollY) ? scrollY : null;
+}
 
 const HeatmapPlaceholder = () => (
     <div className="relative mt-4 aspect-video w-full overflow-hidden rounded-lg border bg-muted/20">
@@ -93,23 +122,31 @@ export function HeatmapDisplay({ pageId }: { pageId: string }) {
 
         const clickData: { x: number; y: number; value: number }[] = [];
         const moveData: { x: number; y: number; value: number }[] = [];
-        const scrollPositions: number[] = [];
         
-        let maxScroll = 0;
         let docHeight = 0;
 
         interactions.forEach(interaction => {
-            if (interaction.window.height > docHeight) {
-                docHeight = interaction.window.height;
+            const viewport = getInteractionWindow(interaction);
+
+            if (viewport.height > docHeight) {
+                docHeight = viewport.height;
             }
             interaction.events.forEach(event => {
                 if (event.type === 'click') {
-                    clickData.push({ x: event.x, y: event.y, value: 50 });
+                    const point = getEventPoint(event);
+                    if (point) {
+                        clickData.push({ ...point, value: 50 });
+                    }
                 } else if (event.type === 'mousemove') {
-                    moveData.push({ x: event.x, y: event.y, value: 5 });
+                    const point = getEventPoint(event);
+                    if (point) {
+                        moveData.push({ ...point, value: 5 });
+                    }
                 } else if (event.type === 'scroll') {
-                    scrollPositions.push(event.scrollY);
-                    if (event.scrollY > maxScroll) maxScroll = event.scrollY;
+                    const scrollY = getScrollY(event);
+                    if (scrollY !== null) {
+                        docHeight = Math.max(docHeight, scrollY + viewport.height);
+                    }
                 }
             });
         });
@@ -122,11 +159,12 @@ export function HeatmapDisplay({ pageId }: { pageId: string }) {
             let totalViews = interactions.length > 0 ? interactions.length : 1;
 
             interactions.forEach(interaction => {
+                const viewport = getInteractionWindow(interaction);
                 const maxScrollY = interaction.events
                     .filter(e => e.type === 'scroll')
-                    .reduce((max, e) => Math.max(max, (e as any).scrollY), 0);
+                    .reduce((max, e) => Math.max(max, getScrollY(e) ?? 0), 0);
 
-                const scrolledBuckets = Math.floor((maxScrollY + interaction.window.height) / bucketSize);
+                const scrolledBuckets = Math.floor((maxScrollY + viewport.height) / bucketSize);
 
                 for (let i = 0; i < Math.min(scrolledBuckets, bucketCount); i++) {
                     scrollCounts[i]++;
@@ -155,9 +193,9 @@ export function HeatmapDisplay({ pageId }: { pageId: string }) {
         const calculateScale = () => {
             if (iframeRef.current && page) {
                 const containerWidth = iframeRef.current.parentElement?.offsetWidth || 1280;
-                
-                const recordingWidth = 1920; // Assume a common recording width
-                const recordingHeight = 1080; // And height for aspect ratio
+                const recordedViewports = (interactions ?? []).map(getInteractionWindow);
+                const recordingWidth = Math.max(1920, ...recordedViewports.map(viewport => viewport.width));
+                const recordingHeight = Math.max(1080, ...recordedViewports.map(viewport => viewport.height));
                 const scale = containerWidth / recordingWidth;
                 
                 setScaledDimensions({
@@ -170,7 +208,7 @@ export function HeatmapDisplay({ pageId }: { pageId: string }) {
         calculateScale();
         window.addEventListener('resize', calculateScale);
         return () => window.removeEventListener('resize', calculateScale);
-    }, [page]);
+    }, [page, interactions]);
 
 
     useEffect(() => {
