@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
+import { headers } from 'next/headers';
 import Link from 'next/link';
-import { ArrowRight, Building2, Code2, Database, Globe, Layers3, Webhook } from 'lucide-react';
+import { ArrowRight, Building2, Code2, Database, Globe, Layers3, ShieldCheck } from 'lucide-react';
 import { prisma } from '@/lib/db';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -12,6 +13,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { PropertySetupGuide } from '@/components/properties/property-setup-guide';
 
 function buildCollectorSnippet(propertyId: string) {
   return `<script>
@@ -40,6 +42,18 @@ function buildCollectorSnippet(propertyId: string) {
 </script>`;
 }
 
+async function getCollectorEndpoint(propertyId: string) {
+  const requestHeaders = await headers();
+  const host = requestHeaders.get('x-forwarded-host') || requestHeaders.get('host');
+  const protocol = requestHeaders.get('x-forwarded-proto') || 'https';
+
+  if (!host) {
+    return `/api/collect?siteId=${propertyId}`;
+  }
+
+  return `${protocol}://${host}/api/collect?siteId=${propertyId}`;
+}
+
 export default async function PropertyDetailPage({
   params,
 }: {
@@ -55,7 +69,9 @@ export default async function PropertyDetailPage({
     notFound();
   }
 
+  const collectorEndpoint = await getCollectorEndpoint(application.id);
   const collectorSnippet = buildCollectorSnippet(application.id);
+  const isActive = application.status === 'active';
 
   return (
     <div className="space-y-8">
@@ -81,83 +97,60 @@ export default async function PropertyDetailPage({
         </Button>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+      {isActive ? (
         <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 font-headline text-2xl">
-              <Code2 className="h-5 w-5 text-primary" />
-              Embed this property on another site
+              <ShieldCheck className="h-5 w-5 text-emerald-600" />
+              Installation verified
             </CardTitle>
             <CardDescription>
-              Use this property ID as the site identifier, then point the SDK at the collector endpoint.
+              This property is active, so the setup guide is hidden.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4 text-sm">
-            <div className="space-y-2 rounded-xl border bg-muted/20 p-4">
-              <p className="font-medium">Collector endpoint</p>
-              <p className="font-mono text-xs break-all text-muted-foreground">
-                https://analytics.yourdomain.com/api/collect?siteId={application.id}
-              </p>
-            </div>
-            <div className="space-y-2 rounded-xl border bg-muted/20 p-4">
-              <p className="font-medium">Allowed origins</p>
-              <div className="flex flex-wrap gap-2">
-                {application.sites.map((site) => (
-                  <Badge key={site} variant="secondary" className="font-normal">
-                    {site}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-            <div className="rounded-xl border bg-background p-4">
-              <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-xs leading-6 text-muted-foreground">
-                {collectorSnippet}
-              </pre>
-            </div>
+          <CardContent className="space-y-3 text-sm text-muted-foreground">
+            <p>The collector endpoint is live for this property.</p>
+            <p className="font-mono text-xs break-all text-foreground">{collectorEndpoint}</p>
           </CardContent>
         </Card>
+      ) : (
+        <PropertySetupGuide propertyId={application.id} collectorEndpoint={collectorEndpoint} />
+      )}
 
-        <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 font-headline text-2xl">
-              <Webhook className="h-5 w-5 text-primary" />
-              How the collector works
-            </CardTitle>
-            <CardDescription>
-              This property is treated as a site allowlist for browser traffic.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4 text-sm">
-            <div className="space-y-2">
-              <p className="font-medium">1. Register the site</p>
-              <p className="text-muted-foreground">
-                Add every production domain or base URL you want to accept events from.
-              </p>
+      <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 font-headline text-2xl">
+            <Code2 className="h-5 w-5 text-primary" />
+            Collector details
+          </CardTitle>
+          <CardDescription>
+            This property is treated as a site allowlist for browser traffic.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4 text-sm">
+          <div className="space-y-2 rounded-xl border bg-muted/20 p-4">
+            <p className="font-medium">Collector endpoint</p>
+            <p className="font-mono text-xs break-all text-muted-foreground">
+              {collectorEndpoint}
+            </p>
+          </div>
+          <div className="space-y-2 rounded-xl border bg-muted/20 p-4">
+            <p className="font-medium">Allowed origins</p>
+            <div className="flex flex-wrap gap-2">
+              {application.sites.map((site) => (
+                <Badge key={site} variant="secondary" className="font-normal">
+                  {site}
+                </Badge>
+              ))}
             </div>
-            <Separator />
-            <div className="space-y-2">
-              <p className="font-medium">2. Send page context</p>
-              <p className="text-muted-foreground">
-                Post the page path, HTML snapshot, viewport size, and interaction events to the collector.
-              </p>
-            </div>
-            <Separator />
-            <div className="space-y-2">
-              <p className="font-medium">3. Validate the origin</p>
-              <p className="text-muted-foreground">
-                The collector accepts requests only when the browser origin or referer matches one of the allowed URLs.
-              </p>
-            </div>
-            <Separator />
-            <div className="space-y-2">
-              <p className="font-medium">4. Replay what changed</p>
-              <p className="text-muted-foreground">
-                For dynamic apps, record DOM snapshots and mutations in addition to clicks and scrolls so the replay stays accurate.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+          <div className="rounded-xl border bg-background p-4">
+            <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-xs leading-6 text-muted-foreground">
+              {collectorSnippet}
+            </pre>
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid gap-4 md:grid-cols-3">
         <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">

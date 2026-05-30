@@ -32,6 +32,7 @@ export async function createApplication(formData: FormData) {
       name,
       sites,
       details: details || null,
+      status: 'setup',
     },
   });
 

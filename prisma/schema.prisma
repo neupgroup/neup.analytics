@@ -19,6 +19,11 @@ enum InteractionEventType {
   keydown
 }
 
+enum ApplicationStatus {
+  setup
+  active
+}
+
 model PageSnapshot {
   id          String        @id @default(cuid())
   pagePath    String
@@ -87,8 +92,9 @@ model InteractionEvent {
 }
 
 model Application {
-  id      String   @id @default(cuid())
+  id      String            @id @default(cuid())
   name    String
   sites   String[]
   details String?
+  status  ApplicationStatus  @default(setup)
 }

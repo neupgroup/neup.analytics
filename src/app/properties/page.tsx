@@ -115,6 +115,12 @@ export default async function PropertiesPage() {
                       {application.sites.length === 1 ? '' : 's'} registered
                     </CardDescription>
                   </div>
+                  <Badge
+                    variant={application.status === 'active' ? 'default' : 'secondary'}
+                    className="capitalize"
+                  >
+                    {application.status}
+                  </Badge>
                   <Button asChild variant="outline" size="sm">
                     <Link href={`/properties/${application.id}`}>
                       View
