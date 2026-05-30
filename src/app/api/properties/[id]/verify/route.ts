@@ -56,10 +56,17 @@ export async function POST(_request: Request, context: { params?: Params | Promi
         })
       : null;
 
+    const installed = interactionCount > 0;
+    let message = 'No recent collector traffic found yet.';
+    if (installed) {
+      message = `SDK installed: ${interactionCount} interactions recorded; last at ${lastInteraction?.createdAt?.toISOString() ?? 'unknown'}. Refresh the tracked site to produce new events.`;
+    }
+
     return NextResponse.json(
       {
         verified: false,
-        message: 'No recent collector traffic found yet.',
+        installed,
+        message,
         diagnostics: {
           pageSnapshotCount,
           interactionCount,

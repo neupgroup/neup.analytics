@@ -91,6 +91,9 @@ export function PropertySetupGuide({
 
         setVerified(false);
         let msg = data.message || 'No collector traffic found yet.';
+        if (data.installed) {
+          msg = 'Installed successfully. ' + msg;
+        }
         if (data.diagnostics) {
           const d = data.diagnostics;
           msg += ` (${d.pageSnapshotCount} pages, ${d.interactionCount} total interactions`;

@@ -1,0 +1,43 @@
+import { prisma } from '@/lib/db';
+import { notFound } from 'next/navigation';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+export default async function LogDetailPage({ params }: { params: { id: string } }) {
+  const id = params.id;
+  const interaction = await prisma.interaction.findUnique({
+    where: { id },
+    include: { events: true },
+  });
+
+  if (!interaction) return notFound();
+
+  return (
+    <div className="space-y-6">
+      <h1 className="font-headline text-2xl">Interaction {interaction.id}</h1>
+      <Card>
+        <CardHeader>
+          <CardTitle>Summary</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <pre className="text-xs">{JSON.stringify({
+            id: interaction.id,
+            createdAt: interaction.createdAt,
+            pagePath: interaction.pagePath,
+            pageId: interaction.pageId,
+            userId: interaction.userId,
+            eventsCount: interaction.events.length,
+          }, null, 2)}</pre>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Events</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <pre className="text-xs">{JSON.stringify(interaction.events, null, 2)}</pre>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
