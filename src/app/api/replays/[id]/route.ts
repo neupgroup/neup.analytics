@@ -23,6 +23,39 @@ function getSnapshotPagePath(details: unknown) {
   return typeof pagePath === 'string' ? pagePath : null;
 }
 
+function snapshotMatchesPage(snapshot: { pageUrl: string; details: unknown }, pagePath: string) {
+  const snapshotPath =
+    getSnapshotPagePath(snapshot.details) ?? getPagePathFromUrl(snapshot.pageUrl);
+
+  return snapshotPath === pagePath;
+}
+
+async function findSnapshotForReplay(pagePath: string, createdAt: Date) {
+  const snapshotsBeforeReplay = await prisma.snapshotWeb.findMany({
+    where: {
+      createdOn: {
+        lte: createdAt,
+      },
+    },
+    orderBy: { createdOn: 'desc' },
+    take: 250,
+  });
+
+  const matchingSnapshot =
+    snapshotsBeforeReplay.find((snapshot) => snapshotMatchesPage(snapshot, pagePath)) ?? null;
+
+  if (matchingSnapshot) {
+    return matchingSnapshot;
+  }
+
+  const latestSnapshots = await prisma.snapshotWeb.findMany({
+    orderBy: { createdOn: 'desc' },
+    take: 250,
+  });
+
+  return latestSnapshots.find((snapshot) => snapshotMatchesPage(snapshot, pagePath)) ?? null;
+}
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<Params> }
@@ -41,24 +74,7 @@ export async function GET(
     return NextResponse.json({ error: 'Replay not found' }, { status: 404 });
   }
 
-  let snapshotWeb = await prisma.snapshotWeb.findFirst({
-    where: { sessionId: id },
-    orderBy: { createdOn: 'desc' },
-  });
-
-  if (!snapshotWeb) {
-    const recentSnapshots = await prisma.snapshotWeb.findMany({
-      orderBy: { createdOn: 'desc' },
-      take: 100,
-    });
-
-    snapshotWeb =
-      recentSnapshots.find((snapshot) => {
-        const snapshotPath =
-          getSnapshotPagePath(snapshot.details) ?? getPagePathFromUrl(snapshot.pageUrl);
-        return snapshotPath === interaction.pagePath;
-      }) ?? null;
-  }
+  const snapshotWeb = await findSnapshotForReplay(interaction.pagePath, interaction.createdAt);
 
   const page = snapshotWeb
     ? {

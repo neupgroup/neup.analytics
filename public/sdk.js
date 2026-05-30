@@ -125,8 +125,8 @@
 
     function shouldCaptureSnapshot() {
       var lastCapturedAt = Number(safeLocalStorageGet(getSnapshotStorageKey()) || 0);
-      var oneDayMs = 24 * 60 * 60 * 1000;
-      return !lastCapturedAt || Date.now() - lastCapturedAt >= oneDayMs;
+      var oneHourMs = 60 * 60 * 1000;
+      return !lastCapturedAt || Date.now() - lastCapturedAt >= oneHourMs;
     }
 
     function captureSnapshotData() {
@@ -174,7 +174,7 @@
       return payload;
     }
 
-    function sendDailySnapshot() {
+    function sendHourlySnapshot() {
       if (snapshotSentThisPage || !shouldCaptureSnapshot()) return;
 
       var data = captureSnapshotData();
@@ -245,10 +245,10 @@
     scheduleNextFlush();
 
     if (document.readyState === 'complete') {
-      window.setTimeout(sendDailySnapshot, 0);
+      window.setTimeout(sendHourlySnapshot, 0);
     } else {
       window.addEventListener('load', function () {
-        window.setTimeout(sendDailySnapshot, 0);
+        window.setTimeout(sendHourlySnapshot, 0);
       }, { once: true });
     }
 

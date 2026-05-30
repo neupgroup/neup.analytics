@@ -50,8 +50,15 @@ function isAllowedSite(site: string, requestOrigin: string | null, referer: stri
   }
 }
 
-function getDayStart(value: Date) {
-  return new Date(Date.UTC(value.getUTCFullYear(), value.getUTCMonth(), value.getUTCDate()));
+function getHourStart(value: Date) {
+  return new Date(
+    Date.UTC(
+      value.getUTCFullYear(),
+      value.getUTCMonth(),
+      value.getUTCDate(),
+      value.getUTCHours()
+    )
+  );
 }
 
 function getPagePathFromUrl(value: string | null) {
@@ -290,22 +297,21 @@ export async function POST(request: NextRequest) {
     });
 
     if (pageUrl && snapshotData) {
-      const dayStart = getDayStart(now);
-      const existingDailySnapshot = await prisma.snapshotWeb.findFirst({
+      const hourStart = getHourStart(now);
+      const existingHourlySnapshot = await prisma.snapshotWeb.findFirst({
         where: {
           pageUrl,
           createdOn: {
-            gte: dayStart,
+            gte: hourStart,
           },
         },
         select: { id: true },
       });
 
-      if (!existingDailySnapshot) {
+      if (!existingHourlySnapshot) {
         const snapshotDetails = {
           ...getPlainObject(body.snapshot?.details),
           siteId: resolvedSiteId,
-          sessionId: created.id,
           pagePath: pagePath ?? getPagePathFromUrl(pageUrl),
           userAgent: body.userAgent ?? null,
           window: body.window ?? body.device?.viewport ?? null,
@@ -313,7 +319,7 @@ export async function POST(request: NextRequest) {
 
         await prisma.snapshotWeb.create({
           data: {
-            sessionId: created.id,
+            sessionId: null,
             pageUrl,
             data: snapshotData,
             details: snapshotDetails,
