@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { ArrowLeft, ExternalLink, FileText, Loader2 } from 'lucide-react';
@@ -25,6 +25,19 @@ type Snapshot = {
   size: number;
 };
 
+type ViewportPreset = {
+  label: string;
+  width: number;
+  height: number;
+};
+
+const viewportPresets: ViewportPreset[] = [
+  { label: '4K', width: 4000, height: 2000 },
+  { label: 'Desktop', width: 1920, height: 1080 },
+  { label: 'Laptop', width: 1440, height: 900 },
+  { label: 'Tablet', width: 1024, height: 1366 },
+];
+
 function formatTimestamp(value: string) {
   return new Date(value).toLocaleString();
 }
@@ -33,6 +46,125 @@ function formatSize(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function SnapshotPreviewPanel({ snapshot }: { snapshot: Snapshot }) {
+  const [viewport, setViewport] = useState<ViewportPreset>(viewportPresets[0]);
+  const [scale, setScale] = useState(1);
+  const previewRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const element = previewRef.current;
+    if (!element) return;
+
+    const updateScale = () => {
+      const bounds = element.getBoundingClientRect();
+      const chromeHeight = 84;
+      const padding = 32;
+      const availableWidth = Math.max(bounds.width - padding, 0);
+      const availableHeight = Math.max(bounds.height - padding - chromeHeight, 0);
+      const nextScale = Math.min(
+        availableWidth / viewport.width,
+        availableHeight / viewport.height,
+        1
+      );
+
+      setScale(Number.isFinite(nextScale) ? nextScale : 1);
+    };
+
+    updateScale();
+
+    const observer = new ResizeObserver(updateScale);
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, [viewport.height, viewport.width]);
+
+  return (
+    <div
+      ref={previewRef}
+      className="mx-auto flex h-[min(78vh,900px)] w-full max-w-full min-w-0 flex-col overflow-hidden rounded-2xl border bg-slate-950 p-4 shadow-2xl shadow-slate-950/20"
+    >
+      <style>{`
+        .snapshot-viewport-shell {
+          width: ${viewport.width * scale}px;
+          height: ${viewport.height * scale}px;
+          max-width: 100%;
+          max-height: 100%;
+        }
+
+        .snapshot-viewport-frame {
+          width: ${viewport.width}px;
+          height: ${viewport.height}px;
+          transform: scale(${scale});
+          transform-origin: top left;
+        }
+      `}</style>
+
+      <div className="mb-4 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.24em] text-slate-400">
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-800 bg-slate-900 px-3 py-1 text-slate-200">
+          <span className="h-2 w-2 rounded-full bg-emerald-400" />
+          Snapshot browser
+        </span>
+        <span>Static render</span>
+      </div>
+
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/90">
+        <div className="flex items-center gap-3 border-b border-slate-800 bg-slate-900 px-4 py-3">
+          <div className="flex items-center gap-2">
+            <span className="h-3 w-3 rounded-full bg-red-400/90" />
+            <span className="h-3 w-3 rounded-full bg-amber-400/90" />
+            <span className="h-3 w-3 rounded-full bg-emerald-400/90" />
+          </div>
+
+          <div className="min-w-0 flex-1 rounded-full border border-slate-700 bg-slate-950/80 px-4 py-2 text-sm text-slate-200">
+            <p className="truncate">{snapshot.pageUrl}</p>
+          </div>
+
+          <div className="rounded-full border border-slate-700 bg-slate-950/80 px-3 py-2 text-xs font-medium text-slate-300">
+            {viewport.width} × {viewport.height}
+          </div>
+        </div>
+
+        <div className="flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-slate-950 px-4 py-6">
+          {snapshot.data ? (
+            <div
+              className="snapshot-viewport-shell relative overflow-hidden rounded-lg bg-white shadow-[0_30px_80px_-30px_rgba(15,23,42,0.75)]"
+            >
+              <iframe
+                srcDoc={snapshot.data}
+                title={snapshot.details?.title || snapshot.pageUrl || 'Snapshot viewer'}
+                className="snapshot-viewport-frame pointer-events-none absolute left-0 top-0 border-0 bg-white"
+                sandbox=""
+              />
+            </div>
+          ) : (
+            <div className="flex min-h-[40vh] items-center justify-center rounded-lg border border-dashed border-slate-700 bg-slate-900 px-6 text-center text-sm text-slate-400">
+              Snapshot HTML is empty.
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        {viewportPresets.map((preset) => {
+          const isActive = preset.label === viewport.label;
+
+          return (
+            <Button
+              key={preset.label}
+              type="button"
+              variant={isActive ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewport(preset)}
+            >
+              {preset.label} {preset.width}×{preset.height}
+            </Button>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
 
 export default function SnapshotDetailPage() {
@@ -131,23 +263,7 @@ export default function SnapshotDetailPage() {
 
           {!isLoading && snapshot && (
             <div className="space-y-4">
-              <div className="overflow-hidden rounded-lg border bg-muted/20 shadow-inner">
-                {snapshot.data ? (
-                  <iframe
-                    srcDoc={snapshot.data}
-                    title={snapshot.details?.title || snapshot.pageUrl || 'Snapshot viewer'}
-                    className="h-[75vh] w-full border-0 bg-white"
-                    sandbox=""
-                  />
-                ) : (
-                  <div className="flex min-h-[50vh] items-center justify-center text-center text-sm text-muted-foreground">
-                    <div>
-                      <FileText className="mx-auto mb-3 h-10 w-10" />
-                      Snapshot HTML is empty.
-                    </div>
-                  </div>
-                )}
-              </div>
+              <SnapshotPreviewPanel snapshot={snapshot} />
 
               <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 <div className="rounded-lg border p-4">
