@@ -105,7 +105,7 @@ export function PropertySetupGuide({
   };
 
   return (
-    <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
+    <Card className="border-border/60 bg-card shadow-sm">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 font-headline text-2xl">
           <ShieldCheck className="h-5 w-5 text-primary" />

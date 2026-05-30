@@ -9,11 +9,13 @@ type NeupIdLogoProps = {
 export function NeupIdLogo({ iconHref, textHref }: NeupIdLogoProps) {
   return (
     <div className="flex items-center gap-2">
-      <Link href={iconHref}>
+      <Link href={iconHref} className="flex items-center">
         <Bot className="h-6 w-6 text-primary" />
       </Link>
-      <Link href={textHref}>
-        <span className="font-headline text-lg font-bold">Neup.Analytics</span>
+      <Link href={textHref} className="flex items-center">
+        <span className="font-headline text-lg font-semibold leading-none">
+          Neup.Analytics
+        </span>
       </Link>
     </div>
   );

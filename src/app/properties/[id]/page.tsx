@@ -98,7 +98,7 @@ export default async function PropertyDetailPage({
       </div>
 
       {isActive ? (
-        <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
+        <Card className="border-border/60 bg-card shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 font-headline text-2xl">
               <ShieldCheck className="h-5 w-5 text-emerald-600" />
@@ -117,7 +117,7 @@ export default async function PropertyDetailPage({
         <PropertySetupGuide propertyId={application.id} collectorEndpoint={collectorEndpoint} />
       )}
 
-      <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
+      <Card className="border-border/60 bg-card shadow-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 font-headline text-2xl">
             <Code2 className="h-5 w-5 text-primary" />
@@ -153,7 +153,7 @@ export default async function PropertyDetailPage({
       </Card>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
+        <Card className="border-border/60 bg-card shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">ID</CardTitle>
             <Database className="h-4 w-4 text-muted-foreground" />
@@ -162,7 +162,7 @@ export default async function PropertyDetailPage({
             <div className="text-sm font-mono break-all text-muted-foreground">{application.id}</div>
           </CardContent>
         </Card>
-        <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
+        <Card className="border-border/60 bg-card shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Base paths</CardTitle>
             <Globe className="h-4 w-4 text-muted-foreground" />
@@ -171,7 +171,7 @@ export default async function PropertyDetailPage({
             <div className="text-2xl font-bold font-headline">{application.sites.length}</div>
           </CardContent>
         </Card>
-        <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
+        <Card className="border-border/60 bg-card shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Type</CardTitle>
             <Building2 className="h-4 w-4 text-muted-foreground" />
@@ -183,7 +183,7 @@ export default async function PropertyDetailPage({
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1.35fr_0.65fr]">
-        <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
+        <Card className="border-border/60 bg-card shadow-sm">
           <CardHeader>
             <CardTitle className="font-headline text-2xl">Base paths</CardTitle>
             <CardDescription>
@@ -200,7 +200,7 @@ export default async function PropertyDetailPage({
         </Card>
 
         <div className="space-y-6">
-          <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
+          <Card className="border-border/60 bg-card shadow-sm">
             <CardHeader>
               <CardTitle className="font-headline text-xl">Details</CardTitle>
               <CardDescription>Optional notes saved with this property.</CardDescription>
@@ -212,7 +212,7 @@ export default async function PropertyDetailPage({
             </CardContent>
           </Card>
 
-          <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
+          <Card className="border-border/60 bg-card shadow-sm">
             <CardHeader>
               <CardTitle className="font-headline text-xl">Record summary</CardTitle>
             </CardHeader>

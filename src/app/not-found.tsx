@@ -9,7 +9,7 @@ import { Card, CardContent } from '@/components/ui/card';
 export default function NotFound() {
   return (
     <div className="flex min-h-[70vh] flex-col items-center justify-center px-4 py-16 text-center">
-      <Card className="w-full max-w-md border-border/50 bg-card/50 backdrop-blur-sm shadow-xl">
+      <Card className="w-full max-w-md border-border/50 bg-card shadow-xl">
         <CardContent className="flex flex-col items-center pt-8 pb-10 px-6">
           <div className="relative mb-6 flex h-24 w-24 items-center justify-center rounded-2xl bg-primary/10 text-primary">
             <Compass className="h-12 w-12 animate-[spin_20s_linear_infinite]" />

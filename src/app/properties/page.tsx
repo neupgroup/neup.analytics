@@ -47,7 +47,7 @@ export default async function PropertiesPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
+        <Card className="border-border/60 bg-card shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Applications</CardTitle>
             <Building2 className="h-4 w-4 text-muted-foreground" />
@@ -57,7 +57,7 @@ export default async function PropertiesPage() {
             <p className="text-xs text-muted-foreground">Saved property groups</p>
           </CardContent>
         </Card>
-        <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
+        <Card className="border-border/60 bg-card shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Base paths</CardTitle>
             <Globe className="h-4 w-4 text-muted-foreground" />
@@ -67,7 +67,7 @@ export default async function PropertiesPage() {
             <p className="text-xs text-muted-foreground">Tracked website entries</p>
           </CardContent>
         </Card>
-        <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
+        <Card className="border-border/60 bg-card shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Storage</CardTitle>
             <Database className="h-4 w-4 text-muted-foreground" />
@@ -80,7 +80,7 @@ export default async function PropertiesPage() {
       </div>
 
       {applications.length === 0 ? (
-        <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
+        <Card className="border-border/60 bg-card shadow-sm">
           <CardContent className="flex min-h-[40vh] flex-col items-center justify-center gap-4 py-12 text-center">
             <Layers3 className="h-14 w-14 text-muted-foreground" />
             <div className="space-y-2">
@@ -102,7 +102,7 @@ export default async function PropertiesPage() {
           {applications.map((application) => (
             <Card
               key={application.id}
-              className="border-border/60 bg-card/80 shadow-sm backdrop-blur"
+              className="border-border/60 bg-card shadow-sm"
             >
               <CardHeader>
                 <div className="flex items-start justify-between gap-4">

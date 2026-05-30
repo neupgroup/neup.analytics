@@ -94,7 +94,7 @@ export function PropertyFormPage({
       )}
 
       <div className="grid gap-6 lg:grid-cols-[1.35fr_0.65fr]">
-        <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
+        <Card className="border-border/60 bg-card shadow-sm">
           <CardHeader>
             <CardTitle className="font-headline text-2xl">
               Choose what you want to add
@@ -159,7 +159,7 @@ export function PropertyFormPage({
         </Card>
 
         <div className="space-y-6">
-          <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
+          <Card className="border-border/60 bg-card shadow-sm">
             <CardHeader>
               <CardTitle className="font-headline text-xl">
                 Stored fields
@@ -200,7 +200,7 @@ export function PropertyFormPage({
             </CardContent>
           </Card>
 
-          <Card className="border-border/60 bg-gradient-to-br from-primary/10 to-background shadow-sm">
+          <Card className="border-border/60 bg-card shadow-sm">
             <CardHeader>
               <CardTitle className="font-headline text-xl">
                 Base path format

@@ -25,7 +25,7 @@ export default async function LogsPage() {
 
       <div className="grid gap-4">
         {interactions.map((it) => (
-          <Card key={it.id} className="border-border/60 bg-card/80">
+          <Card key={it.id} className="border-border/60 bg-card">
             <CardHeader>
               <CardTitle className="text-sm">{it.pagePath || '(no path)'}</CardTitle>
             </CardHeader>
