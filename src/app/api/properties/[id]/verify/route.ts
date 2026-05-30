@@ -5,12 +5,16 @@ type Params = {
   id: string;
 };
 
-export async function POST(
-  _request: Request,
-  { params }: { params: Params }
-) {
+export async function POST(_request: Request, context: { params?: Params | Promise<Params> }) {
+  const params = await (context.params as Promise<Params> | Params | undefined);
+  const id = params?.id;
+
+  if (!id) {
+    return NextResponse.json({ error: 'Missing property id in route.' }, { status: 400 });
+  }
+
   const application = await prisma.application.findUnique({
-    where: { id: params.id },
+    where: { id },
     select: { id: true },
   });
 
@@ -20,12 +24,12 @@ export async function POST(
 
   const cutoff = new Date(Date.now() - 15 * 60 * 1000);
   const pageSnapshots = await prisma.pageSnapshot.findMany({
-    where: { siteId: params.id },
+    where: { siteId: id },
     select: { id: true },
   });
 
   const pageIds = pageSnapshots.map((page) => page.id);
-
+  // Check for recent interactions linked to the property's pages
   const interaction = pageIds.length
     ? await prisma.interaction.findFirst({
         where: {
@@ -33,19 +37,41 @@ export async function POST(
           createdAt: { gte: cutoff },
         },
         orderBy: { createdAt: 'desc' },
-        select: { id: true },
+        select: { id: true, createdAt: true },
       })
     : null;
 
   if (!interaction) {
+    // Provide diagnostics to help determine why verification failed
+    const pageSnapshotCount = pageIds.length;
+    const interactionCount = pageIds.length
+      ? await prisma.interaction.count({ where: { pageId: { in: pageIds } } })
+      : 0;
+
+    const lastInteraction = pageIds.length
+      ? await prisma.interaction.findFirst({
+          where: { pageId: { in: pageIds } },
+          orderBy: { createdAt: 'desc' },
+          select: { createdAt: true },
+        })
+      : null;
+
     return NextResponse.json(
-      { verified: false, message: 'No recent collector traffic found yet.' },
+      {
+        verified: false,
+        message: 'No recent collector traffic found yet.',
+        diagnostics: {
+          pageSnapshotCount,
+          interactionCount,
+          lastInteractionAt: lastInteraction?.createdAt ?? null,
+        },
+      },
       { status: 200 }
     );
   }
 
   await prisma.application.update({
-    where: { id: params.id },
+    where: { id },
     data: { status: 'active' },
   });
 

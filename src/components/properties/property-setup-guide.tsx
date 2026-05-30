@@ -35,17 +35,18 @@ function buildSnippet(propertyId: string, collectorEndpoint: string, selected: R
   const enabled = Object.entries(selected)
     .filter(([, value]) => value)
     .map(([key]) => key);
+  // Derive hosted sdk URL from the collector endpoint (same origin)
+  let sdkUrl = collectorEndpoint.replace(/\/api\/collect.*$/i, '/sdk.js');
+  if (sdkUrl.startsWith('/')) {
+    // Make absolute using current app origin (this runs client-side)
+    try {
+      sdkUrl = window.location.protocol + '//' + window.location.host + sdkUrl;
+    } catch (e) {
+      // leave as-is if window is unavailable
+    }
+  }
 
-  return `<script>
-  window.neupAnalytics = window.neupAnalytics || {};
-  window.neupAnalytics.init = function init() {
-    return {
-      siteId: '${propertyId}',
-      endpoint: '${collectorEndpoint}',
-      collect: ${JSON.stringify(enabled, null, 2)}
-    };
-  };
-</script>`;
+  return `<script async src="${sdkUrl}" data-site-id="${propertyId}" data-collect="${enabled.join(',')}"></script>`;
 }
 
 export function PropertySetupGuide({
@@ -88,8 +89,15 @@ export function PropertySetupGuide({
         return;
       }
 
-      setVerified(false);
-      setVerifyMessage(data.message || 'No collector traffic found yet.');
+        setVerified(false);
+        let msg = data.message || 'No collector traffic found yet.';
+        if (data.diagnostics) {
+          const d = data.diagnostics;
+          msg += ` (${d.pageSnapshotCount} pages, ${d.interactionCount} total interactions`;
+          if (d.lastInteractionAt) msg += `, last: ${new Date(d.lastInteractionAt).toLocaleString()}`;
+          msg += ')';
+        }
+        setVerifyMessage(msg);
     });
   };
 
