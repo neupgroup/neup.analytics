@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowRight, Building2, Database, Globe, Layers3 } from 'lucide-react';
+import { ArrowRight, Building2, Code2, Database, Globe, Layers3, Webhook } from 'lucide-react';
 import { prisma } from '@/lib/db';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,33 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+
+function buildCollectorSnippet(propertyId: string) {
+  return `<script>
+  (function () {
+    const siteId = '${propertyId}';
+    const endpoint = 'https://analytics.yourdomain.com/api/collect?siteId=' + encodeURIComponent(siteId);
+
+    window.neupAnalytics = window.neupAnalytics || {};
+    window.neupAnalytics.init = function init() {
+      const payload = {
+        siteId,
+        pagePath: location.pathname,
+        content: document.documentElement.outerHTML,
+        window: { width: window.innerWidth, height: window.innerHeight },
+        userAgent: navigator.userAgent,
+        events: []
+      };
+
+      fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    };
+  })();
+</script>`;
+}
 
 export default async function PropertyDetailPage({
   params,
@@ -27,6 +54,8 @@ export default async function PropertyDetailPage({
   if (!application) {
     notFound();
   }
+
+  const collectorSnippet = buildCollectorSnippet(application.id);
 
   return (
     <div className="space-y-8">
@@ -50,6 +79,84 @@ export default async function PropertyDetailPage({
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </Button>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 font-headline text-2xl">
+              <Code2 className="h-5 w-5 text-primary" />
+              Embed this property on another site
+            </CardTitle>
+            <CardDescription>
+              Use this property ID as the site identifier, then point the SDK at the collector endpoint.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4 text-sm">
+            <div className="space-y-2 rounded-xl border bg-muted/20 p-4">
+              <p className="font-medium">Collector endpoint</p>
+              <p className="font-mono text-xs break-all text-muted-foreground">
+                https://analytics.yourdomain.com/api/collect?siteId={application.id}
+              </p>
+            </div>
+            <div className="space-y-2 rounded-xl border bg-muted/20 p-4">
+              <p className="font-medium">Allowed origins</p>
+              <div className="flex flex-wrap gap-2">
+                {application.sites.map((site) => (
+                  <Badge key={site} variant="secondary" className="font-normal">
+                    {site}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+            <div className="rounded-xl border bg-background p-4">
+              <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-xs leading-6 text-muted-foreground">
+                {collectorSnippet}
+              </pre>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-border/60 bg-card/80 shadow-sm backdrop-blur">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 font-headline text-2xl">
+              <Webhook className="h-5 w-5 text-primary" />
+              How the collector works
+            </CardTitle>
+            <CardDescription>
+              This property is treated as a site allowlist for browser traffic.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4 text-sm">
+            <div className="space-y-2">
+              <p className="font-medium">1. Register the site</p>
+              <p className="text-muted-foreground">
+                Add every production domain or base URL you want to accept events from.
+              </p>
+            </div>
+            <Separator />
+            <div className="space-y-2">
+              <p className="font-medium">2. Send page context</p>
+              <p className="text-muted-foreground">
+                Post the page path, HTML snapshot, viewport size, and interaction events to the collector.
+              </p>
+            </div>
+            <Separator />
+            <div className="space-y-2">
+              <p className="font-medium">3. Validate the origin</p>
+              <p className="text-muted-foreground">
+                The collector accepts requests only when the browser origin or referer matches one of the allowed URLs.
+              </p>
+            </div>
+            <Separator />
+            <div className="space-y-2">
+              <p className="font-medium">4. Replay what changed</p>
+              <p className="text-muted-foreground">
+                For dynamic apps, record DOM snapshots and mutations in addition to clicks and scrolls so the replay stays accurate.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
