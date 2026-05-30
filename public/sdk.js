@@ -3,9 +3,12 @@
     var SESSION_ID_KEY = 'session_id';
     var SESSION_STARTED_AT_KEY = 'session_started_at';
     var EVENT_BUFFER_KEY = 'session_event_buffer';
-    var FLUSH_TIMER_KEY = 'session_flush_timer';
-    var INITIAL_FLUSH_INTERVAL_MS = 5000;
-    var LONG_FLUSH_INTERVAL_MS = 30000;
+    var FIRST_WINDOW_INTERVAL_MS = 5000;
+    var MAX_WINDOW_MS = 30000;
+    var SCROLL_SAMPLE_INTERVAL_MS = 500;
+    var nextFlushElapsedMs = FIRST_WINDOW_INTERVAL_MS;
+    var flushTimerId = null;
+    var lastScrollEventAt = 0;
 
     var script = document.currentScript;
     if (!script) {
@@ -71,11 +74,6 @@
       safeSessionStorageSet(EVENT_BUFFER_KEY, JSON.stringify(eventBuffer));
     }
 
-    function clearBuffer() {
-      eventBuffer = [];
-      safeSessionStorageRemove(EVENT_BUFFER_KEY);
-    }
-
     function getElapsedMs() {
       return Math.max(0, Date.now() - sessionStartedAt);
     }
@@ -126,10 +124,12 @@
       payload.events = eventBuffer.slice();
 
       if (includeHeartbeat) {
+        var elapsedMs = getElapsedMs();
         payload.events.push({
           type: 'heartbeat',
-          ts: Date.now(),
-          elapsedMs: getElapsedMs(),
+          timestamp: Date.now(),
+          elapsedMs: elapsedMs,
+          value: String(Math.min(elapsedMs, MAX_WINDOW_MS)),
         });
       }
 
@@ -140,7 +140,8 @@
       var payload = buildBatchPayload(includeHeartbeat !== false);
       if (!payload.events.length) return;
       send(payload);
-      clearBuffer();
+      eventBuffer = [];
+      persistBuffer();
     }
 
     function enqueue(event) {
@@ -149,22 +150,31 @@
     }
 
     function scheduleNextFlush() {
-      if (safeSessionStorageGet(FLUSH_TIMER_KEY)) {
-        safeSessionStorageRemove(FLUSH_TIMER_KEY);
+      if (flushTimerId) {
+        window.clearTimeout(flushTimerId);
       }
 
-      var nextDelay = getElapsedMs() < LONG_FLUSH_INTERVAL_MS ? INITIAL_FLUSH_INTERVAL_MS : LONG_FLUSH_INTERVAL_MS;
-      var timerId = window.setTimeout(function () {
+      var elapsed = getElapsedMs();
+      var targetElapsed = nextFlushElapsedMs;
+      if (elapsed >= MAX_WINDOW_MS) {
+        targetElapsed = elapsed + MAX_WINDOW_MS;
+      }
+
+      var nextDelay = Math.max(0, targetElapsed - elapsed);
+      flushTimerId = window.setTimeout(function () {
         flush(true);
+        if (nextFlushElapsedMs < MAX_WINDOW_MS) {
+          nextFlushElapsedMs += FIRST_WINDOW_INTERVAL_MS;
+        } else {
+          nextFlushElapsedMs = getElapsedMs() + MAX_WINDOW_MS;
+        }
         scheduleNextFlush();
       }, nextDelay);
-
-      safeSessionStorageSet(FLUSH_TIMER_KEY, String(timerId));
     }
 
     // Send the first session packet immediately so the session exists on arrival.
     if (collect.indexOf('pageview') !== -1) {
-      enqueue({ type: 'pageview', ts: Date.now(), elapsedMs: 0 });
+      enqueue({ type: 'pageview', timestamp: Date.now(), elapsedMs: 0 });
     }
     flush(true);
 
@@ -180,7 +190,7 @@
           else if (t && t.className) selector = t.tagName.toLowerCase() + '.' + t.className.toString().split(' ').join('.');
           else if (t) selector = t.tagName && t.tagName.toLowerCase();
 
-          enqueue({ type: 'click', ts: Date.now(), x: e.clientX, y: e.clientY, selector: selector, elapsedMs: getElapsedMs() });
+          enqueue({ type: 'click', timestamp: Date.now(), x: e.clientX, y: e.clientY, element: selector, elapsedMs: getElapsedMs() });
         } catch (err) {}
       }, true);
     }
@@ -189,7 +199,10 @@
     if (collect.indexOf('scrolls') !== -1 || collect.indexOf('scroll') !== -1) {
       window.addEventListener('scroll', function () {
         try {
-          enqueue({ type: 'scroll', ts: Date.now(), scrollY: window.scrollY, scrollX: window.scrollX, elapsedMs: getElapsedMs() });
+          var now = Date.now();
+          if (now - lastScrollEventAt < SCROLL_SAMPLE_INTERVAL_MS) return;
+          lastScrollEventAt = now;
+          enqueue({ type: 'scroll', timestamp: now, scrollY: window.scrollY, scrollX: window.scrollX, elapsedMs: getElapsedMs() });
         } catch (err) {}
       }, { passive: true });
     }
@@ -198,13 +211,13 @@
     if (collect.indexOf('errors') !== -1) {
       window.addEventListener('error', function (ev) {
         try {
-          enqueue({ type: 'error', ts: Date.now(), message: ev.message, filename: ev.filename, lineno: ev.lineno, colno: ev.colno, elapsedMs: getElapsedMs() });
+          enqueue({ type: 'input', timestamp: Date.now(), element: 'window', value: 'error: ' + ev.message, elapsedMs: getElapsedMs() });
         } catch (err) {}
       });
 
       window.addEventListener('unhandledrejection', function (ev) {
         try {
-          enqueue({ type: 'unhandledrejection', ts: Date.now(), reason: (ev && ev.reason && (ev.reason.message || String(ev.reason))) || String(ev), elapsedMs: getElapsedMs() });
+          enqueue({ type: 'input', timestamp: Date.now(), element: 'window', value: 'unhandledrejection: ' + ((ev && ev.reason && (ev.reason.message || String(ev.reason))) || String(ev)), elapsedMs: getElapsedMs() });
         } catch (err) {}
       });
     }
@@ -216,13 +229,13 @@
     window.neupAnalytics.sessionId = sessionId;
     window.neupAnalytics.pageview = function () {
       if (collect.indexOf('pageview') !== -1) {
-        enqueue({ type: 'pageview', ts: Date.now(), elapsedMs: getElapsedMs() });
+        enqueue({ type: 'pageview', timestamp: Date.now(), elapsedMs: getElapsedMs() });
         flush(true);
       }
     };
     window.neupAnalytics.track = function (event) {
       try {
-        enqueue(Object.assign({ ts: Date.now(), elapsedMs: getElapsedMs() }, event));
+        enqueue(Object.assign({ timestamp: Date.now(), elapsedMs: getElapsedMs() }, event));
       } catch (e) {}
     };
     window.neupAnalytics.flush = function () {

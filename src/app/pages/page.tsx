@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FileText, Search, ArrowRight } from 'lucide-react';
@@ -47,9 +47,16 @@ export default function PagesPage() {
             </CardHeader>
             <CardContent>
                 {isLoading && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="overflow-hidden rounded-lg border">
                         {[...Array(3)].map((_, i) => (
-                            <Skeleton key={i} className="h-48 w-full rounded-lg" />
+                            <div key={i} className="flex items-center gap-4 border-b p-4 last:border-b-0">
+                                <Skeleton className="h-16 w-24 shrink-0 rounded-md" />
+                                <div className="min-w-0 flex-1 space-y-2">
+                                    <Skeleton className="h-4 w-2/3" />
+                                    <Skeleton className="h-3 w-1/3" />
+                                </div>
+                                <Skeleton className="h-9 w-28 rounded-md" />
+                            </div>
                         ))}
                     </div>
                 )}
@@ -69,32 +76,43 @@ export default function PagesPage() {
                     </div>
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {pages.map((page) => (
-                        <Card key={page.id} className="flex flex-col">
-                            <CardHeader className="flex-row items-center gap-4 space-y-0">
-                                <FileText className="h-8 w-8 text-muted-foreground" />
-                                <div>
-                                    <CardTitle className="text-base font-semibold">{page.pagePath}</CardTitle>
-                                    <CardDescription className="text-xs">Version {page.version}</CardDescription>
+                {!isLoading && !error && pages.length > 0 && (
+                    <div className="overflow-hidden rounded-lg border bg-card">
+                        {pages.map((page) => (
+                            <div key={page.id} className="group flex flex-col gap-4 border-b p-4 transition-colors last:border-b-0 hover:bg-muted/40 sm:flex-row sm:items-center">
+                                <div className="relative h-20 w-full shrink-0 overflow-hidden rounded-md border bg-muted sm:w-32">
+                                    {page.content ? (
+                                        <>
+                                            <iframe srcDoc={page.content} className="h-[160px] w-[256px] origin-top-left scale-50" sandbox="allow-scripts allow-same-origin" scrolling="no" />
+                                            <div className="absolute inset-0 bg-transparent" title="Page preview"></div>
+                                        </>
+                                    ) : (
+                                        <div className="flex h-full items-center justify-center">
+                                            <FileText className="h-6 w-6 text-muted-foreground" />
+                                        </div>
+                                    )}
                                 </div>
-                            </CardHeader>
-                            <CardContent className="flex-grow aspect-video relative border-t border-b overflow-hidden">
-                                <iframe srcDoc={page.content} className="w-full h-full scale-[0.5] origin-top-left" sandbox="allow-scripts allow-same-origin" scrolling="no" />
-                                <div className="absolute inset-0 bg-transparent" title="Page preview"></div>
-                            </CardContent>
-                            <CardFooter className="flex-col items-start pt-4">
-                                <p className="text-xs text-muted-foreground">Recorded on: {formatTimestamp(page.recordedOn)}</p>
-                                <Button asChild variant="outline" size="sm" className="w-full mt-4">
+
+                                <div className="flex min-w-0 flex-1 items-start gap-3">
+                                    <FileText className="mt-0.5 hidden h-5 w-5 shrink-0 text-muted-foreground sm:block" />
+                                    <div className="min-w-0">
+                                        <p className="truncate text-sm font-medium">{page.pagePath}</p>
+                                        <p className="mt-1 text-xs text-muted-foreground">
+                                            Version {page.version} - Recorded on {formatTimestamp(page.recordedOn)}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <Button asChild variant="outline" size="sm" className="w-full shrink-0 sm:w-auto">
                                     <Link href={`/pages/${page.id}`}>
                                         View Details
                                         <ArrowRight className="ml-2 h-4 w-4" />
                                     </Link>
                                 </Button>
-                            </CardFooter>
-                        </Card>
-                    ))}
-                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </CardContent>
         </Card>
     );

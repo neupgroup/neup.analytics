@@ -71,6 +71,17 @@ function getCorsHeaders(origin: string | null) {
   return headers;
 }
 
+const allowedEventTypes = new Set([
+  'pageview',
+  'heartbeat',
+  'mousemove',
+  'click',
+  'scroll',
+  'touch',
+  'input',
+  'keydown',
+]);
+
 function withCors(body: unknown, status: number, origin: string | null) {
   return new NextResponse(JSON.stringify(body), {
     status,
@@ -146,17 +157,19 @@ export async function POST(request: NextRequest) {
       return withCors({ error: 'Origin is not allowed for this property.' }, 403, requestOrigin);
     }
 
-    const interactionEvents = (body.events || []).map((e: any) => ({
-      type: e.type,
-      x: e.x ?? null,
-      y: e.y ?? null,
-      element: e.element ?? null,
-      value: e.value ?? null,
-      key: e.key ?? null,
-      scrollX: e.scrollX ?? null,
-      scrollY: e.scrollY ?? null,
-      timestamp: normalizeTimestamp(e.timestamp),
-    }));
+    const interactionEvents = (Array.isArray(body.events) ? body.events : [])
+      .filter((e: any) => allowedEventTypes.has(e?.type))
+      .map((e: any) => ({
+        type: e.type,
+        x: Number.isFinite(e.x) ? Math.floor(e.x) : null,
+        y: Number.isFinite(e.y) ? Math.floor(e.y) : null,
+        element: e.element ?? e.selector ?? null,
+        value: e.value ?? null,
+        key: e.key ?? null,
+        scrollX: Number.isFinite(e.scrollX) ? Math.floor(e.scrollX) : null,
+        scrollY: Number.isFinite(e.scrollY) ? Math.floor(e.scrollY) : null,
+        timestamp: normalizeTimestamp(e.timestamp ?? e.ts),
+      }));
 
     // Upsert user if provided
     let userId: string | undefined = undefined;
@@ -164,8 +177,8 @@ export async function POST(request: NextRequest) {
       userId = body.userId;
       await prisma.user.upsert({
         where: { id: userId },
-        create: { id: userId, createdAt: now, lastSeenAt: now, isLive: false },
-        update: { lastSeenAt: now },
+        create: { id: userId, createdAt: now, lastSeen: now, isLive: false },
+        update: { lastSeen: now },
       });
     }
 
