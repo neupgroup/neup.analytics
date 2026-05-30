@@ -1,8 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 
+function normalizeTimestamp(value: unknown) {
+  const maxInt32 = 2147483647;
+
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    if (value > maxInt32) {
+      // Convert millisecond timestamps to seconds for the integer column.
+      return Math.floor(value / 1000);
+    }
+
+    return Math.floor(value);
+  }
+
+  return Math.floor(Date.now() / 1000);
+}
+
 function getRequestOrigin(request: NextRequest) {
-  return request.headers.get('origin') || request.headers.get('referer');
+  const origin = request.headers.get('origin');
+  if (origin) return origin;
+
+  const referer = request.headers.get('referer');
+  if (!referer) return null;
+
+  try {
+    return new URL(referer).origin;
+  } catch {
+    return null;
+  }
 }
 
 function isAllowedSite(site: string, requestOrigin: string | null, referer: string | null) {
@@ -26,13 +51,24 @@ function isAllowedSite(site: string, requestOrigin: string | null, referer: stri
 }
 
 function getCorsHeaders(origin: string | null) {
-  return {
-    'Access-Control-Allow-Origin': origin ?? '*',
+  const sanitizedOrigin = typeof origin === 'string' ? origin.trim() : null;
+
+  // Do not fall back to wildcard for credentialed CORS. We only reflect a real origin.
+  if (!sanitizedOrigin) {
+    return {};
+  }
+
+  const headers: Record<string, string> = {
+    'Access-Control-Allow-Origin': sanitizedOrigin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Neup-Site-Id',
     'Access-Control-Max-Age': '86400',
     Vary: 'Origin',
   };
+
+  headers['Access-Control-Allow-Credentials'] = 'true';
+
+  return headers;
 }
 
 function withCors(body: unknown, status: number, origin: string | null) {
@@ -165,7 +201,7 @@ export async function POST(request: NextRequest) {
             key: e.key ?? null,
             scrollX: e.scrollX ?? null,
             scrollY: e.scrollY ?? null,
-            timestamp: typeof e.timestamp === 'number' ? e.timestamp : Date.now(),
+            timestamp: normalizeTimestamp(e.timestamp),
           })),
         },
       },
