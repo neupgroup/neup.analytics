@@ -11,6 +11,7 @@
 
 # Testing
 /coverage
+/certificates
 
 # Next.JS
 /.next/
@@ -41,3 +42,10 @@ next-env.d.ts
 
 # Prisma Generated Files
 /src/generated/prisma
+
+
+# Neup.Standard Files
+/core
+/neup.core
+/logica
+/neup.logica
