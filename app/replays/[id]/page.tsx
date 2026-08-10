@@ -26,7 +26,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { cn } from '@/lib/utils';
+import { cn } from '@/core/utils';
 
 type InteractionEvent =
   | { type: 'mousemove'; x: number; y: number; timestamp: number }

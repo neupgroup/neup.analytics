@@ -1,7 +1,7 @@
 import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
-import { cn } from '@/lib/utils';
+import { cn } from '@/core/utils';
 import { SessionProvider } from '@/context/session-context';
 import { ProgressBar } from '@/components/progress-bar';
 import { Suspense } from 'react';

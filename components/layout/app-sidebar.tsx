@@ -21,7 +21,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
+import { cn } from '@/core/utils';
 
 const navItems = [
   { href: '/dashboard', icon: Home, label: 'Dashboard' },

@@ -16,7 +16,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { AIChatAssistant } from '@/components/ai-chat-assistant';
 import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
+import { cn } from '@/core/utils';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LineChart },

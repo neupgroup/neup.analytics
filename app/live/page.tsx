@@ -10,7 +10,7 @@ import {
 import { Eye, MousePointer2, User, Wifi, WifiOff } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@/lib/utils';
+import { cn } from '@/core/utils';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 type User = {

@@ -15,7 +15,7 @@ import {
   FileText,
   Camera,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/core/utils';
 
 const navItems = [
   { href: '/home', label: 'Home', icon: LineChart },
