@@ -8,7 +8,7 @@ import {
   Tablet,
   Users,
 } from 'lucide-react';
-import { prisma } from '@/lib/db';
+import { prisma } from '@/core/database/prisma';
 import {
   Card,
   CardContent,

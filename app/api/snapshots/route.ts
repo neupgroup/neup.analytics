@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
+import { prisma } from '@/core/database/prisma';
 
 function normalizeUrl(value: unknown) {
   if (typeof value !== 'string') {

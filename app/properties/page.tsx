@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight, Building2, Database, Globe, Layers3 } from 'lucide-react';
-import { prisma } from '@/lib/db';
+import { prisma } from '@/core/database/prisma';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
