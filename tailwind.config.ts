@@ -9,6 +9,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
+        sans: ['Outfit', 'sans-serif'],
         body: ['Outfit', 'sans-serif'],
         headline: ['Outfit', 'sans-serif'],
         code: ['Source Code Pro', 'monospace'],
