@@ -117,6 +117,17 @@ model Application {
   status  ApplicationStatus @default(setup)
 }
 
+model Account {
+  id           String   @id
+  connectionId String
+  type         String
+  displayName  String
+  displayImage String
+  createdOn    DateTime @default(now())
+  status       String
+  moreDetails  Json?
+}
+
 model Activity {
   id           String   @id @default(cuid())
   identifierId String

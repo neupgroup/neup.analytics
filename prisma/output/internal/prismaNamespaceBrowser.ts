@@ -56,7 +56,9 @@ export const ModelName = {
   Interaction: 'Interaction',
   SnapshotWeb: 'SnapshotWeb',
   InteractionEvent: 'InteractionEvent',
-  Application: 'Application'
+  Application: 'Application',
+  Account: 'Account',
+  Activity: 'Activity'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -158,6 +160,33 @@ export const ApplicationScalarFieldEnum = {
 } as const
 
 export type ApplicationScalarFieldEnum = (typeof ApplicationScalarFieldEnum)[keyof typeof ApplicationScalarFieldEnum]
+
+
+export const AccountScalarFieldEnum = {
+  id: 'id',
+  connectionId: 'connectionId',
+  type: 'type',
+  displayName: 'displayName',
+  displayImage: 'displayImage',
+  createdOn: 'createdOn',
+  status: 'status',
+  moreDetails: 'moreDetails'
+} as const
+
+export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
+
+
+export const ActivityScalarFieldEnum = {
+  id: 'id',
+  identifierId: 'identifierId',
+  ip: 'ip',
+  userAgent: 'userAgent',
+  pageUrl: 'pageUrl',
+  referral: 'referral',
+  activityOn: 'activityOn'
+} as const
+
+export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typeof ActivityScalarFieldEnum]
 
 
 export const SortOrder = {

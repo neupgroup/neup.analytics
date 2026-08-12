@@ -71,3 +71,13 @@ export type InteractionEvent = Prisma.InteractionEventModel
  * 
  */
 export type Application = Prisma.ApplicationModel
+/**
+ * Model Account
+ * 
+ */
+export type Account = Prisma.AccountModel
+/**
+ * Model Activity
+ * 
+ */
+export type Activity = Prisma.ActivityModel
