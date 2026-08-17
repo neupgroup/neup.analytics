@@ -1,29 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { checkAuthSession } from '@/logica/account/auth';
-import baseJson from '@/logica/base.json';
+import account from '@/logica/account';
 
 function createAuthStartUrl(request: NextRequest): string {
-    const baseUrl = baseJson.neupid.endsWith('/')
-      ? baseJson.neupid
-      : `${baseJson.neupid}/`;
-  
-    const authUrl = new URL('auth/start', baseUrl);
-  
-    authUrl.searchParams.set(
-      'authenticatesTo',
-      request.nextUrl.href,
-    );
-  
-    return authUrl.toString();
-  }
+  const authUrl = new URL('https://neupgroup.com/account/auth/start');
+
+  authUrl.searchParams.set('authenticatesTo', request.nextUrl.href);
+
+  return authUrl.toString();
+}
 
 export async function proxy(request: NextRequest) {
   const authAccountToken = request.cookies.get('auth_account')?.value;
 
-  const auth = await checkAuthSession({
-    authAccountToken,
-    hostname: request.nextUrl.hostname,
-  });
+  const auth = await account.self.isAuthenticated('remote', authAccountToken);
 
   if (auth.authenticated) {
     return NextResponse.next();
