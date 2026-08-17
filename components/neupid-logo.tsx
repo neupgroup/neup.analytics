@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { Bot } from 'lucide-react';
+import Image from 'next/image';
+import { makeAppPath } from '@/core/appconfig';
 
 type NeupIdLogoProps = {
   iconHref: string;
@@ -7,10 +8,19 @@ type NeupIdLogoProps = {
 };
 
 export function NeupIdLogo({ iconHref, textHref }: NeupIdLogoProps) {
+  const logoSrc = makeAppPath('/logo.svg');
+
   return (
     <div className="flex items-center gap-2">
       <Link href={iconHref} className="flex items-center">
-        <Bot className="h-6 w-6 text-primary" />
+        <Image
+          src={logoSrc}
+          alt="Neup.Analytics logo"
+          width={32}
+          height={32}
+          className="h-8 w-8 rounded-lg"
+          priority
+        />
       </Link>
       <Link href={textHref} className="flex items-center">
         <span className="font-headline text-lg font-semibold leading-none">

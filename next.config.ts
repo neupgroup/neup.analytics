@@ -1,11 +1,25 @@
 import type {NextConfig} from 'next';
 
+function normalizeBasePath(value: string | undefined): string {
+  if (typeof value !== 'string') return '';
+
+  const trimmed = value.trim();
+  if (!trimmed || trimmed === '/') return '';
+
+  const withoutTrailingSlash = trimmed.replace(/\/+$/, '');
+  return withoutTrailingSlash.startsWith('/') ? withoutTrailingSlash : `/${withoutTrailingSlash}`;
+}
+
+const basePath = normalizeBasePath(
+  process.env.NEXT_PUBLIC_APP_BASEPATH || process.env.APP_BASEPATH || '/analytics'
+);
+
 const nextConfig: NextConfig = {
   /* config options here */
   typescript: {
     ignoreBuildErrors: true,
   },
-  basePath: "/analytics",
+  basePath,
   images: {
     remotePatterns: [
       {
