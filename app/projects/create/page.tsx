@@ -1,0 +1,133 @@
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { prisma } from "@/core/database/prisma";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+export default function CreateProjectPage() {
+  async function createProject(formData: FormData) {
+    "use server";
+
+    const path = String(formData.get("path") ?? "").trim();
+    const type = String(formData.get("type") ?? "").trim();
+    const moreDetails = String(formData.get("moreDetails") ?? "").trim();
+
+    if (!path || !type) {
+      throw new Error("Path and type are required.");
+    }
+
+    await prisma.project.create({
+      data: {
+        path,
+        type,
+        ...(moreDetails ? { moreDetails } : {}),
+        token: crypto.randomUUID().replace(/-/g, ""),
+      },
+    });
+
+    redirect("/projects");
+  }
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <Link
+          href="/projects"
+          className="text-sm text-muted-foreground hover:underline"
+        >
+          ← Back to Projects
+        </Link>
+
+        <div className="mt-4">
+          <h1 className="text-3xl font-bold tracking-tight">
+            Create project
+          </h1>
+
+          <p className="mt-2 text-muted-foreground">
+            Register a site or domain for Analytics data collection.
+          </p>
+        </div>
+      </div>
+
+      <Card className="max-w-2xl">
+        <CardHeader>
+          <CardTitle>Project details</CardTitle>
+
+          <CardDescription>
+            Create a project for the site or domain you want to track.
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent>
+          <form action={createProject} className="space-y-6">
+            <div className="space-y-2">
+              <label htmlFor="path" className="text-sm font-medium">
+                Path
+              </label>
+
+              <input
+                id="path"
+                name="path"
+                type="text"
+                placeholder="example.com"
+                required
+                className="w-full rounded-md border px-3 py-2 text-sm"
+              />
+
+              <p className="text-sm text-muted-foreground">
+                The site or domain for which Analytics data will be collected.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="type" className="text-sm font-medium">
+                Type
+              </label>
+
+              <input
+                id="type"
+                name="type"
+                type="text"
+                placeholder="website"
+                required
+                className="w-full rounded-md border px-3 py-2 text-sm"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="moreDetails" className="text-sm font-medium">
+                More details
+              </label>
+
+              <textarea
+                id="moreDetails"
+                name="moreDetails"
+                placeholder="Additional project details"
+                rows={4}
+                className="w-full rounded-md border px-3 py-2 text-sm"
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <Button type="submit">
+                Create project
+              </Button>
+
+              <Button asChild variant="outline">
+                <Link href="/projects">
+                  Cancel
+                </Link>
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

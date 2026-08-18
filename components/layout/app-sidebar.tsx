@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import {
   Home,
-  Building2,
+  Box,
   LineChart,
   GitFork,
   Map,
@@ -24,8 +24,8 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/core/utils';
 
 const navItems = [
-  { href: '/dashboard', icon: Home, label: 'Dashboard' },
-  { href: '/properties', icon: Building2, label: 'Properties' },
+  { href: '/home', icon: Home, label: 'Home' },
+  { href: '/projects', icon: Box, label: 'Projects' },
   { href: '/journeys', icon: GitFork, label: 'Journeys' },
   { href: '/heatmaps', icon: Map, label: 'Heatmaps' },
   { href: '/replays', icon: PlaySquare, label: 'Replays' },
@@ -43,12 +43,13 @@ export function AppSidebar() {
       <TooltipProvider>
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
           <Link
-            href="/dashboard"
+            href="/home"
             className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
           >
             <Bot className="h-4 w-4 transition-all group-hover:scale-110" />
             <span className="sr-only">Neup.Analytics</span>
           </Link>
+
           {navItems.map((item) => (
             <Tooltip key={item.href}>
               <TooltipTrigger asChild>
@@ -57,7 +58,8 @@ export function AppSidebar() {
                   className={cn(
                     'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
                     {
-                      'bg-accent text-accent-foreground': pathname === item.href,
+                      'bg-accent text-accent-foreground':
+                        pathname === item.href,
                     }
                   )}
                 >
@@ -65,10 +67,14 @@ export function AppSidebar() {
                   <span className="sr-only">{item.label}</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">{item.label}</TooltipContent>
+
+              <TooltipContent side="right">
+                {item.label}
+              </TooltipContent>
             </Tooltip>
           ))}
         </nav>
+
         <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
           <Tooltip>
             <TooltipTrigger asChild>
@@ -77,15 +83,19 @@ export function AppSidebar() {
                 className={cn(
                   'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
                   {
-                    'bg-accent text-accent-foreground': pathname === '/settings',
+                    'bg-accent text-accent-foreground':
+                      pathname === '/settings',
                   }
-                  )}
+                )}
               >
                 <Settings className="h-5 w-5" />
                 <span className="sr-only">Settings</span>
               </Link>
             </TooltipTrigger>
-            <TooltipContent side="right">Settings</TooltipContent>
+
+            <TooltipContent side="right">
+              Settings
+            </TooltipContent>
           </Tooltip>
         </nav>
       </TooltipProvider>

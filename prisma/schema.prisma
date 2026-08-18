@@ -10,22 +10,6 @@ datasource db {
   provider = "postgresql"
 }
 
-enum InteractionEventType {
-  pageview
-  heartbeat
-  mousemove
-  click
-  scroll
-  touch
-  input
-  keydown
-}
-
-enum ApplicationStatus {
-  setup
-  active
-}
-
 model PageSnapshot {
   id           String        @id @default(cuid())
   pagePath     String
@@ -55,9 +39,7 @@ model User {
 model Interaction {
   id           String             @id @default(cuid())
   createdAt    DateTime           @default(now())
-  user         User?              @relation(fields: [userId], references: [id])
   userId       String?
-  page         PageSnapshot?      @relation(fields: [pageId], references: [id])
   pageId       String?
   pagePath     String
   windowWidth  Int
@@ -69,6 +51,8 @@ model Interaction {
   country      String?
   latitude     Float?
   longitude    Float?
+  page         PageSnapshot?      @relation(fields: [pageId], references: [id])
+  user         User?              @relation(fields: [userId], references: [id])
   events       InteractionEvent[]
   snapshotWebs SnapshotWeb[]
 
@@ -79,12 +63,12 @@ model Interaction {
 
 model SnapshotWeb {
   id        String       @id @default(cuid())
-  session   Interaction? @relation(fields: [sessionId], references: [id])
   sessionId String?      @map("session_id")
   pageUrl   String
   data      String
   details   Json?
   createdOn DateTime     @default(now()) @map("created_on")
+  session   Interaction? @relation(fields: [sessionId], references: [id])
 
   @@index([createdOn])
   @@index([pageUrl])
@@ -94,7 +78,6 @@ model SnapshotWeb {
 
 model InteractionEvent {
   id            String               @id @default(cuid())
-  interaction   Interaction          @relation(fields: [interactionId], references: [id])
   interactionId String
   type          InteractionEventType
   x             Int?
@@ -105,6 +88,7 @@ model InteractionEvent {
   value         String?
   key           String?
   timestamp     Int
+  interaction   Interaction          @relation(fields: [interactionId], references: [id])
 
   @@index([interactionId])
 }
@@ -136,8 +120,38 @@ model Activity {
   pageUrl      String
   referral     String?
   activityOn   DateTime @default(now())
+  projectId    String
+  project      Project  @relation(fields: [projectId], references: [id])
 
   @@index([identifierId])
+  @@index([projectId])
   @@index([activityOn])
   @@index([pageUrl])
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  path        String
+  type        String
+  moreDetails Json?
+  token       String   @unique
+  createdOn   DateTime @default(now())
+
+  activities Activity[]
+}
+
+enum InteractionEventType {
+  mousemove
+  click
+  scroll
+  touch
+  input
+  keydown
+  pageview
+  heartbeat
+}
+
+enum ApplicationStatus {
+  setup
+  active
 }

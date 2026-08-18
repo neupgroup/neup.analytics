@@ -10,14 +10,14 @@
 */
 
 export const InteractionEventType = {
-  pageview: 'pageview',
-  heartbeat: 'heartbeat',
   mousemove: 'mousemove',
   click: 'click',
   scroll: 'scroll',
   touch: 'touch',
   input: 'input',
-  keydown: 'keydown'
+  keydown: 'keydown',
+  pageview: 'pageview',
+  heartbeat: 'heartbeat'
 } as const
 
 export type InteractionEventType = (typeof InteractionEventType)[keyof typeof InteractionEventType]

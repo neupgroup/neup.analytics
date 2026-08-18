@@ -300,8 +300,8 @@ export type InteractionWhereInput = {
   country?: Prisma.StringNullableFilter<"Interaction"> | string | null
   latitude?: Prisma.FloatNullableFilter<"Interaction"> | number | null
   longitude?: Prisma.FloatNullableFilter<"Interaction"> | number | null
-  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   page?: Prisma.XOR<Prisma.PageSnapshotNullableScalarRelationFilter, Prisma.PageSnapshotWhereInput> | null
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   events?: Prisma.InteractionEventListRelationFilter
   snapshotWebs?: Prisma.SnapshotWebListRelationFilter
 }
@@ -321,8 +321,8 @@ export type InteractionOrderByWithRelationInput = {
   country?: Prisma.SortOrderInput | Prisma.SortOrder
   latitude?: Prisma.SortOrderInput | Prisma.SortOrder
   longitude?: Prisma.SortOrderInput | Prisma.SortOrder
-  user?: Prisma.UserOrderByWithRelationInput
   page?: Prisma.PageSnapshotOrderByWithRelationInput
+  user?: Prisma.UserOrderByWithRelationInput
   events?: Prisma.InteractionEventOrderByRelationAggregateInput
   snapshotWebs?: Prisma.SnapshotWebOrderByRelationAggregateInput
 }
@@ -345,8 +345,8 @@ export type InteractionWhereUniqueInput = Prisma.AtLeast<{
   country?: Prisma.StringNullableFilter<"Interaction"> | string | null
   latitude?: Prisma.FloatNullableFilter<"Interaction"> | number | null
   longitude?: Prisma.FloatNullableFilter<"Interaction"> | number | null
-  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   page?: Prisma.XOR<Prisma.PageSnapshotNullableScalarRelationFilter, Prisma.PageSnapshotWhereInput> | null
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   events?: Prisma.InteractionEventListRelationFilter
   snapshotWebs?: Prisma.SnapshotWebListRelationFilter
 }, "id">
@@ -406,8 +406,8 @@ export type InteractionCreateInput = {
   country?: string | null
   latitude?: number | null
   longitude?: number | null
-  user?: Prisma.UserCreateNestedOneWithoutInteractionsInput
   page?: Prisma.PageSnapshotCreateNestedOneWithoutInteractionsInput
+  user?: Prisma.UserCreateNestedOneWithoutInteractionsInput
   events?: Prisma.InteractionEventCreateNestedManyWithoutInteractionInput
   snapshotWebs?: Prisma.SnapshotWebCreateNestedManyWithoutSessionInput
 }
@@ -444,8 +444,8 @@ export type InteractionUpdateInput = {
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  user?: Prisma.UserUpdateOneWithoutInteractionsNestedInput
   page?: Prisma.PageSnapshotUpdateOneWithoutInteractionsNestedInput
+  user?: Prisma.UserUpdateOneWithoutInteractionsNestedInput
   events?: Prisma.InteractionEventUpdateManyWithoutInteractionNestedInput
   snapshotWebs?: Prisma.SnapshotWebUpdateManyWithoutSessionNestedInput
 }
@@ -882,8 +882,8 @@ export type InteractionCreateWithoutSnapshotWebsInput = {
   country?: string | null
   latitude?: number | null
   longitude?: number | null
-  user?: Prisma.UserCreateNestedOneWithoutInteractionsInput
   page?: Prisma.PageSnapshotCreateNestedOneWithoutInteractionsInput
+  user?: Prisma.UserCreateNestedOneWithoutInteractionsInput
   events?: Prisma.InteractionEventCreateNestedManyWithoutInteractionInput
 }
 
@@ -934,8 +934,8 @@ export type InteractionUpdateWithoutSnapshotWebsInput = {
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  user?: Prisma.UserUpdateOneWithoutInteractionsNestedInput
   page?: Prisma.PageSnapshotUpdateOneWithoutInteractionsNestedInput
+  user?: Prisma.UserUpdateOneWithoutInteractionsNestedInput
   events?: Prisma.InteractionEventUpdateManyWithoutInteractionNestedInput
 }
 
@@ -970,8 +970,8 @@ export type InteractionCreateWithoutEventsInput = {
   country?: string | null
   latitude?: number | null
   longitude?: number | null
-  user?: Prisma.UserCreateNestedOneWithoutInteractionsInput
   page?: Prisma.PageSnapshotCreateNestedOneWithoutInteractionsInput
+  user?: Prisma.UserCreateNestedOneWithoutInteractionsInput
   snapshotWebs?: Prisma.SnapshotWebCreateNestedManyWithoutSessionInput
 }
 
@@ -1022,8 +1022,8 @@ export type InteractionUpdateWithoutEventsInput = {
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   latitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   longitude?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  user?: Prisma.UserUpdateOneWithoutInteractionsNestedInput
   page?: Prisma.PageSnapshotUpdateOneWithoutInteractionsNestedInput
+  user?: Prisma.UserUpdateOneWithoutInteractionsNestedInput
   snapshotWebs?: Prisma.SnapshotWebUpdateManyWithoutSessionNestedInput
 }
 
@@ -1236,8 +1236,8 @@ export type InteractionSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   country?: boolean
   latitude?: boolean
   longitude?: boolean
-  user?: boolean | Prisma.Interaction$userArgs<ExtArgs>
   page?: boolean | Prisma.Interaction$pageArgs<ExtArgs>
+  user?: boolean | Prisma.Interaction$userArgs<ExtArgs>
   events?: boolean | Prisma.Interaction$eventsArgs<ExtArgs>
   snapshotWebs?: boolean | Prisma.Interaction$snapshotWebsArgs<ExtArgs>
   _count?: boolean | Prisma.InteractionCountOutputTypeDefaultArgs<ExtArgs>
@@ -1258,8 +1258,8 @@ export type InteractionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   country?: boolean
   latitude?: boolean
   longitude?: boolean
-  user?: boolean | Prisma.Interaction$userArgs<ExtArgs>
   page?: boolean | Prisma.Interaction$pageArgs<ExtArgs>
+  user?: boolean | Prisma.Interaction$userArgs<ExtArgs>
 }, ExtArgs["result"]["interaction"]>
 
 export type InteractionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1277,8 +1277,8 @@ export type InteractionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   country?: boolean
   latitude?: boolean
   longitude?: boolean
-  user?: boolean | Prisma.Interaction$userArgs<ExtArgs>
   page?: boolean | Prisma.Interaction$pageArgs<ExtArgs>
+  user?: boolean | Prisma.Interaction$userArgs<ExtArgs>
 }, ExtArgs["result"]["interaction"]>
 
 export type InteractionSelectScalar = {
@@ -1300,26 +1300,26 @@ export type InteractionSelectScalar = {
 
 export type InteractionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "createdAt" | "userId" | "pageId" | "pagePath" | "windowWidth" | "windowHeight" | "userAgent" | "ip" | "city" | "region" | "country" | "latitude" | "longitude", ExtArgs["result"]["interaction"]>
 export type InteractionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.Interaction$userArgs<ExtArgs>
   page?: boolean | Prisma.Interaction$pageArgs<ExtArgs>
+  user?: boolean | Prisma.Interaction$userArgs<ExtArgs>
   events?: boolean | Prisma.Interaction$eventsArgs<ExtArgs>
   snapshotWebs?: boolean | Prisma.Interaction$snapshotWebsArgs<ExtArgs>
   _count?: boolean | Prisma.InteractionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type InteractionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.Interaction$userArgs<ExtArgs>
   page?: boolean | Prisma.Interaction$pageArgs<ExtArgs>
+  user?: boolean | Prisma.Interaction$userArgs<ExtArgs>
 }
 export type InteractionIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  user?: boolean | Prisma.Interaction$userArgs<ExtArgs>
   page?: boolean | Prisma.Interaction$pageArgs<ExtArgs>
+  user?: boolean | Prisma.Interaction$userArgs<ExtArgs>
 }
 
 export type $InteractionPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Interaction"
   objects: {
-    user: Prisma.$UserPayload<ExtArgs> | null
     page: Prisma.$PageSnapshotPayload<ExtArgs> | null
+    user: Prisma.$UserPayload<ExtArgs> | null
     events: Prisma.$InteractionEventPayload<ExtArgs>[]
     snapshotWebs: Prisma.$SnapshotWebPayload<ExtArgs>[]
   }
@@ -1732,8 +1732,8 @@ readonly fields: InteractionFieldRefs;
  */
 export interface Prisma__InteractionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  user<T extends Prisma.Interaction$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Interaction$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   page<T extends Prisma.Interaction$pageArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Interaction$pageArgs<ExtArgs>>): Prisma.Prisma__PageSnapshotClient<runtime.Types.Result.GetResult<Prisma.$PageSnapshotPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.Interaction$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Interaction$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   events<T extends Prisma.Interaction$eventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Interaction$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$InteractionEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   snapshotWebs<T extends Prisma.Interaction$snapshotWebsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Interaction$snapshotWebsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SnapshotWebPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -2180,25 +2180,6 @@ export type InteractionDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
 }
 
 /**
- * Interaction.user
- */
-export type Interaction$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the User
-   */
-  select?: Prisma.UserSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the User
-   */
-  omit?: Prisma.UserOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  where?: Prisma.UserWhereInput
-}
-
-/**
  * Interaction.page
  */
 export type Interaction$pageArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2215,6 +2196,25 @@ export type Interaction$pageArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   include?: Prisma.PageSnapshotInclude<ExtArgs> | null
   where?: Prisma.PageSnapshotWhereInput
+}
+
+/**
+ * Interaction.user
+ */
+export type Interaction$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the User
+   */
+  select?: Prisma.UserSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the User
+   */
+  omit?: Prisma.UserOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

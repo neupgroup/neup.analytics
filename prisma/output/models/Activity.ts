@@ -32,6 +32,7 @@ export type ActivityMinAggregateOutputType = {
   pageUrl: string | null
   referral: string | null
   activityOn: Date | null
+  projectId: string | null
 }
 
 export type ActivityMaxAggregateOutputType = {
@@ -42,6 +43,7 @@ export type ActivityMaxAggregateOutputType = {
   pageUrl: string | null
   referral: string | null
   activityOn: Date | null
+  projectId: string | null
 }
 
 export type ActivityCountAggregateOutputType = {
@@ -52,6 +54,7 @@ export type ActivityCountAggregateOutputType = {
   pageUrl: number
   referral: number
   activityOn: number
+  projectId: number
   _all: number
 }
 
@@ -64,6 +67,7 @@ export type ActivityMinAggregateInputType = {
   pageUrl?: true
   referral?: true
   activityOn?: true
+  projectId?: true
 }
 
 export type ActivityMaxAggregateInputType = {
@@ -74,6 +78,7 @@ export type ActivityMaxAggregateInputType = {
   pageUrl?: true
   referral?: true
   activityOn?: true
+  projectId?: true
 }
 
 export type ActivityCountAggregateInputType = {
@@ -84,6 +89,7 @@ export type ActivityCountAggregateInputType = {
   pageUrl?: true
   referral?: true
   activityOn?: true
+  projectId?: true
   _all?: true
 }
 
@@ -167,6 +173,7 @@ export type ActivityGroupByOutputType = {
   pageUrl: string
   referral: string | null
   activityOn: Date
+  projectId: string
   _count: ActivityCountAggregateOutputType | null
   _min: ActivityMinAggregateOutputType | null
   _max: ActivityMaxAggregateOutputType | null
@@ -198,6 +205,8 @@ export type ActivityWhereInput = {
   pageUrl?: Prisma.StringFilter<"Activity"> | string
   referral?: Prisma.StringNullableFilter<"Activity"> | string | null
   activityOn?: Prisma.DateTimeFilter<"Activity"> | Date | string
+  projectId?: Prisma.StringFilter<"Activity"> | string
+  project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
 }
 
 export type ActivityOrderByWithRelationInput = {
@@ -208,6 +217,8 @@ export type ActivityOrderByWithRelationInput = {
   pageUrl?: Prisma.SortOrder
   referral?: Prisma.SortOrderInput | Prisma.SortOrder
   activityOn?: Prisma.SortOrder
+  projectId?: Prisma.SortOrder
+  project?: Prisma.ProjectOrderByWithRelationInput
 }
 
 export type ActivityWhereUniqueInput = Prisma.AtLeast<{
@@ -221,6 +232,8 @@ export type ActivityWhereUniqueInput = Prisma.AtLeast<{
   pageUrl?: Prisma.StringFilter<"Activity"> | string
   referral?: Prisma.StringNullableFilter<"Activity"> | string | null
   activityOn?: Prisma.DateTimeFilter<"Activity"> | Date | string
+  projectId?: Prisma.StringFilter<"Activity"> | string
+  project?: Prisma.XOR<Prisma.ProjectScalarRelationFilter, Prisma.ProjectWhereInput>
 }, "id">
 
 export type ActivityOrderByWithAggregationInput = {
@@ -231,6 +244,7 @@ export type ActivityOrderByWithAggregationInput = {
   pageUrl?: Prisma.SortOrder
   referral?: Prisma.SortOrderInput | Prisma.SortOrder
   activityOn?: Prisma.SortOrder
+  projectId?: Prisma.SortOrder
   _count?: Prisma.ActivityCountOrderByAggregateInput
   _max?: Prisma.ActivityMaxOrderByAggregateInput
   _min?: Prisma.ActivityMinOrderByAggregateInput
@@ -247,6 +261,7 @@ export type ActivityScalarWhereWithAggregatesInput = {
   pageUrl?: Prisma.StringWithAggregatesFilter<"Activity"> | string
   referral?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
   activityOn?: Prisma.DateTimeWithAggregatesFilter<"Activity"> | Date | string
+  projectId?: Prisma.StringWithAggregatesFilter<"Activity"> | string
 }
 
 export type ActivityCreateInput = {
@@ -257,6 +272,7 @@ export type ActivityCreateInput = {
   pageUrl: string
   referral?: string | null
   activityOn?: Date | string
+  project: Prisma.ProjectCreateNestedOneWithoutActivitiesInput
 }
 
 export type ActivityUncheckedCreateInput = {
@@ -267,6 +283,7 @@ export type ActivityUncheckedCreateInput = {
   pageUrl: string
   referral?: string | null
   activityOn?: Date | string
+  projectId: string
 }
 
 export type ActivityUpdateInput = {
@@ -277,6 +294,7 @@ export type ActivityUpdateInput = {
   pageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   referral?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  project?: Prisma.ProjectUpdateOneRequiredWithoutActivitiesNestedInput
 }
 
 export type ActivityUncheckedUpdateInput = {
@@ -287,6 +305,7 @@ export type ActivityUncheckedUpdateInput = {
   pageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   referral?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ActivityCreateManyInput = {
@@ -297,6 +316,7 @@ export type ActivityCreateManyInput = {
   pageUrl: string
   referral?: string | null
   activityOn?: Date | string
+  projectId: string
 }
 
 export type ActivityUpdateManyMutationInput = {
@@ -317,6 +337,7 @@ export type ActivityUncheckedUpdateManyInput = {
   pageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   referral?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  projectId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ActivityCountOrderByAggregateInput = {
@@ -327,6 +348,7 @@ export type ActivityCountOrderByAggregateInput = {
   pageUrl?: Prisma.SortOrder
   referral?: Prisma.SortOrder
   activityOn?: Prisma.SortOrder
+  projectId?: Prisma.SortOrder
 }
 
 export type ActivityMaxOrderByAggregateInput = {
@@ -337,6 +359,7 @@ export type ActivityMaxOrderByAggregateInput = {
   pageUrl?: Prisma.SortOrder
   referral?: Prisma.SortOrder
   activityOn?: Prisma.SortOrder
+  projectId?: Prisma.SortOrder
 }
 
 export type ActivityMinOrderByAggregateInput = {
@@ -347,6 +370,159 @@ export type ActivityMinOrderByAggregateInput = {
   pageUrl?: Prisma.SortOrder
   referral?: Prisma.SortOrder
   activityOn?: Prisma.SortOrder
+  projectId?: Prisma.SortOrder
+}
+
+export type ActivityListRelationFilter = {
+  every?: Prisma.ActivityWhereInput
+  some?: Prisma.ActivityWhereInput
+  none?: Prisma.ActivityWhereInput
+}
+
+export type ActivityOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
+}
+
+export type ActivityCreateNestedManyWithoutProjectInput = {
+  create?: Prisma.XOR<Prisma.ActivityCreateWithoutProjectInput, Prisma.ActivityUncheckedCreateWithoutProjectInput> | Prisma.ActivityCreateWithoutProjectInput[] | Prisma.ActivityUncheckedCreateWithoutProjectInput[]
+  connectOrCreate?: Prisma.ActivityCreateOrConnectWithoutProjectInput | Prisma.ActivityCreateOrConnectWithoutProjectInput[]
+  createMany?: Prisma.ActivityCreateManyProjectInputEnvelope
+  connect?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+}
+
+export type ActivityUncheckedCreateNestedManyWithoutProjectInput = {
+  create?: Prisma.XOR<Prisma.ActivityCreateWithoutProjectInput, Prisma.ActivityUncheckedCreateWithoutProjectInput> | Prisma.ActivityCreateWithoutProjectInput[] | Prisma.ActivityUncheckedCreateWithoutProjectInput[]
+  connectOrCreate?: Prisma.ActivityCreateOrConnectWithoutProjectInput | Prisma.ActivityCreateOrConnectWithoutProjectInput[]
+  createMany?: Prisma.ActivityCreateManyProjectInputEnvelope
+  connect?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+}
+
+export type ActivityUpdateManyWithoutProjectNestedInput = {
+  create?: Prisma.XOR<Prisma.ActivityCreateWithoutProjectInput, Prisma.ActivityUncheckedCreateWithoutProjectInput> | Prisma.ActivityCreateWithoutProjectInput[] | Prisma.ActivityUncheckedCreateWithoutProjectInput[]
+  connectOrCreate?: Prisma.ActivityCreateOrConnectWithoutProjectInput | Prisma.ActivityCreateOrConnectWithoutProjectInput[]
+  upsert?: Prisma.ActivityUpsertWithWhereUniqueWithoutProjectInput | Prisma.ActivityUpsertWithWhereUniqueWithoutProjectInput[]
+  createMany?: Prisma.ActivityCreateManyProjectInputEnvelope
+  set?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+  disconnect?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+  delete?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+  connect?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+  update?: Prisma.ActivityUpdateWithWhereUniqueWithoutProjectInput | Prisma.ActivityUpdateWithWhereUniqueWithoutProjectInput[]
+  updateMany?: Prisma.ActivityUpdateManyWithWhereWithoutProjectInput | Prisma.ActivityUpdateManyWithWhereWithoutProjectInput[]
+  deleteMany?: Prisma.ActivityScalarWhereInput | Prisma.ActivityScalarWhereInput[]
+}
+
+export type ActivityUncheckedUpdateManyWithoutProjectNestedInput = {
+  create?: Prisma.XOR<Prisma.ActivityCreateWithoutProjectInput, Prisma.ActivityUncheckedCreateWithoutProjectInput> | Prisma.ActivityCreateWithoutProjectInput[] | Prisma.ActivityUncheckedCreateWithoutProjectInput[]
+  connectOrCreate?: Prisma.ActivityCreateOrConnectWithoutProjectInput | Prisma.ActivityCreateOrConnectWithoutProjectInput[]
+  upsert?: Prisma.ActivityUpsertWithWhereUniqueWithoutProjectInput | Prisma.ActivityUpsertWithWhereUniqueWithoutProjectInput[]
+  createMany?: Prisma.ActivityCreateManyProjectInputEnvelope
+  set?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+  disconnect?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+  delete?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+  connect?: Prisma.ActivityWhereUniqueInput | Prisma.ActivityWhereUniqueInput[]
+  update?: Prisma.ActivityUpdateWithWhereUniqueWithoutProjectInput | Prisma.ActivityUpdateWithWhereUniqueWithoutProjectInput[]
+  updateMany?: Prisma.ActivityUpdateManyWithWhereWithoutProjectInput | Prisma.ActivityUpdateManyWithWhereWithoutProjectInput[]
+  deleteMany?: Prisma.ActivityScalarWhereInput | Prisma.ActivityScalarWhereInput[]
+}
+
+export type ActivityCreateWithoutProjectInput = {
+  id?: string
+  identifierId: string
+  ip?: string | null
+  userAgent?: string | null
+  pageUrl: string
+  referral?: string | null
+  activityOn?: Date | string
+}
+
+export type ActivityUncheckedCreateWithoutProjectInput = {
+  id?: string
+  identifierId: string
+  ip?: string | null
+  userAgent?: string | null
+  pageUrl: string
+  referral?: string | null
+  activityOn?: Date | string
+}
+
+export type ActivityCreateOrConnectWithoutProjectInput = {
+  where: Prisma.ActivityWhereUniqueInput
+  create: Prisma.XOR<Prisma.ActivityCreateWithoutProjectInput, Prisma.ActivityUncheckedCreateWithoutProjectInput>
+}
+
+export type ActivityCreateManyProjectInputEnvelope = {
+  data: Prisma.ActivityCreateManyProjectInput | Prisma.ActivityCreateManyProjectInput[]
+  skipDuplicates?: boolean
+}
+
+export type ActivityUpsertWithWhereUniqueWithoutProjectInput = {
+  where: Prisma.ActivityWhereUniqueInput
+  update: Prisma.XOR<Prisma.ActivityUpdateWithoutProjectInput, Prisma.ActivityUncheckedUpdateWithoutProjectInput>
+  create: Prisma.XOR<Prisma.ActivityCreateWithoutProjectInput, Prisma.ActivityUncheckedCreateWithoutProjectInput>
+}
+
+export type ActivityUpdateWithWhereUniqueWithoutProjectInput = {
+  where: Prisma.ActivityWhereUniqueInput
+  data: Prisma.XOR<Prisma.ActivityUpdateWithoutProjectInput, Prisma.ActivityUncheckedUpdateWithoutProjectInput>
+}
+
+export type ActivityUpdateManyWithWhereWithoutProjectInput = {
+  where: Prisma.ActivityScalarWhereInput
+  data: Prisma.XOR<Prisma.ActivityUpdateManyMutationInput, Prisma.ActivityUncheckedUpdateManyWithoutProjectInput>
+}
+
+export type ActivityScalarWhereInput = {
+  AND?: Prisma.ActivityScalarWhereInput | Prisma.ActivityScalarWhereInput[]
+  OR?: Prisma.ActivityScalarWhereInput[]
+  NOT?: Prisma.ActivityScalarWhereInput | Prisma.ActivityScalarWhereInput[]
+  id?: Prisma.StringFilter<"Activity"> | string
+  identifierId?: Prisma.StringFilter<"Activity"> | string
+  ip?: Prisma.StringNullableFilter<"Activity"> | string | null
+  userAgent?: Prisma.StringNullableFilter<"Activity"> | string | null
+  pageUrl?: Prisma.StringFilter<"Activity"> | string
+  referral?: Prisma.StringNullableFilter<"Activity"> | string | null
+  activityOn?: Prisma.DateTimeFilter<"Activity"> | Date | string
+  projectId?: Prisma.StringFilter<"Activity"> | string
+}
+
+export type ActivityCreateManyProjectInput = {
+  id?: string
+  identifierId: string
+  ip?: string | null
+  userAgent?: string | null
+  pageUrl: string
+  referral?: string | null
+  activityOn?: Date | string
+}
+
+export type ActivityUpdateWithoutProjectInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  identifierId?: Prisma.StringFieldUpdateOperationsInput | string
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  referral?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ActivityUncheckedUpdateWithoutProjectInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  identifierId?: Prisma.StringFieldUpdateOperationsInput | string
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  referral?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ActivityUncheckedUpdateManyWithoutProjectInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  identifierId?: Prisma.StringFieldUpdateOperationsInput | string
+  ip?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userAgent?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pageUrl?: Prisma.StringFieldUpdateOperationsInput | string
+  referral?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  activityOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -359,6 +535,8 @@ export type ActivitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   pageUrl?: boolean
   referral?: boolean
   activityOn?: boolean
+  projectId?: boolean
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["activity"]>
 
 export type ActivitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -369,6 +547,8 @@ export type ActivitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   pageUrl?: boolean
   referral?: boolean
   activityOn?: boolean
+  projectId?: boolean
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["activity"]>
 
 export type ActivitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -379,6 +559,8 @@ export type ActivitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   pageUrl?: boolean
   referral?: boolean
   activityOn?: boolean
+  projectId?: boolean
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["activity"]>
 
 export type ActivitySelectScalar = {
@@ -389,13 +571,25 @@ export type ActivitySelectScalar = {
   pageUrl?: boolean
   referral?: boolean
   activityOn?: boolean
+  projectId?: boolean
 }
 
-export type ActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "identifierId" | "ip" | "userAgent" | "pageUrl" | "referral" | "activityOn", ExtArgs["result"]["activity"]>
+export type ActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "identifierId" | "ip" | "userAgent" | "pageUrl" | "referral" | "activityOn" | "projectId", ExtArgs["result"]["activity"]>
+export type ActivityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
+}
+export type ActivityIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
+}
+export type ActivityIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
+}
 
 export type $ActivityPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Activity"
-  objects: {}
+  objects: {
+    project: Prisma.$ProjectPayload<ExtArgs>
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     identifierId: string
@@ -404,6 +598,7 @@ export type $ActivityPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     pageUrl: string
     referral: string | null
     activityOn: Date
+    projectId: string
   }, ExtArgs["result"]["activity"]>
   composites: {}
 }
@@ -798,6 +993,7 @@ readonly fields: ActivityFieldRefs;
  */
 export interface Prisma__ActivityClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  project<T extends Prisma.ProjectDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProjectDefaultArgs<ExtArgs>>): Prisma.Prisma__ProjectClient<runtime.Types.Result.GetResult<Prisma.$ProjectPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -834,6 +1030,7 @@ export interface ActivityFieldRefs {
   readonly pageUrl: Prisma.FieldRef<"Activity", 'String'>
   readonly referral: Prisma.FieldRef<"Activity", 'String'>
   readonly activityOn: Prisma.FieldRef<"Activity", 'DateTime'>
+  readonly projectId: Prisma.FieldRef<"Activity", 'String'>
 }
     
 
@@ -850,6 +1047,10 @@ export type ActivityFindUniqueArgs<ExtArgs extends runtime.Types.Extensions.Inte
    * Omit specific fields from the Activity
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
   /**
    * Filter, which Activity to fetch.
    */
@@ -869,6 +1070,10 @@ export type ActivityFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.Extensio
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
+  /**
    * Filter, which Activity to fetch.
    */
   where: Prisma.ActivityWhereUniqueInput
@@ -886,6 +1091,10 @@ export type ActivityFindFirstArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Omit specific fields from the Activity
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
   /**
    * Filter, which Activity to fetch.
    */
@@ -935,6 +1144,10 @@ export type ActivityFindFirstOrThrowArgs<ExtArgs extends runtime.Types.Extension
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
+  /**
    * Filter, which Activity to fetch.
    */
   where?: Prisma.ActivityWhereInput
@@ -982,6 +1195,10 @@ export type ActivityFindManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Omit specific fields from the Activity
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
   /**
    * Filter, which Activities to fetch.
    */
@@ -1031,6 +1248,10 @@ export type ActivityCreateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
+  /**
    * The data needed to create a Activity.
    */
   data: Prisma.XOR<Prisma.ActivityCreateInput, Prisma.ActivityUncheckedCreateInput>
@@ -1064,6 +1285,10 @@ export type ActivityCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    */
   data: Prisma.ActivityCreateManyInput | Prisma.ActivityCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1078,6 +1303,10 @@ export type ActivityUpdateArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Activity
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
   /**
    * The data needed to update a Activity.
    */
@@ -1130,6 +1359,10 @@ export type ActivityUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Extens
    * Limit how many Activities to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1144,6 +1377,10 @@ export type ActivityUpsertArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Activity
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
   /**
    * The filter to search for the Activity to update in case it exists.
    */
@@ -1170,6 +1407,10 @@ export type ActivityDeleteArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Omit specific fields from the Activity
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
   /**
    * Filter which Activity to delete.
    */
@@ -1202,4 +1443,8 @@ export type ActivityDefaultArgs<ExtArgs extends runtime.Types.Extensions.Interna
    * Omit specific fields from the Activity
    */
   omit?: Prisma.ActivityOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ActivityInclude<ExtArgs> | null
 }

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  Building2,
+  Box,
   LineChart,
   GitFork,
   Map,
@@ -19,7 +19,7 @@ import { cn } from '@/core/utils';
 
 const navItems = [
   { href: '/home', label: 'Home', icon: LineChart },
-  { href: '/properties', label: 'Properties', icon: Building2 },
+  { href: '/projects', label: 'Projects', icon: Box },
   { href: '/journeys', label: 'Journeys', icon: GitFork },
   { href: '/heatmaps', label: 'Heatmaps', icon: Map },
   { href: '/replays', label: 'Replays', icon: PlaySquare },
@@ -52,5 +52,3 @@ export function DashboardNav() {
     </nav>
   );
 }
-
-    

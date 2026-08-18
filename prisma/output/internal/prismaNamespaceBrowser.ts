@@ -58,7 +58,8 @@ export const ModelName = {
   InteractionEvent: 'InteractionEvent',
   Application: 'Application',
   Account: 'Account',
-  Activity: 'Activity'
+  Activity: 'Activity',
+  Project: 'Project'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -183,10 +184,23 @@ export const ActivityScalarFieldEnum = {
   userAgent: 'userAgent',
   pageUrl: 'pageUrl',
   referral: 'referral',
-  activityOn: 'activityOn'
+  activityOn: 'activityOn',
+  projectId: 'projectId'
 } as const
 
 export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typeof ActivityScalarFieldEnum]
+
+
+export const ProjectScalarFieldEnum = {
+  id: 'id',
+  path: 'path',
+  type: 'type',
+  moreDetails: 'moreDetails',
+  token: 'token',
+  createdOn: 'createdOn'
+} as const
+
+export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
 
 
 export const SortOrder = {

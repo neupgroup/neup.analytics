@@ -81,3 +81,8 @@ export type Account = Prisma.AccountModel
  * 
  */
 export type Activity = Prisma.ActivityModel
+/**
+ * Model Project
+ * 
+ */
+export type Project = Prisma.ProjectModel

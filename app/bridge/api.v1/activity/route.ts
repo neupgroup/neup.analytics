@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { prisma } from "@/core/database/prisma";
 import { createActivity } from "@/services/activity/createActivity";
 
 export async function POST(request: Request) {
@@ -15,6 +16,16 @@ export async function POST(request: Request) {
       );
     }
 
+    if (!body.token) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "token is required",
+        },
+        { status: 400 }
+      );
+    }
+
     if (!body.pageUrl) {
       return NextResponse.json(
         {
@@ -25,11 +36,31 @@ export async function POST(request: Request) {
       );
     }
 
+    const project = await prisma.project.findUnique({
+      where: {
+        token: String(body.token),
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!project) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Invalid project token",
+        },
+        { status: 404 }
+      );
+    }
+
     const activity = await createActivity({
-      identifierId: body.identifierId,
+      identifierId: String(body.identifierId),
+      projectId: project.id,
       ip: body.ip,
       userAgent: body.userAgent,
-      pageUrl: body.pageUrl,
+      pageUrl: String(body.pageUrl),
       referral: body.referral,
     });
 
