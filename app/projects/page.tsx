@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Plus, Box } from 'lucide-react';
+import { Plus, Box, Activity } from 'lucide-react';
 import { prisma } from '@/core/database/prisma';
 
 export default async function ProjectsPage() {
@@ -146,6 +146,17 @@ export default async function ProjectsPage() {
                       {project.token}
                     </p>
                   </div>
+                </div>
+
+                {/* Activity */}
+                <div className="mt-6 border-t border-slate-100 pt-5">
+                  <Link
+                    href={`/activity?selectedProject=${encodeURIComponent(project.id)}`}
+                    className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-950"
+                  >
+                    <Activity className="h-4 w-4" />
+                    View Activity
+                  </Link>
                 </div>
               </div>
             ))}
