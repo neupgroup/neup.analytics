@@ -70,7 +70,7 @@ export function AppSidebar() {
                 <Link
                   href={createSidebarHref(item.href, selectedProject)}
                   className={cn(
-                    'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
+                    'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground md:h-8 md:w-8',
                     {
                       'bg-accent text-accent-foreground':
                         pathname === item.href,
@@ -95,7 +95,7 @@ export function AppSidebar() {
               <Link
                 href={createSidebarHref('/settings', selectedProject)}
                 className={cn(
-                  'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
+                  'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground md:h-8 md:w-8',
                   {
                     'bg-accent text-accent-foreground':
                       pathname === '/settings',

@@ -55,7 +55,7 @@ export function DashboardNav() {
           key={item.href}
           href={createDashboardHref(item.href, selectedProject)}
           className={cn(
-            'flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-muted-foreground transition-all hover:text-primary',
+            'flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-muted-foreground transition-all hover:bg-muted hover:text-primary',
             pathname === item.href && 'bg-muted text-primary'
           )}
         >
