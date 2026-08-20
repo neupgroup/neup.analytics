@@ -27,10 +27,6 @@ export default async function ProjectsPage({
         {/* Header */}
         <div className="mb-8">
           <div>
-            <div className="mb-3 inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-              Projects
-            </div>
-
             <h1 className="text-4xl font-bold tracking-tight text-slate-950">
               Projects
             </h1>

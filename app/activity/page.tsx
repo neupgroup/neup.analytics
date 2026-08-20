@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import {
   Activity as ActivityIcon,
-  ArrowLeft,
 } from 'lucide-react';
 import { prisma } from '@/core/database/prisma';
 import { url } from '@/core/link';
@@ -59,20 +58,7 @@ export default async function ActivityPage({
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <Link
-          href={url('/projects').addParam('selectedProject', project.id).get()}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Projects
-        </Link>
-
-        <div className="mt-4">
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-            <ActivityIcon className="h-3.5 w-3.5" />
-            Activity
-          </div>
-
+        <div>
           <h1 className="text-3xl font-bold tracking-tight">
             Activity
           </h1>
@@ -186,7 +172,6 @@ export default async function ActivityPage({
           <div className="mt-5">
             <Button asChild variant="outline">
               <Link href={url('/projects').addParam('selectedProject', project.id).get()}>
-                <ArrowLeft className="mr-2 h-4 w-4" />
                 View Projects
               </Link>
             </Button>

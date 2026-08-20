@@ -5,8 +5,7 @@ import { use, useMemo } from "react";
 // import { doc, Timestamp } from "firebase/firestore";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Monitor, Tablet, Smartphone } from "lucide-react";
-import Link from "next/link";
+import { Monitor, Tablet, Smartphone } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 type Page = {
@@ -34,11 +33,6 @@ export default function PageDetailPage({ params }: { params: { id: string } }) {
 
     return (
         <div className="space-y-4">
-            <Link href="/pages" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-                <ArrowLeft className="h-4 w-4" />
-                Back to Page Management
-            </Link>
-
             <Card>
                  <CardHeader>
                     {isLoading ? (

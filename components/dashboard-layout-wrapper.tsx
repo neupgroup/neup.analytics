@@ -6,6 +6,7 @@ import { UserNav } from '@/components/user-nav';
 import { NeupIdLogo } from '@/components/neupid-logo';
 import { useSession } from '@/core/providers/session';
 import { Skeleton } from '@/components/ui/skeleton';
+import { MobilePageBack } from '@/components/mobile-page-back';
 
 export function DashboardLayoutWrapper({
   children,
@@ -70,7 +71,10 @@ export function DashboardLayoutWrapper({
           </div>
         </aside>
         <main className="min-h-[calc(100vh-4rem)] p-6 lg:p-8">
-          <div className="w-full space-y-4">{children}</div>
+          <div className="w-full space-y-4">
+            <MobilePageBack />
+            {children}
+          </div>
         </main>
       </div>
     </div>

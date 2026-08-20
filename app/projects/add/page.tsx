@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Box, Plus, ArrowLeft } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -13,20 +13,7 @@ export default function AddProjectPage() {
   return (
     <div className="space-y-8">
       <div>
-        <Link
-          href="/projects"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Projects
-        </Link>
-
-        <div className="mt-4">
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-            <Box className="h-3.5 w-3.5" />
-            Projects
-          </div>
-
+        <div>
           <h1 className="text-3xl font-bold tracking-tight">
             Add Project
           </h1>

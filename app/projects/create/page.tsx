@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { prisma } from "@/core/database/prisma";
 import { Button } from "@/components/ui/button";
@@ -37,14 +36,7 @@ export default function CreateProjectPage() {
   return (
     <div className="space-y-8">
       <div>
-        <Link
-          href="/projects"
-          className="text-sm text-muted-foreground hover:underline"
-        >
-          ← Back to Projects
-        </Link>
-
-        <div className="mt-4">
+        <div>
           <h1 className="text-3xl font-bold tracking-tight">
             Create project
           </h1>
