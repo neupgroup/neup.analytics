@@ -23,7 +23,11 @@ function getPathname(value: string): string {
   }
 }
 
-export function inferActivityType(pageUrl: string): string {
+export function inferActivityType(pageUrl?: string | null): string {
+  if (!pageUrl) {
+    return 'activity';
+  }
+
   const pathname = getPathname(pageUrl);
 
   if (pathname.includes('/order') || pathname.includes('/checkout')) {
@@ -77,11 +81,18 @@ export function inferAgentType(userAgent?: string | null): string {
 }
 
 export function presentActivity(activity: {
-  pageUrl: string;
+  type?: string | null;
+  agent?: unknown;
+  pageUrl?: string | null;
   userAgent?: string | null;
 }): ActivityPresentation {
-  const type = inferActivityType(activity.pageUrl);
-  const agentType = inferAgentType(activity.userAgent);
+  const explicitType = activity.type?.trim().toLowerCase();
+  const agentValue =
+    typeof activity.agent === 'string'
+      ? activity.agent
+      : null;
+  const type = explicitType || inferActivityType(activity.pageUrl);
+  const agentType = agentValue?.trim().toLowerCase() || inferAgentType(activity.userAgent);
   const typeLabel = type === 'visit' ? 'Page visit' : toReadableLabel(type);
 
   return {

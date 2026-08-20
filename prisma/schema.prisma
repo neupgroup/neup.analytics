@@ -115,15 +115,23 @@ model Account {
 model Activity {
   id           String   @id @default(cuid())
   identifierId String
+  type         String?
+  sessionId    String?
+  timeSpent    Int?
+  agent        Json?
+  location     Json?
+  moreDetails  Json?
   ip           String?
   userAgent    String?
-  pageUrl      String
+  pageUrl      String?
   referral     String?
   activityOn   DateTime @default(now())
   projectId    String
   project      Project  @relation(fields: [projectId], references: [id])
 
   @@index([identifierId])
+  @@index([type])
+  @@index([sessionId])
   @@index([projectId])
   @@index([activityOn])
   @@index([pageUrl])

@@ -1232,6 +1232,12 @@ export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeo
 export const ActivityScalarFieldEnum = {
   id: 'id',
   identifierId: 'identifierId',
+  type: 'type',
+  sessionId: 'sessionId',
+  timeSpent: 'timeSpent',
+  agent: 'agent',
+  location: 'location',
+  moreDetails: 'moreDetails',
   ip: 'ip',
   userAgent: 'userAgent',
   pageUrl: 'pageUrl',

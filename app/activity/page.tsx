@@ -195,7 +195,7 @@ export default async function ActivityPage({
                     .get()}
                   className="text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4"
                 >
-                  {activity.pageUrl}
+                  {activity.pageUrl ?? 'Unknown page'}
                 </Link>{' '}
                 from{' '}
                 <Link
