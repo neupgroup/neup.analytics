@@ -22,7 +22,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { url } from '@/core/link';
+import { url } from '@/core/helpers/link/url';
 import { cn } from '@/core/utils';
 
 const navItems = [

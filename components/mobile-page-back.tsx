@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { url } from '@/core/link';
+import { url } from '@/core/helpers/link/url';
 
 function resolveBackPath(pathname: string): string | null {
   const normalizedPathname = pathname === '/' ? '/home' : pathname;

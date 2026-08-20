@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Plus, Box } from 'lucide-react';
 import { prisma } from '@/core/database/prisma';
-import { url } from '@/core/link';
+import { url } from '@/core/helpers/link/url';
 
 type ProjectsPageProps = {
   searchParams?: Promise<{

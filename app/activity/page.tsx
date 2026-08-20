@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { prisma } from '@/core/database/prisma';
 import { formatReadableDateTime } from '@/core/helpers/date';
-import { url } from '@/core/link';
+import { url } from '@/core/helpers/link/url';
 import { presentActivity } from '@/services/activity/presentActivity';
 
 type ActivityPageProps = {

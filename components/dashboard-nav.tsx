@@ -16,7 +16,7 @@ import {
   FileText,
   Camera,
 } from 'lucide-react';
-import { url } from '@/core/link';
+import { url } from '@/core/helpers/link/url';
 import { cn } from '@/core/utils';
 
 const navItems = [
