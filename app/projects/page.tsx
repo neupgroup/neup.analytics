@@ -1,8 +1,19 @@
 import Link from 'next/link';
-import { Plus, Box, Activity } from 'lucide-react';
+import { Plus, Box } from 'lucide-react';
 import { prisma } from '@/core/database/prisma';
 
-export default async function ProjectsPage() {
+type ProjectsPageProps = {
+  searchParams?: Promise<{
+    selectedProject?: string;
+  }>;
+};
+
+export default async function ProjectsPage({
+  searchParams,
+}: ProjectsPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const selectedProject = resolvedSearchParams?.selectedProject;
+
   const projects = await prisma.project.findMany({
     orderBy: {
       createdOn: 'desc',
@@ -13,7 +24,7 @@ export default async function ProjectsPage() {
     <main className="flex-1 bg-white">
       <div className="mx-auto w-full max-w-7xl px-6 py-8 lg:px-10">
         {/* Header */}
-        <div className="mb-8 flex items-start justify-between gap-6">
+        <div className="mb-8">
           <div>
             <div className="mb-3 inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
               Projects
@@ -28,38 +39,28 @@ export default async function ProjectsPage() {
               is collected.
             </p>
           </div>
-
-          <Link
-            href="/projects/create"
-            className="inline-flex items-center gap-2 rounded-lg bg-sky-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-sky-600"
-          >
-            <Plus className="h-4 w-4" />
-            Create project
-          </Link>
         </div>
 
-        {/* Total Projects */}
-        <div className="mb-8 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-sm font-semibold text-slate-800">
-                Total Projects
-              </p>
-
-              <p className="mt-3 text-3xl font-bold text-slate-950">
-                {projects.length}
-              </p>
-
-              <p className="mt-1 text-sm text-slate-500">
-                Registered Analytics Projects
-              </p>
+        <Link
+          href="/projects/create"
+          className="mb-6 flex min-h-[76px] w-full items-center rounded-xl border border-slate-200 bg-white px-5 py-4 transition-colors duration-200 ease-out hover:bg-sky-50"
+        >
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="rounded-full bg-sky-100 p-2 text-sky-600">
+              <Plus className="h-4 w-4" />
             </div>
 
-            <div className="rounded-lg p-1 text-slate-400">
-              <Box className="h-5 w-5" />
+            <div className="min-w-0">
+              <h2 className="truncate text-lg font-semibold text-slate-950">
+                Create project
+              </h2>
+
+              <p className="mt-1 truncate text-sm text-slate-500">
+                Add a new analytics project
+              </p>
             </div>
           </div>
-        </div>
+        </Link>
 
         {/* Projects */}
         {projects.length === 0 ? (
@@ -83,82 +84,31 @@ export default async function ProjectsPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid gap-5 md:grid-cols-2">
-            {projects.map((project) => (
-              <div
+          <div className="space-y-0">
+            {projects.map((project, index) => (
+              <Link
                 key={project.id}
-                className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md"
+                href={`/projects?selectedProject=${encodeURIComponent(project.id)}`}
+                className={`flex min-h-[76px] w-full items-center border px-5 py-4 transition-colors duration-200 ease-out ${
+                  selectedProject === project.id
+                    ? 'border-sky-200 bg-sky-100 hover:bg-sky-200'
+                    : 'border-slate-200 bg-white hover:bg-sky-50'
+                } ${
+                  index === 0 ? 'rounded-t-xl' : 'rounded-none border-t-0'
+                } ${
+                  index === projects.length - 1 ? 'rounded-b-xl' : ''
+                }`}
               >
-                {/* Project heading */}
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <h2 className="truncate text-xl font-bold text-slate-950">
-                      {project.path}
-                    </h2>
+                <div className="min-w-0">
+                  <h2 className="truncate text-lg font-semibold text-slate-950">
+                    {project.path}
+                  </h2>
 
-                    <p className="mt-1 text-sm text-slate-500">
-                      Created on{' '}
-                      {new Intl.DateTimeFormat('en-US', {
-                        month: 'numeric',
-                        day: 'numeric',
-                        year: 'numeric',
-                      }).format(new Date(project.createdOn))}
-                    </p>
-                  </div>
-
-                  <span className="shrink-0 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-                    {project.type}
-                  </span>
+                  <p className="mt-1 truncate text-sm text-slate-500">
+                    {project.path}
+                  </p>
                 </div>
-
-                {/* Details */}
-                <div className="mt-7 space-y-5">
-                  <div>
-                    <p className="text-sm font-semibold text-slate-800">
-                      Path
-                    </p>
-
-                    <p className="mt-1 break-all text-sm text-slate-500">
-                      {project.path}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm font-semibold text-slate-800">
-                      More details
-                    </p>
-
-                    <p className="mt-1 break-all text-sm text-slate-500">
-                      {project.moreDetails
-                        ? typeof project.moreDetails === 'string'
-                          ? project.moreDetails
-                          : JSON.stringify(project.moreDetails)
-                        : '—'}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm font-semibold text-slate-800">
-                      Token
-                    </p>
-
-                    <p className="mt-1 break-all font-mono text-xs text-slate-500">
-                      {project.token}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Activity */}
-                <div className="mt-6 border-t border-slate-100 pt-5">
-                  <Link
-                    href={`/activity?selectedProject=${encodeURIComponent(project.id)}`}
-                    className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-950"
-                  >
-                    <Activity className="h-4 w-4" />
-                    View Activity
-                  </Link>
-                </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
