@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import {
   Activity as ActivityIcon,
+  X,
 } from 'lucide-react';
 import { prisma } from '@/core/database/prisma';
 import { formatReadableDateTime } from '@/core/helpers/date';
@@ -75,6 +76,42 @@ export default async function ActivityPage({
       return true;
     });
 
+  const activeFilters = [
+    selectedActivityType
+      ? {
+          key: 'activityType',
+          label: `Type: ${selectedActivityType}`,
+          href: url('/activity')
+            .addParam('selectedProject', project.id)
+            .addParam('agentType', selectedAgentType)
+            .addParam('pageUrl', selectedPageUrl)
+            .get(),
+        }
+      : null,
+    selectedPageUrl
+      ? {
+          key: 'pageUrl',
+          label: `URL: ${selectedPageUrl}`,
+          href: url('/activity')
+            .addParam('selectedProject', project.id)
+            .addParam('activityType', selectedActivityType)
+            .addParam('agentType', selectedAgentType)
+            .get(),
+        }
+      : null,
+    selectedAgentType
+      ? {
+          key: 'agentType',
+          label: `Agent: ${selectedAgentType}`,
+          href: url('/activity')
+            .addParam('selectedProject', project.id)
+            .addParam('activityType', selectedActivityType)
+            .addParam('pageUrl', selectedPageUrl)
+            .get(),
+        }
+      : null,
+  ].filter((filter): filter is { key: string; label: string; href: string } => Boolean(filter));
+
   return (
     <div className="space-y-8">
       <div>
@@ -86,6 +123,21 @@ export default async function ActivityPage({
           View activity collected for the selected project.
         </p>
       </div>
+
+      {activeFilters.length > 0 ? (
+        <div className="flex flex-wrap gap-2">
+          {activeFilters.map((filter) => (
+            <Link
+              key={filter.key}
+              href={filter.href}
+              className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-sm text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-200"
+            >
+              <span>{filter.label}</span>
+              <X className="h-3.5 w-3.5" />
+            </Link>
+          ))}
+        </div>
+      ) : null}
 
       {activities.length === 0 ? (
         <div className="rounded-lg border border-dashed p-10 text-center">
