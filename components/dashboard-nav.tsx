@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import {
   Activity,
   Box,
@@ -16,6 +16,7 @@ import {
   FileText,
   Camera,
 } from 'lucide-react';
+import { url } from '@/core/link';
 import { cn } from '@/core/utils';
 
 const navItems = [
@@ -35,13 +36,15 @@ const navItems = [
 
 export function DashboardNav() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const selectedProject = searchParams.get('selectedProject');
 
   return (
     <nav className="grid items-start gap-2">
       {navItems.map((item) => (
         <Link
           key={item.href}
-          href={item.href}
+          href={url(item.href).addParam('selectedProject', selectedProject).get()}
           className={cn(
             'flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-muted-foreground transition-all hover:text-primary',
             pathname === item.href && 'bg-muted text-primary'

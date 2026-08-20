@@ -21,7 +21,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { url } from '@/core/link';
 import { cn } from '@/core/utils';
 
 const navItems = [
@@ -39,13 +40,15 @@ const navItems = [
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const selectedProject = searchParams.get('selectedProject');
 
   return (
     <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-card sm:flex">
       <TooltipProvider>
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
           <Link
-            href="/home"
+            href={url('/home').addParam('selectedProject', selectedProject).get()}
             className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
           >
             <Bot className="h-4 w-4 transition-all group-hover:scale-110" />
@@ -56,7 +59,7 @@ export function AppSidebar() {
             <Tooltip key={item.href}>
               <TooltipTrigger asChild>
                 <Link
-                  href={item.href}
+                  href={url(item.href).addParam('selectedProject', selectedProject).get()}
                   className={cn(
                     'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
                     {
@@ -81,7 +84,7 @@ export function AppSidebar() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="/settings"
+                href={url('/settings').addParam('selectedProject', selectedProject).get()}
                 className={cn(
                   'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
                   {

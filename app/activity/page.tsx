@@ -5,6 +5,7 @@ import {
   ArrowLeft,
 } from 'lucide-react';
 import { prisma } from '@/core/database/prisma';
+import { url } from '@/core/link';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -59,7 +60,7 @@ export default async function ActivityPage({
       {/* Header */}
       <div>
         <Link
-          href="/projects"
+          href={url('/projects').addParam('selectedProject', project.id).get()}
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
@@ -184,7 +185,7 @@ export default async function ActivityPage({
 
           <div className="mt-5">
             <Button asChild variant="outline">
-              <Link href="/projects">
+              <Link href={url('/projects').addParam('selectedProject', project.id).get()}>
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 View Projects
               </Link>
