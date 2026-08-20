@@ -46,7 +46,9 @@ export function DashboardLayoutWrapper({
             </div>
           </aside>
           <main className="min-h-[calc(100vh-4rem)] p-6 lg:p-8">
-            <Skeleton className="h-64 w-full" />
+            <div className="mx-auto w-full max-w-7xl">
+              <Skeleton className="h-64 w-full" />
+            </div>
           </main>
         </div>
       </div>
@@ -71,7 +73,7 @@ export function DashboardLayoutWrapper({
           </div>
         </aside>
         <main className="min-h-[calc(100vh-4rem)] p-6 lg:p-8">
-          <div className="w-full space-y-4">
+          <div className="mx-auto w-full max-w-7xl space-y-4">
             <MobilePageBack />
             {children}
           </div>
