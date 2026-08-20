@@ -1,13 +1,7 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { prisma } from "@/core/database/prisma";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 export default function CreateProjectPage() {
   async function createProject(formData: FormData) {
@@ -47,79 +41,67 @@ export default function CreateProjectPage() {
         </div>
       </div>
 
-      <Card className="max-w-2xl">
-        <CardHeader>
-          <CardTitle>Project details</CardTitle>
+      <form action={createProject} className="max-w-2xl space-y-6">
+        <div className="space-y-2">
+          <label htmlFor="path" className="text-sm font-medium">
+            Path
+          </label>
 
-          <CardDescription>
-            Create a project for the site or domain you want to track.
-          </CardDescription>
-        </CardHeader>
+          <input
+            id="path"
+            name="path"
+            type="text"
+            placeholder="example.com"
+            required
+            className="w-full rounded-md border px-3 py-2 text-sm"
+          />
 
-        <CardContent>
-          <form action={createProject} className="space-y-6">
-            <div className="space-y-2">
-              <label htmlFor="path" className="text-sm font-medium">
-                Path
-              </label>
+          <p className="text-sm text-muted-foreground">
+            The site or domain for which Analytics data will be collected.
+          </p>
+        </div>
 
-              <input
-                id="path"
-                name="path"
-                type="text"
-                placeholder="example.com"
-                required
-                className="w-full rounded-md border px-3 py-2 text-sm"
-              />
+        <div className="space-y-2">
+          <label htmlFor="type" className="text-sm font-medium">
+            Type
+          </label>
 
-              <p className="text-sm text-muted-foreground">
-                The site or domain for which Analytics data will be collected.
-              </p>
-            </div>
+          <input
+            id="type"
+            name="type"
+            type="text"
+            placeholder="website"
+            required
+            className="w-full rounded-md border px-3 py-2 text-sm"
+          />
+        </div>
 
-            <div className="space-y-2">
-              <label htmlFor="type" className="text-sm font-medium">
-                Type
-              </label>
+        <div className="space-y-2">
+          <label htmlFor="moreDetails" className="text-sm font-medium">
+            More details
+          </label>
 
-              <input
-                id="type"
-                name="type"
-                type="text"
-                placeholder="website"
-                required
-                className="w-full rounded-md border px-3 py-2 text-sm"
-              />
-            </div>
+          <textarea
+            id="moreDetails"
+            name="moreDetails"
+            placeholder="Additional project details"
+            rows={4}
+            className="w-full rounded-md border px-3 py-2 text-sm"
+          />
+        </div>
 
-            <div className="space-y-2">
-              <label htmlFor="moreDetails" className="text-sm font-medium">
-                More details
-              </label>
+        <div className="flex gap-3">
+          <Button type="submit">
+            Create project
+          </Button>
 
-              <textarea
-                id="moreDetails"
-                name="moreDetails"
-                placeholder="Additional project details"
-                rows={4}
-                className="w-full rounded-md border px-3 py-2 text-sm"
-              />
-            </div>
-
-            <div className="flex gap-3">
-              <Button type="submit">
-                Create project
-              </Button>
-
-              <Button asChild variant="outline">
-                <Link href="/projects">
-                  Cancel
-                </Link>
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+          <Button asChild variant="outline">
+            <Link href="/projects">
+              Cancel
+            </Link>
+          </Button>
+        </div>
+      </form>
     </div>
   );
 }
