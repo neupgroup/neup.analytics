@@ -5,6 +5,7 @@ import {
   Home,
   Box,
   LineChart,
+  Activity,
   GitFork,
   Map,
   PlaySquare,
@@ -26,6 +27,7 @@ import { cn } from '@/core/utils';
 const navItems = [
   { href: '/home', icon: Home, label: 'Home' },
   { href: '/projects', icon: Box, label: 'Projects' },
+  { href: '/activity', icon: Activity, label: 'Activity' },
   { href: '/journeys', icon: GitFork, label: 'Journeys' },
   { href: '/heatmaps', icon: Map, label: 'Heatmaps' },
   { href: '/replays', icon: PlaySquare, label: 'Replays' },

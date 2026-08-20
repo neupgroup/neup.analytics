@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
+  Activity,
   Box,
   LineChart,
   GitFork,
@@ -20,6 +21,7 @@ import { cn } from '@/core/utils';
 const navItems = [
   { href: '/home', label: 'Home', icon: LineChart },
   { href: '/projects', label: 'Projects', icon: Box },
+  { href: '/activity', label: 'Activity', icon: Activity },
   { href: '/journeys', label: 'Journeys', icon: GitFork },
   { href: '/heatmaps', label: 'Heatmaps', icon: Map },
   { href: '/replays', label: 'Replays', icon: PlaySquare },
