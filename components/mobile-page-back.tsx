@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { url } from '@/core/helpers/link/url';
 
 function resolveBackPath(pathname: string): string | null {
   const normalizedPathname = pathname === '/' ? '/home' : pathname;
@@ -31,7 +30,11 @@ export function MobilePageBack() {
   }
 
   const selectedProject = searchParams.get('selectedProject');
-  const href = url(backPath).addParam('selectedProject', selectedProject).get();
+  const params = new URLSearchParams();
+  if (selectedProject) {
+    params.set('selectedProject', selectedProject);
+  }
+  const href = params.size > 0 ? `${backPath}?${params.toString()}` : backPath;
 
   return (
     <div className="md:hidden">

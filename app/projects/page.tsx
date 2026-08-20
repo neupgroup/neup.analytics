@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { Plus, Box } from 'lucide-react';
 import { prisma } from '@/core/database/prisma';
-import { url } from '@/core/helpers/link/url';
 
 type ProjectsPageProps = {
   searchParams?: Promise<{
@@ -20,6 +19,12 @@ export default async function ProjectsPage({
       createdOn: 'desc',
     },
   });
+
+  function createProjectSelectionHref(projectId: string): string {
+    const params = new URLSearchParams();
+    params.set('selectedProject', projectId);
+    return `/projects?${params.toString()}`;
+  }
 
   return (
     <div className="space-y-8">
@@ -80,7 +85,7 @@ export default async function ProjectsPage({
           {projects.map((project, index) => (
             <Link
               key={project.id}
-              href={url('/projects').addParam('selectedProject', project.id).get()}
+              href={createProjectSelectionHref(project.id)}
               className={`flex min-h-[76px] w-full items-center border px-5 py-4 transition-colors duration-200 ease-out ${
                 selectedProject === project.id
                   ? 'border-sky-200 bg-sky-100 hover:bg-sky-200'

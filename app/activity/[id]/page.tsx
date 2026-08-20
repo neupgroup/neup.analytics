@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation';
 import { prisma } from '@/core/database/prisma';
+import { makeAppPath } from '@/core/appconfig';
 import { formatReadableDateTime } from '@/core/helpers/date';
+import { url } from '@/core/helpers/link/url';
 import { presentActivity } from '@/services/activity/presentActivity';
 
 type ActivityDetailPageProps = {
@@ -20,7 +22,7 @@ export default async function ActivityDetailPage({
   const selectedProject = resolvedSearchParams.selectedProject?.trim();
 
   if (!selectedProject) {
-    redirect('/projects');
+    redirect(makeAppPath('/projects'));
   }
 
   const activity = await prisma.activity.findFirst({
@@ -31,7 +33,7 @@ export default async function ActivityDetailPage({
   });
 
   if (!activity) {
-    redirect(`/activity?selectedProject=${encodeURIComponent(selectedProject)}`);
+    redirect(url('/activity').addParam('selectedProject', selectedProject).get());
   }
 
   const presentation = presentActivity(activity);

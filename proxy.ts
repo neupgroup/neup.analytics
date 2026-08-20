@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import account from '@/logica/account';
 import { prisma } from '@/core/database/prisma';
+import { APP_BASE_PATH, makeAppPath } from '@/core/appconfig';
 
 function createAuthStartUrl(request: NextRequest): string {
   const authUrl = new URL('https://neupgroup.com/account/auth/start');
@@ -11,16 +12,35 @@ function createAuthStartUrl(request: NextRequest): string {
 }
 
 function createProjectsUrl(request: NextRequest): string {
-  return new URL('/projects', request.url).toString();
+  return new URL(makeAppPath('/projects'), request.url).toString();
+}
+
+function normalizeRequestPathname(pathname: string): string {
+  if (!APP_BASE_PATH) {
+    return pathname;
+  }
+
+  if (pathname === APP_BASE_PATH) {
+    return '/';
+  }
+
+  if (pathname.startsWith(`${APP_BASE_PATH}/`)) {
+    return pathname.slice(APP_BASE_PATH.length) || '/';
+  }
+
+  return pathname;
 }
 
 function canAccessWithoutSelectedProject(pathname: string): boolean {
+  const normalizedPathname = normalizeRequestPathname(pathname);
+
   return (
-    pathname === '/projects'
-    || pathname.startsWith('/projects/')
-    || pathname.startsWith('/api/')
-    || pathname.startsWith('/bridge/')
-    || pathname.startsWith('/analytics/bridge/')
+    normalizedPathname === '/projects'
+    || normalizedPathname.startsWith('/projects/')
+    || normalizedPathname === '/api'
+    || normalizedPathname.startsWith('/api/')
+    || normalizedPathname === '/bridge'
+    || normalizedPathname.startsWith('/bridge/')
   );
 }
 
@@ -45,13 +65,13 @@ async function hasValidSelectedProject(request: NextRequest): Promise<boolean> {
 
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  const normalizedPathname = normalizeRequestPathname(pathname);
 
   // The Activity API is a public analytics collection endpoint.
   // It is authenticated using the Project token in the request body,
   // not through a NeupID browser session.
   if (
-    pathname === '/bridge/api.v1/activity' ||
-    pathname === '/analytics/bridge/api.v1/activity'
+    normalizedPathname === '/bridge/api.v1/activity'
   ) {
     return NextResponse.next();
   }

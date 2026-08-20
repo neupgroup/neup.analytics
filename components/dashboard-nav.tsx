@@ -16,7 +16,6 @@ import {
   FileText,
   Camera,
 } from 'lucide-react';
-import { url } from '@/core/helpers/link/url';
 import { cn } from '@/core/utils';
 
 const navItems = [
@@ -34,6 +33,16 @@ const navItems = [
   { href: '/settings', label: 'Settings', icon: Settings },
 ];
 
+function createDashboardHref(path: string, selectedProject: string | null): string {
+  if (!selectedProject) {
+    return path;
+  }
+
+  const params = new URLSearchParams();
+  params.set('selectedProject', selectedProject);
+  return `${path}?${params.toString()}`;
+}
+
 export function DashboardNav() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -44,7 +53,7 @@ export function DashboardNav() {
       {navItems.map((item) => (
         <Link
           key={item.href}
-          href={url(item.href).addParam('selectedProject', selectedProject).get()}
+          href={createDashboardHref(item.href, selectedProject)}
           className={cn(
             'flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-muted-foreground transition-all hover:text-primary',
             pathname === item.href && 'bg-muted text-primary'

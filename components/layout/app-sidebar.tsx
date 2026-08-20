@@ -22,7 +22,6 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { url } from '@/core/helpers/link/url';
 import { cn } from '@/core/utils';
 
 const navItems = [
@@ -38,6 +37,16 @@ const navItems = [
   { href: '/reports', icon: LineChart, label: 'Reports' },
 ];
 
+function createSidebarHref(path: string, selectedProject: string | null): string {
+  if (!selectedProject) {
+    return path;
+  }
+
+  const params = new URLSearchParams();
+  params.set('selectedProject', selectedProject);
+  return `${path}?${params.toString()}`;
+}
+
 export function AppSidebar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -48,7 +57,7 @@ export function AppSidebar() {
       <TooltipProvider>
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
           <Link
-            href={url('/home').addParam('selectedProject', selectedProject).get()}
+            href={createSidebarHref('/home', selectedProject)}
             className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
           >
             <Bot className="h-4 w-4 transition-all group-hover:scale-110" />
@@ -59,7 +68,7 @@ export function AppSidebar() {
             <Tooltip key={item.href}>
               <TooltipTrigger asChild>
                 <Link
-                  href={url(item.href).addParam('selectedProject', selectedProject).get()}
+                  href={createSidebarHref(item.href, selectedProject)}
                   className={cn(
                     'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
                     {
@@ -84,7 +93,7 @@ export function AppSidebar() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href={url('/settings').addParam('selectedProject', selectedProject).get()}
+                href={createSidebarHref('/settings', selectedProject)}
                 className={cn(
                   'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8',
                   {

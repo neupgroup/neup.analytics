@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { prisma } from '@/core/database/prisma';
 import { formatReadableDateTime } from '@/core/helpers/date';
+import { makeAppPath } from '@/core/appconfig';
 import { url } from '@/core/helpers/link/url';
 import { presentActivity } from '@/services/activity/presentActivity';
 
@@ -28,7 +29,7 @@ export default async function ActivityPage({
   const selectedPageUrl = params.pageUrl?.trim();
 
   if (!selectedProject) {
-    redirect('/projects');
+    redirect(makeAppPath('/projects'));
   }
 
   const project = await prisma.project.findUnique({
@@ -43,7 +44,7 @@ export default async function ActivityPage({
   });
 
   if (!project) {
-    redirect('/projects');
+    redirect(makeAppPath('/projects'));
   }
 
   const activities = await prisma.activity.findMany({
