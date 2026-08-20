@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import account from '@/logica/account';
+import { prisma } from '@/core/database/prisma';
 
 function createAuthStartUrl(request: NextRequest): string {
   const authUrl = new URL('https://neupgroup.com/account/auth/start');
@@ -7,6 +8,39 @@ function createAuthStartUrl(request: NextRequest): string {
   authUrl.searchParams.set('authenticatesTo', request.nextUrl.href);
 
   return authUrl.toString();
+}
+
+function createProjectsUrl(request: NextRequest): string {
+  return new URL('/projects', request.url).toString();
+}
+
+function canAccessWithoutSelectedProject(pathname: string): boolean {
+  return (
+    pathname === '/projects'
+    || pathname.startsWith('/projects/')
+    || pathname.startsWith('/api/')
+    || pathname.startsWith('/bridge/')
+    || pathname.startsWith('/analytics/bridge/')
+  );
+}
+
+async function hasValidSelectedProject(request: NextRequest): Promise<boolean> {
+  const selectedProject = request.nextUrl.searchParams.get('selectedProject')?.trim();
+
+  if (!selectedProject) {
+    return false;
+  }
+
+  const project = await prisma.project.findUnique({
+    where: {
+      id: selectedProject,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  return Boolean(project);
 }
 
 export async function proxy(request: NextRequest) {
@@ -30,7 +64,15 @@ export async function proxy(request: NextRequest) {
   );
 
   if (auth.authenticated) {
-    return NextResponse.next();
+    if (canAccessWithoutSelectedProject(pathname)) {
+      return NextResponse.next();
+    }
+
+    if (await hasValidSelectedProject(request)) {
+      return NextResponse.next();
+    }
+
+    return NextResponse.redirect(createProjectsUrl(request));
   }
 
   return NextResponse.redirect(createAuthStartUrl(request));
