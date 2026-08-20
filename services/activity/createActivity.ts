@@ -5,8 +5,6 @@ type ActivityEventInput = {
   identifier?: string;
   identifierId?: string;
   type?: string;
-  session?: string;
-  sessionId?: string;
   timeSpent?: number;
   timespent?: number;
   activityOn?: Date | string;
@@ -113,7 +111,6 @@ function normalizeActivityInput(data: CreateActivityInput): Prisma.ActivityUnche
     id: data.id?.trim() || crypto.randomUUID().replace(/-/g, ''),
     identifierId: identifierId.trim(),
     type: data.type?.trim() || undefined,
-    sessionId: data.sessionId?.trim() || data.session?.trim() || undefined,
     timeSpent:
       typeof timeSpent === 'number' && Number.isInteger(timeSpent)
         ? timeSpent
@@ -145,8 +142,6 @@ export function parseActivityEvents(input: unknown): ActivityEventInput[] {
       identifier: readString(record.identifier),
       identifierId: readString(record.identifierId),
       type: readString(record.type),
-      session: readString(record.session),
-      sessionId: readString(record.sessionId),
       timeSpent: readInteger(record.timeSpent),
       timespent: readInteger(record.timespent),
       activityOn: readDate(record.activityOn),

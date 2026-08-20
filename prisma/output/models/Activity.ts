@@ -38,7 +38,6 @@ export type ActivityMinAggregateOutputType = {
   id: string | null
   identifierId: string | null
   type: string | null
-  sessionId: string | null
   timeSpent: number | null
   ip: string | null
   userAgent: string | null
@@ -52,7 +51,6 @@ export type ActivityMaxAggregateOutputType = {
   id: string | null
   identifierId: string | null
   type: string | null
-  sessionId: string | null
   timeSpent: number | null
   ip: string | null
   userAgent: string | null
@@ -66,7 +64,6 @@ export type ActivityCountAggregateOutputType = {
   id: number
   identifierId: number
   type: number
-  sessionId: number
   timeSpent: number
   agent: number
   location: number
@@ -93,7 +90,6 @@ export type ActivityMinAggregateInputType = {
   id?: true
   identifierId?: true
   type?: true
-  sessionId?: true
   timeSpent?: true
   ip?: true
   userAgent?: true
@@ -107,7 +103,6 @@ export type ActivityMaxAggregateInputType = {
   id?: true
   identifierId?: true
   type?: true
-  sessionId?: true
   timeSpent?: true
   ip?: true
   userAgent?: true
@@ -121,7 +116,6 @@ export type ActivityCountAggregateInputType = {
   id?: true
   identifierId?: true
   type?: true
-  sessionId?: true
   timeSpent?: true
   agent?: true
   location?: true
@@ -225,7 +219,6 @@ export type ActivityGroupByOutputType = {
   id: string
   identifierId: string
   type: string | null
-  sessionId: string | null
   timeSpent: number | null
   agent: runtime.JsonValue | null
   location: runtime.JsonValue | null
@@ -265,7 +258,6 @@ export type ActivityWhereInput = {
   id?: Prisma.StringFilter<"Activity"> | string
   identifierId?: Prisma.StringFilter<"Activity"> | string
   type?: Prisma.StringNullableFilter<"Activity"> | string | null
-  sessionId?: Prisma.StringNullableFilter<"Activity"> | string | null
   timeSpent?: Prisma.IntNullableFilter<"Activity"> | number | null
   agent?: Prisma.JsonNullableFilter<"Activity">
   location?: Prisma.JsonNullableFilter<"Activity">
@@ -283,7 +275,6 @@ export type ActivityOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   identifierId?: Prisma.SortOrder
   type?: Prisma.SortOrderInput | Prisma.SortOrder
-  sessionId?: Prisma.SortOrderInput | Prisma.SortOrder
   timeSpent?: Prisma.SortOrderInput | Prisma.SortOrder
   agent?: Prisma.SortOrderInput | Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -304,7 +295,6 @@ export type ActivityWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ActivityWhereInput | Prisma.ActivityWhereInput[]
   identifierId?: Prisma.StringFilter<"Activity"> | string
   type?: Prisma.StringNullableFilter<"Activity"> | string | null
-  sessionId?: Prisma.StringNullableFilter<"Activity"> | string | null
   timeSpent?: Prisma.IntNullableFilter<"Activity"> | number | null
   agent?: Prisma.JsonNullableFilter<"Activity">
   location?: Prisma.JsonNullableFilter<"Activity">
@@ -322,7 +312,6 @@ export type ActivityOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   identifierId?: Prisma.SortOrder
   type?: Prisma.SortOrderInput | Prisma.SortOrder
-  sessionId?: Prisma.SortOrderInput | Prisma.SortOrder
   timeSpent?: Prisma.SortOrderInput | Prisma.SortOrder
   agent?: Prisma.SortOrderInput | Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -347,7 +336,6 @@ export type ActivityScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Activity"> | string
   identifierId?: Prisma.StringWithAggregatesFilter<"Activity"> | string
   type?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
-  sessionId?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
   timeSpent?: Prisma.IntNullableWithAggregatesFilter<"Activity"> | number | null
   agent?: Prisma.JsonNullableWithAggregatesFilter<"Activity">
   location?: Prisma.JsonNullableWithAggregatesFilter<"Activity">
@@ -364,7 +352,6 @@ export type ActivityCreateInput = {
   id?: string
   identifierId: string
   type?: string | null
-  sessionId?: string | null
   timeSpent?: number | null
   agent?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   location?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -381,7 +368,6 @@ export type ActivityUncheckedCreateInput = {
   id?: string
   identifierId: string
   type?: string | null
-  sessionId?: string | null
   timeSpent?: number | null
   agent?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   location?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -398,7 +384,6 @@ export type ActivityUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   identifierId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timeSpent?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   agent?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   location?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -415,7 +400,6 @@ export type ActivityUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   identifierId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timeSpent?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   agent?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   location?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -432,7 +416,6 @@ export type ActivityCreateManyInput = {
   id?: string
   identifierId: string
   type?: string | null
-  sessionId?: string | null
   timeSpent?: number | null
   agent?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   location?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -449,7 +432,6 @@ export type ActivityUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   identifierId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timeSpent?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   agent?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   location?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -465,7 +447,6 @@ export type ActivityUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   identifierId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timeSpent?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   agent?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   location?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -482,7 +463,6 @@ export type ActivityCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   identifierId?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  sessionId?: Prisma.SortOrder
   timeSpent?: Prisma.SortOrder
   agent?: Prisma.SortOrder
   location?: Prisma.SortOrder
@@ -503,7 +483,6 @@ export type ActivityMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   identifierId?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  sessionId?: Prisma.SortOrder
   timeSpent?: Prisma.SortOrder
   ip?: Prisma.SortOrder
   userAgent?: Prisma.SortOrder
@@ -517,7 +496,6 @@ export type ActivityMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   identifierId?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  sessionId?: Prisma.SortOrder
   timeSpent?: Prisma.SortOrder
   ip?: Prisma.SortOrder
   userAgent?: Prisma.SortOrder
@@ -587,7 +565,6 @@ export type ActivityCreateWithoutProjectInput = {
   id?: string
   identifierId: string
   type?: string | null
-  sessionId?: string | null
   timeSpent?: number | null
   agent?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   location?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -603,7 +580,6 @@ export type ActivityUncheckedCreateWithoutProjectInput = {
   id?: string
   identifierId: string
   type?: string | null
-  sessionId?: string | null
   timeSpent?: number | null
   agent?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   location?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -648,7 +624,6 @@ export type ActivityScalarWhereInput = {
   id?: Prisma.StringFilter<"Activity"> | string
   identifierId?: Prisma.StringFilter<"Activity"> | string
   type?: Prisma.StringNullableFilter<"Activity"> | string | null
-  sessionId?: Prisma.StringNullableFilter<"Activity"> | string | null
   timeSpent?: Prisma.IntNullableFilter<"Activity"> | number | null
   agent?: Prisma.JsonNullableFilter<"Activity">
   location?: Prisma.JsonNullableFilter<"Activity">
@@ -665,7 +640,6 @@ export type ActivityCreateManyProjectInput = {
   id?: string
   identifierId: string
   type?: string | null
-  sessionId?: string | null
   timeSpent?: number | null
   agent?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   location?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -681,7 +655,6 @@ export type ActivityUpdateWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   identifierId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timeSpent?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   agent?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   location?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -697,7 +670,6 @@ export type ActivityUncheckedUpdateWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   identifierId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timeSpent?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   agent?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   location?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -713,7 +685,6 @@ export type ActivityUncheckedUpdateManyWithoutProjectInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   identifierId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  sessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   timeSpent?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   agent?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   location?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -731,7 +702,6 @@ export type ActivitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   id?: boolean
   identifierId?: boolean
   type?: boolean
-  sessionId?: boolean
   timeSpent?: boolean
   agent?: boolean
   location?: boolean
@@ -749,7 +719,6 @@ export type ActivitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   identifierId?: boolean
   type?: boolean
-  sessionId?: boolean
   timeSpent?: boolean
   agent?: boolean
   location?: boolean
@@ -767,7 +736,6 @@ export type ActivitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   id?: boolean
   identifierId?: boolean
   type?: boolean
-  sessionId?: boolean
   timeSpent?: boolean
   agent?: boolean
   location?: boolean
@@ -785,7 +753,6 @@ export type ActivitySelectScalar = {
   id?: boolean
   identifierId?: boolean
   type?: boolean
-  sessionId?: boolean
   timeSpent?: boolean
   agent?: boolean
   location?: boolean
@@ -798,7 +765,7 @@ export type ActivitySelectScalar = {
   projectId?: boolean
 }
 
-export type ActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "identifierId" | "type" | "sessionId" | "timeSpent" | "agent" | "location" | "moreDetails" | "ip" | "userAgent" | "pageUrl" | "referral" | "activityOn" | "projectId", ExtArgs["result"]["activity"]>
+export type ActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "identifierId" | "type" | "timeSpent" | "agent" | "location" | "moreDetails" | "ip" | "userAgent" | "pageUrl" | "referral" | "activityOn" | "projectId", ExtArgs["result"]["activity"]>
 export type ActivityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }
@@ -818,7 +785,6 @@ export type $ActivityPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     id: string
     identifierId: string
     type: string | null
-    sessionId: string | null
     timeSpent: number | null
     agent: runtime.JsonValue | null
     location: runtime.JsonValue | null
@@ -1256,7 +1222,6 @@ export interface ActivityFieldRefs {
   readonly id: Prisma.FieldRef<"Activity", 'String'>
   readonly identifierId: Prisma.FieldRef<"Activity", 'String'>
   readonly type: Prisma.FieldRef<"Activity", 'String'>
-  readonly sessionId: Prisma.FieldRef<"Activity", 'String'>
   readonly timeSpent: Prisma.FieldRef<"Activity", 'Int'>
   readonly agent: Prisma.FieldRef<"Activity", 'Json'>
   readonly location: Prisma.FieldRef<"Activity", 'Json'>

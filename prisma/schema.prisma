@@ -116,7 +116,6 @@ model Activity {
   id           String   @id @default(cuid())
   identifierId String
   type         String?
-  sessionId    String?
   timeSpent    Int?
   agent        Json?
   location     Json?
@@ -131,7 +130,6 @@ model Activity {
 
   @@index([identifierId])
   @@index([type])
-  @@index([sessionId])
   @@index([projectId])
   @@index([activityOn])
   @@index([pageUrl])

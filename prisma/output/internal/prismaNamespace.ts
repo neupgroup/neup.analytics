@@ -1233,7 +1233,6 @@ export const ActivityScalarFieldEnum = {
   id: 'id',
   identifierId: 'identifierId',
   type: 'type',
-  sessionId: 'sessionId',
   timeSpent: 'timeSpent',
   agent: 'agent',
   location: 'location',
