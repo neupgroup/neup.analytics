@@ -19,6 +19,10 @@ type ActivityPageProps = {
     activityType?: string;
     agentType?: string;
     pageUrl?: string;
+    identifier?: string;
+    userAgent?: string;
+    referral?: string;
+    ip?: string;
   }>;
 };
 
@@ -27,12 +31,20 @@ function activityHref(params: {
   activityType?: string;
   agentType?: string;
   pageUrl?: string;
+  identifier?: string;
+  userAgent?: string;
+  referral?: string;
+  ip?: string;
 }) {
   return url('/activity', '/')
     .addParam('selectedProject', params.selectedProject)
     .addParam('activityType', params.activityType)
     .addParam('agentType', params.agentType)
     .addParam('pageUrl', params.pageUrl)
+    .addParam('identifier', params.identifier)
+    .addParam('userAgent', params.userAgent)
+    .addParam('referral', params.referral)
+    .addParam('ip', params.ip)
     .get();
 }
 
@@ -50,6 +62,10 @@ export default async function ActivityPage({
   const selectedActivityType = params.activityType?.trim().toLowerCase();
   const selectedAgentType = params.agentType?.trim().toLowerCase();
   const selectedPageUrl = params.pageUrl?.trim();
+  const selectedIdentifier = params.identifier?.trim();
+  const selectedUserAgent = params.userAgent?.trim();
+  const selectedReferral = params.referral?.trim();
+  const selectedIp = params.ip?.trim();
 
   if (!selectedProject) {
     redirect(makeAppPath('/projects'));
@@ -101,6 +117,22 @@ export default async function ActivityPage({
         return false;
       }
 
+      if (selectedIdentifier && activity.identifierId !== selectedIdentifier) {
+        return false;
+      }
+
+      if (selectedUserAgent && activity.userAgent !== selectedUserAgent) {
+        return false;
+      }
+
+      if (selectedReferral && activity.referral !== selectedReferral) {
+        return false;
+      }
+
+      if (selectedIp && activity.ip !== selectedIp) {
+        return false;
+      }
+
       return true;
     });
 
@@ -113,6 +145,10 @@ export default async function ActivityPage({
             selectedProject: project.id,
             agentType: selectedAgentType,
             pageUrl: selectedPageUrl,
+            identifier: selectedIdentifier,
+            userAgent: selectedUserAgent,
+            referral: selectedReferral,
+            ip: selectedIp,
           }),
         }
       : null,
@@ -124,6 +160,10 @@ export default async function ActivityPage({
             selectedProject: project.id,
             activityType: selectedActivityType,
             agentType: selectedAgentType,
+            identifier: selectedIdentifier,
+            userAgent: selectedUserAgent,
+            referral: selectedReferral,
+            ip: selectedIp,
           }),
         }
       : null,
@@ -135,6 +175,70 @@ export default async function ActivityPage({
             selectedProject: project.id,
             activityType: selectedActivityType,
             pageUrl: selectedPageUrl,
+            identifier: selectedIdentifier,
+            userAgent: selectedUserAgent,
+            referral: selectedReferral,
+            ip: selectedIp,
+          }),
+        }
+      : null,
+    selectedIdentifier
+      ? {
+          key: 'identifier',
+          label: `Identifier: ${selectedIdentifier}`,
+          href: activityHref({
+            selectedProject: project.id,
+            activityType: selectedActivityType,
+            agentType: selectedAgentType,
+            pageUrl: selectedPageUrl,
+            userAgent: selectedUserAgent,
+            referral: selectedReferral,
+            ip: selectedIp,
+          }),
+        }
+      : null,
+    selectedUserAgent
+      ? {
+          key: 'userAgent',
+          label: `User Agent: ${selectedUserAgent}`,
+          href: activityHref({
+            selectedProject: project.id,
+            activityType: selectedActivityType,
+            agentType: selectedAgentType,
+            pageUrl: selectedPageUrl,
+            identifier: selectedIdentifier,
+            referral: selectedReferral,
+            ip: selectedIp,
+          }),
+        }
+      : null,
+    selectedReferral
+      ? {
+          key: 'referral',
+          label: `Referral: ${selectedReferral}`,
+          href: activityHref({
+            selectedProject: project.id,
+            activityType: selectedActivityType,
+            agentType: selectedAgentType,
+            pageUrl: selectedPageUrl,
+            identifier: selectedIdentifier,
+            userAgent: selectedUserAgent,
+            ip: selectedIp,
+          }),
+        }
+      : null,
+    selectedIp
+      ? {
+          key: 'ip',
+          label: `IP: ${selectedIp}`,
+          href: activityHref({
+            selectedProject: project.id,
+            activityType: selectedActivityType,
+            agentType: selectedAgentType,
+            pageUrl: selectedPageUrl,
+            identifier: selectedIdentifier,
+            userAgent: selectedUserAgent,
+            referral: selectedReferral,
           }),
         }
       : null,
@@ -200,6 +304,10 @@ export default async function ActivityPage({
                 activityType: presentation.type,
                 agentType: selectedAgentType,
                 pageUrl: selectedPageUrl,
+                identifier: selectedIdentifier,
+                userAgent: selectedUserAgent,
+                referral: selectedReferral,
+                ip: selectedIp,
               })}
               pageLabel={activity.pageUrl ?? 'Unknown page'}
               pageHref={activityHref({
@@ -207,6 +315,10 @@ export default async function ActivityPage({
                 activityType: selectedActivityType,
                 agentType: selectedAgentType,
                 pageUrl: activity.pageUrl ?? undefined,
+                identifier: selectedIdentifier,
+                userAgent: selectedUserAgent,
+                referral: selectedReferral,
+                ip: selectedIp,
               })}
               agentLabel={presentation.agentTypeLabel}
               agentHref={activityHref({
@@ -214,6 +326,10 @@ export default async function ActivityPage({
                 activityType: selectedActivityType,
                 agentType: presentation.agentType.toLowerCase(),
                 pageUrl: selectedPageUrl,
+                identifier: selectedIdentifier,
+                userAgent: selectedUserAgent,
+                referral: selectedReferral,
+                ip: selectedIp,
               })}
               locationLabel={getIpLocationLabel(ipMap, activity.ip)}
               timestamp={formatReadableDateTime(activity.activityOn)}

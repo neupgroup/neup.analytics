@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/core/database/prisma';
 import { makeAppPath } from '@/core/appconfig';
@@ -40,6 +41,11 @@ export default async function ActivityDetailPage({
   const presentation = presentActivity(activity);
   const ipMap = await getFreshIpMap(activity.ip);
   const ipLocation = formatIpMapLocation(ipMap);
+  const filterHref = (key: string, value: string | null | undefined) => url('/activity', '/')
+    .addParam('selectedProject', selectedProject)
+    .addParam(key, value ?? undefined)
+    .get();
+  const filterLinkClassName = 'text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4';
 
   return (
     <div className="space-y-8">
@@ -60,7 +66,14 @@ export default async function ActivityDetailPage({
           </p>
 
           <p className="mt-1 break-all text-sm text-slate-950">
-            {activity.pageUrl}
+            {activity.pageUrl ? (
+              <Link
+                href={filterHref('pageUrl', activity.pageUrl)}
+                className={filterLinkClassName}
+              >
+                {activity.pageUrl}
+              </Link>
+            ) : '—'}
           </p>
         </div>
 
@@ -80,7 +93,12 @@ export default async function ActivityDetailPage({
           </p>
 
           <p className="mt-1 text-sm text-slate-700">
-            {presentation.type}
+            <Link
+              href={filterHref('activityType', presentation.type)}
+              className={filterLinkClassName}
+            >
+              {presentation.type}
+            </Link>
           </p>
         </div>
 
@@ -90,7 +108,12 @@ export default async function ActivityDetailPage({
           </p>
 
           <p className="mt-1 text-sm text-slate-700">
-            {presentation.agentType}
+            <Link
+              href={filterHref('agentType', presentation.agentType.toLowerCase())}
+              className={filterLinkClassName}
+            >
+              {presentation.agentType}
+            </Link>
           </p>
         </div>
 
@@ -100,7 +123,12 @@ export default async function ActivityDetailPage({
           </p>
 
           <p className="mt-1 break-all text-sm text-slate-700">
-            {activity.identifierId}
+            <Link
+              href={filterHref('identifier', activity.identifierId)}
+              className={filterLinkClassName}
+            >
+              {activity.identifierId}
+            </Link>
           </p>
         </div>
 
@@ -110,7 +138,14 @@ export default async function ActivityDetailPage({
           </p>
 
           <p className="mt-1 break-all text-sm text-slate-700">
-            {activity.ip ?? '—'}
+            {activity.ip ? (
+              <Link
+                href={filterHref('ip', activity.ip)}
+                className={filterLinkClassName}
+              >
+                {activity.ip}
+              </Link>
+            ) : '—'}
           </p>
         </div>
 
@@ -140,7 +175,14 @@ export default async function ActivityDetailPage({
           </p>
 
           <p className="mt-1 break-all text-sm text-slate-700">
-            {activity.referral ?? '—'}
+            {activity.referral ? (
+              <Link
+                href={filterHref('referral', activity.referral)}
+                className={filterLinkClassName}
+              >
+                {activity.referral}
+              </Link>
+            ) : '—'}
           </p>
         </div>
 
@@ -150,7 +192,14 @@ export default async function ActivityDetailPage({
           </p>
 
           <p className="mt-1 break-all text-sm text-slate-700">
-            {activity.userAgent ?? '—'}
+            {activity.userAgent ? (
+              <Link
+                href={filterHref('userAgent', activity.userAgent)}
+                className={filterLinkClassName}
+              >
+                {activity.userAgent}
+              </Link>
+            ) : '—'}
           </p>
         </div>
       </div>
