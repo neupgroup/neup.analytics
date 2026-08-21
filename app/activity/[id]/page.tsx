@@ -33,7 +33,7 @@ export default async function ActivityDetailPage({
   });
 
   if (!activity) {
-    redirect(url('/activity').addParam('selectedProject', selectedProject).get());
+    redirect(url('/activity', '/').addParam('selectedProject', selectedProject).get());
   }
 
   const presentation = presentActivity(activity);

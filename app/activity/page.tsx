@@ -25,14 +25,18 @@ function activityHref(params: {
   agentType?: string;
   pageUrl?: string;
 }) {
-  return makeAppPath(
-    url('/activity')
-      .addParam('selectedProject', params.selectedProject)
-      .addParam('activityType', params.activityType)
-      .addParam('agentType', params.agentType)
-      .addParam('pageUrl', params.pageUrl)
-      .get()
-  );
+  return url('/activity', '/')
+    .addParam('selectedProject', params.selectedProject)
+    .addParam('activityType', params.activityType)
+    .addParam('agentType', params.agentType)
+    .addParam('pageUrl', params.pageUrl)
+    .get();
+}
+
+function activityDetailHref(activityId: string, selectedProject: string) {
+  return url(`/activity/${activityId}`, '/')
+    .addParam('selectedProject', selectedProject)
+    .get();
 }
 
 export default async function ActivityPage({
@@ -183,13 +187,19 @@ export default async function ActivityPage({
           {presentedActivities.map(({ activity, presentation }, index) => (
             <div
               key={activity.id}
-              className={`block border border-slate-200 bg-white px-5 py-4 transition-colors duration-200 ease-out hover:bg-sky-50 ${
+              className={`relative block border border-slate-200 bg-white px-5 py-4 transition-colors duration-200 ease-out hover:bg-sky-50 focus-within:bg-sky-50 ${
                 index === 0 ? 'rounded-t-xl' : 'rounded-none border-t-0'
               } ${
                 index === presentedActivities.length - 1 ? 'rounded-b-xl' : ''
               }`}
             >
-              <p className="break-all text-sm text-slate-950">
+              <Link
+                href={activityDetailHref(activity.id, project.id)}
+                aria-label={`View activity ${activity.id}`}
+                className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2"
+              />
+
+              <p className="pointer-events-none relative z-10 break-all text-sm text-slate-950">
                 <Link
                   href={activityHref({
                     selectedProject: project.id,
@@ -197,7 +207,7 @@ export default async function ActivityPage({
                     agentType: selectedAgentType,
                     pageUrl: selectedPageUrl,
                   })}
-                  className="font-medium text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4"
+                  className="pointer-events-auto font-medium text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4"
                 >
                   {presentation.typeLabel}
                 </Link>{' '}
@@ -209,7 +219,7 @@ export default async function ActivityPage({
                     agentType: selectedAgentType,
                     pageUrl: activity.pageUrl ?? undefined,
                   })}
-                  className="text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4"
+                  className="pointer-events-auto text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4"
                 >
                   {activity.pageUrl ?? 'Unknown page'}
                 </Link>{' '}
@@ -221,13 +231,13 @@ export default async function ActivityPage({
                     agentType: presentation.agentType.toLowerCase(),
                     pageUrl: selectedPageUrl,
                   })}
-                  className="text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4"
+                  className="pointer-events-auto text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4"
                 >
                   {presentation.agentTypeLabel}
                 </Link>
               </p>
 
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="pointer-events-none relative z-10 mt-1 text-sm text-slate-500">
                 {formatReadableDateTime(activity.activityOn)}
               </p>
             </div>
