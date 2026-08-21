@@ -11,7 +11,7 @@ import {
   PlaySquare,
   Users,
   Eye,
-  Settings,
+  Settings2,
   BarChart,
   FileText,
   Camera,
@@ -30,7 +30,7 @@ const navItems = [
   { href: '/users', label: 'Users', icon: Users },
   { href: '/live', label: 'Live View', icon: Eye },
   { href: '/reports', label: 'Reports', icon: BarChart },
-  { href: '/settings', label: 'Settings', icon: Settings },
+  { href: '/config', label: 'Config', icon: Settings2 },
 ];
 
 function createDashboardHref(path: string, selectedProject: string | null): string {

@@ -1,0 +1,7 @@
+- Fix existing TypeScript errors from `npx tsc --noEmit --pretty false`:
+  - `app/heatmaps/page.tsx`: uses `page_path` on `Page`; available property appears to be `pagePath`.
+  - `app/live/page.tsx`: missing `Timestamp` and `isLoadingPage` symbols.
+  - `app/pages/[id]/page.tsx`: missing `Timestamp`, `isLoading`, `page`, `formatTimestamp`, and `error` symbols.
+  - `hooks/use-interaction-recorder.ts`: event payloads include fields not declared on `Omit<InteractionEvent, "timestamp">`.
+- Fix the existing `/bride/webhook.v1/activity` typo in `logica/analytics/project.ts`.
+- Restore a runnable ESLint setup; `npm run lint` has no local `eslint` dependency/configuration.

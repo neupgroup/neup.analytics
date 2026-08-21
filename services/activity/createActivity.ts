@@ -94,6 +94,53 @@ function readJsonValue(value: unknown): Prisma.InputJsonValue | undefined {
   return undefined;
 }
 
+function isLocalDevelopmentOrigin(originUrl: URL): boolean {
+  return (
+    process.env.NODE_ENV !== 'production'
+    && ['localhost', '127.0.0.1', '[::1]'].includes(originUrl.hostname)
+  );
+}
+
+function isLocalUrl(url: URL): boolean {
+  return ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
+}
+
+export function isProjectOriginAllowed(
+  projectPath: string,
+  requestOrigin: string,
+  collectorUrl?: string
+): boolean {
+  const normalizedPath = projectPath.trim();
+  const normalizedOrigin = requestOrigin.trim();
+
+  if (!normalizedPath || !normalizedOrigin || normalizedOrigin === 'null') {
+    return false;
+  }
+
+  try {
+    const originUrl = new URL(normalizedOrigin);
+    const collectionUrl = collectorUrl ? new URL(collectorUrl) : undefined;
+
+    if (
+      isLocalDevelopmentOrigin(originUrl)
+      || (collectionUrl && isLocalUrl(originUrl) && isLocalUrl(collectionUrl))
+    ) {
+      return true;
+    }
+
+    const hasConfiguredProtocol = /^https?:\/\//i.test(normalizedPath);
+    const projectUrl = new URL(
+      hasConfiguredProtocol ? normalizedPath : `https://${normalizedPath}`
+    );
+
+    return hasConfiguredProtocol
+      ? projectUrl.origin === originUrl.origin
+      : projectUrl.host === originUrl.host;
+  } catch {
+    return false;
+  }
+}
+
 function normalizeActivityInput(data: CreateActivityInput): Prisma.ActivityUncheckedCreateInput {
   const identifierId = data.identifierId ?? data.identifier;
 

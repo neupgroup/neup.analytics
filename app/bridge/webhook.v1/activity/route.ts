@@ -112,21 +112,21 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         success: true,
-        message: 'Activity recorded successfully',
+        message: 'Webhook activity recorded successfully',
         data: activity,
       },
       { status: 201, headers: getCorsHeaders(allowedOrigin) }
     );
   } catch (error) {
     const message =
-      error instanceof Error ? error.message : 'Failed to create activity';
+      error instanceof Error ? error.message : 'Failed to record webhook activity';
 
     const status =
       message.includes('required') || message.includes('JSON object')
         ? 400
         : 500;
 
-    console.error('Activity API error:', error);
+    console.error('Activity webhook error:', error);
 
     return NextResponse.json(
       {

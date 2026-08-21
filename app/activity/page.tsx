@@ -19,6 +19,22 @@ type ActivityPageProps = {
   }>;
 };
 
+function activityHref(params: {
+  selectedProject: string;
+  activityType?: string;
+  agentType?: string;
+  pageUrl?: string;
+}) {
+  return makeAppPath(
+    url('/activity')
+      .addParam('selectedProject', params.selectedProject)
+      .addParam('activityType', params.activityType)
+      .addParam('agentType', params.agentType)
+      .addParam('pageUrl', params.pageUrl)
+      .get()
+  );
+}
+
 export default async function ActivityPage({
   searchParams,
 }: ActivityPageProps) {
@@ -82,33 +98,33 @@ export default async function ActivityPage({
       ? {
           key: 'activityType',
           label: `Type: ${selectedActivityType}`,
-          href: url('/activity')
-            .addParam('selectedProject', project.id)
-            .addParam('agentType', selectedAgentType)
-            .addParam('pageUrl', selectedPageUrl)
-            .get(),
+          href: activityHref({
+            selectedProject: project.id,
+            agentType: selectedAgentType,
+            pageUrl: selectedPageUrl,
+          }),
         }
       : null,
     selectedPageUrl
       ? {
           key: 'pageUrl',
           label: `URL: ${selectedPageUrl}`,
-          href: url('/activity')
-            .addParam('selectedProject', project.id)
-            .addParam('activityType', selectedActivityType)
-            .addParam('agentType', selectedAgentType)
-            .get(),
+          href: activityHref({
+            selectedProject: project.id,
+            activityType: selectedActivityType,
+            agentType: selectedAgentType,
+          }),
         }
       : null,
     selectedAgentType
       ? {
           key: 'agentType',
           label: `Agent: ${selectedAgentType}`,
-          href: url('/activity')
-            .addParam('selectedProject', project.id)
-            .addParam('activityType', selectedActivityType)
-            .addParam('pageUrl', selectedPageUrl)
-            .get(),
+          href: activityHref({
+            selectedProject: project.id,
+            activityType: selectedActivityType,
+            pageUrl: selectedPageUrl,
+          }),
         }
       : null,
   ].filter((filter): filter is { key: string; label: string; href: string } => Boolean(filter));
@@ -175,36 +191,36 @@ export default async function ActivityPage({
             >
               <p className="break-all text-sm text-slate-950">
                 <Link
-                  href={url('/activity')
-                    .addParam('selectedProject', project.id)
-                    .addParam('activityType', presentation.type)
-                    .addParam('agentType', selectedAgentType)
-                    .addParam('pageUrl', selectedPageUrl)
-                    .get()}
+                  href={activityHref({
+                    selectedProject: project.id,
+                    activityType: presentation.type,
+                    agentType: selectedAgentType,
+                    pageUrl: selectedPageUrl,
+                  })}
                   className="font-medium text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4"
                 >
                   {presentation.typeLabel}
                 </Link>{' '}
                 on{' '}
                 <Link
-                  href={url('/activity')
-                    .addParam('selectedProject', project.id)
-                    .addParam('activityType', selectedActivityType)
-                    .addParam('agentType', selectedAgentType)
-                    .addParam('pageUrl', activity.pageUrl)
-                    .get()}
+                  href={activityHref({
+                    selectedProject: project.id,
+                    activityType: selectedActivityType,
+                    agentType: selectedAgentType,
+                    pageUrl: activity.pageUrl ?? undefined,
+                  })}
                   className="text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4"
                 >
                   {activity.pageUrl ?? 'Unknown page'}
                 </Link>{' '}
                 from{' '}
                 <Link
-                  href={url('/activity')
-                    .addParam('selectedProject', project.id)
-                    .addParam('activityType', selectedActivityType)
-                    .addParam('agentType', presentation.agentType.toLowerCase())
-                    .addParam('pageUrl', selectedPageUrl)
-                    .get()}
+                  href={activityHref({
+                    selectedProject: project.id,
+                    activityType: selectedActivityType,
+                    agentType: presentation.agentType.toLowerCase(),
+                    pageUrl: selectedPageUrl,
+                  })}
                   className="text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4"
                 >
                   {presentation.agentTypeLabel}

@@ -67,11 +67,11 @@ export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const normalizedPathname = normalizeRequestPathname(pathname);
 
-  // The Activity API is a public analytics collection endpoint.
-  // It is authenticated using the Project token in the request body,
-  // not through a NeupID browser session.
+  // SDK loading and activity collection must be available to external sites.
   if (
     normalizedPathname === '/bridge/api.v1/activity'
+    || normalizedPathname === '/bridge/webhook.v1/activity'
+    || normalizedPathname === '/bridge/sdk.v1/record'
   ) {
     return NextResponse.next();
   }

@@ -11,7 +11,7 @@ import {
   PlaySquare,
   Users,
   Eye,
-  Settings,
+  Settings2,
   Bot,
   Camera,
 } from 'lucide-react';
@@ -93,22 +93,22 @@ export function AppSidebar() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href={createSidebarHref('/settings', selectedProject)}
+                href={createSidebarHref('/config', selectedProject)}
                 className={cn(
                   'flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground md:h-8 md:w-8',
                   {
                     'bg-accent text-accent-foreground':
-                      pathname === '/settings',
+                      pathname === '/config',
                   }
                 )}
               >
-                <Settings className="h-5 w-5" />
-                <span className="sr-only">Settings</span>
+                <Settings2 className="h-5 w-5" />
+                <span className="sr-only">Config</span>
               </Link>
             </TooltipTrigger>
 
             <TooltipContent side="right">
-              Settings
+              Config
             </TooltipContent>
           </Tooltip>
         </nav>
