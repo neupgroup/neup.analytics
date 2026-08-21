@@ -18,7 +18,7 @@ function normalizeIpAddress(value: string | null | undefined): string | undefine
   return readString(value);
 }
 
-function isDevelopmentIpAddress(ipAddress: string): boolean {
+export function isDevelopmentIpAddress(ipAddress: string): boolean {
   const normalized = ipAddress.trim().toLowerCase();
 
   return (
@@ -250,4 +250,21 @@ export function formatIpMapLocation(ipMap: Pick<NonNullable<IpMapRecord>, 'city'
     .map(String);
 
   return parts.length > 0 ? parts.join(', ') : null;
+}
+
+export function getIpLocationLabel(
+  ipMap: Pick<NonNullable<IpMapRecord>, 'city' | 'region' | 'country' | 'ipType'> | null | undefined,
+  ipAddress: string | null | undefined
+) {
+  const normalizedIpAddress = normalizeIpAddress(ipAddress);
+
+  if (ipMap?.ipType === 'dev') {
+    return null;
+  }
+
+  if (normalizedIpAddress && isDevelopmentIpAddress(normalizedIpAddress)) {
+    return null;
+  }
+
+  return formatIpMapLocation(ipMap);
 }

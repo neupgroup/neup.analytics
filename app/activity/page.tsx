@@ -4,12 +4,14 @@ import {
   Activity as ActivityIcon,
   X,
 } from 'lucide-react';
+import { ActivityCard } from '@/components/activity-card';
+import { ActivitySet } from '@/components/activity-set';
 import { prisma } from '@/core/database/prisma';
 import { formatReadableDateTime } from '@/core/helpers/date';
 import { makeAppPath } from '@/core/appconfig';
 import { url } from '@/core/helpers/link/url';
 import { presentActivity } from '@/services/activity/presentActivity';
-import { formatIpMapLocation, getFreshIpMapsByAddress } from '@/services/ipmap/getIpMap';
+import { getFreshIpMapsByAddress, getIpLocationLabel } from '@/services/ipmap/getIpMap';
 
 type ActivityPageProps = {
   searchParams: Promise<{
@@ -188,74 +190,37 @@ export default async function ActivityPage({
           </p>
         </div>
       ) : (
-        <div className="space-y-0">
-          {presentedActivities.map(({ activity, presentation, ipMap }, index) => (
-            <div
+        <ActivitySet>
+          {presentedActivities.map(({ activity, presentation, ipMap }) => (
+            <ActivityCard
               key={activity.id}
-              className={`relative block border border-slate-200 bg-white px-5 py-4 transition-colors duration-200 ease-out hover:bg-sky-50 focus-within:bg-sky-50 ${
-                index === 0 ? 'rounded-t-xl' : 'rounded-none border-t-0'
-              } ${
-                index === presentedActivities.length - 1 ? 'rounded-b-xl' : ''
-              }`}
-            >
-              <Link
-                href={activityDetailHref(activity.id, project.id)}
-                aria-label={`View activity ${activity.id}`}
-                className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2"
-              />
-
-              <p className="pointer-events-none relative z-10 break-all text-sm text-slate-950">
-                <Link
-                  href={activityHref({
-                    selectedProject: project.id,
-                    activityType: presentation.type,
-                    agentType: selectedAgentType,
-                    pageUrl: selectedPageUrl,
-                  })}
-                  className="pointer-events-auto font-medium text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4"
-                >
-                  {presentation.typeLabel}
-                </Link>{' '}
-                on{' '}
-                <Link
-                  href={activityHref({
-                    selectedProject: project.id,
-                    activityType: selectedActivityType,
-                    agentType: selectedAgentType,
-                    pageUrl: activity.pageUrl ?? undefined,
-                  })}
-                  className="pointer-events-auto text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4"
-                >
-                  {activity.pageUrl ?? 'Unknown page'}
-                </Link>{' '}
-                from{' '}
-                <Link
-                  href={activityHref({
-                    selectedProject: project.id,
-                    activityType: selectedActivityType,
-                    agentType: presentation.agentType.toLowerCase(),
-                    pageUrl: selectedPageUrl,
-                  })}
-                  className="pointer-events-auto text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4"
-                >
-                  {presentation.agentTypeLabel}
-                </Link>
-              </p>
-
-              <p className="pointer-events-none relative z-10 mt-1 text-sm text-slate-500">
-                {formatReadableDateTime(activity.activityOn)}
-              </p>
-
-              {ipMap ? (
-                <p className="pointer-events-none relative z-10 mt-1 text-xs text-slate-500">
-                  {formatIpMapLocation(ipMap) ?? activity.ip ?? 'Unknown IP'}
-                  {' · '}
-                  updated {formatReadableDateTime(ipMap.lastUpdated)}
-                </p>
-              ) : null}
-            </div>
+              title={presentation.typeLabel}
+              titleHref={activityHref({
+                selectedProject: project.id,
+                activityType: presentation.type,
+                agentType: selectedAgentType,
+                pageUrl: selectedPageUrl,
+              })}
+              pageLabel={activity.pageUrl ?? 'Unknown page'}
+              pageHref={activityHref({
+                selectedProject: project.id,
+                activityType: selectedActivityType,
+                agentType: selectedAgentType,
+                pageUrl: activity.pageUrl ?? undefined,
+              })}
+              agentLabel={presentation.agentTypeLabel}
+              agentHref={activityHref({
+                selectedProject: project.id,
+                activityType: selectedActivityType,
+                agentType: presentation.agentType.toLowerCase(),
+                pageUrl: selectedPageUrl,
+              })}
+              locationLabel={getIpLocationLabel(ipMap, activity.ip)}
+              timestamp={formatReadableDateTime(activity.activityOn)}
+              detailHref={activityDetailHref(activity.id, project.id)}
+            />
           ))}
-        </div>
+        </ActivitySet>
       )}
     </div>
   );
