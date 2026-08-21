@@ -203,6 +203,16 @@ export function parseActivityEvents(input: unknown): ActivityEventInput[] {
   });
 }
 
+export function isHeartbeatActivityEvent(event: ActivityEventInput): boolean {
+  return event.type?.trim().toLowerCase() === 'heartbeat';
+}
+
+export function getRecordableActivityEvents(
+  events: ActivityEventInput[]
+): ActivityEventInput[] {
+  return events.filter((event) => !isHeartbeatActivityEvent(event));
+}
+
 export async function createActivity(data: CreateActivityInput) {
   const normalized = normalizeActivityInput(data);
 
@@ -212,8 +222,10 @@ export async function createActivity(data: CreateActivityInput) {
 }
 
 export async function createActivities(projectId: string, data: ActivityEventInput[]) {
+  const recordableEvents = getRecordableActivityEvents(data);
+
   return prisma.$transaction(
-    data.map((item) =>
+    recordableEvents.map((item) =>
       prisma.activity.create({
         data: normalizeActivityInput({
           ...item,

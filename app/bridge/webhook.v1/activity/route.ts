@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/core/database/prisma';
 import {
   createActivities,
+  getRecordableActivityEvents,
   isProjectOriginAllowed,
   parseActivityEvents,
 } from '@/services/activity/createActivity';
@@ -100,13 +101,28 @@ export async function POST(request: Request) {
 
     const ip = getRequestIp(request);
     const userAgent = request.headers.get('user-agent')?.trim() || undefined;
+    const activityEvents = events.map((event) => ({
+      ...event,
+      ip: event.ip ?? ip,
+      userAgent: event.userAgent ?? userAgent,
+    }));
+    const recordableEvents = getRecordableActivityEvents(activityEvents);
+
+    if (recordableEvents.length === 0) {
+      return NextResponse.json(
+        {
+          success: true,
+          message: 'Heartbeat accepted',
+          active: true,
+          data: [],
+        },
+        { status: 200, headers: getCorsHeaders(allowedOrigin) }
+      );
+    }
+
     const activity = await createActivities(
       project.id,
-      events.map((event) => ({
-        ...event,
-        ip: event.ip ?? ip,
-        userAgent: event.userAgent ?? userAgent,
-      }))
+      recordableEvents
     );
 
     return NextResponse.json(
