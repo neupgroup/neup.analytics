@@ -314,6 +314,23 @@ export type EnumApplicationStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumApplicationStatusFilter<$PrismaModel>
 }
 
+export type EnumIpMapTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.IpMapType | Prisma.EnumIpMapTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.IpMapType[] | Prisma.ListEnumIpMapTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.IpMapType[] | Prisma.ListEnumIpMapTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumIpMapTypeFilter<$PrismaModel> | $Enums.IpMapType
+}
+
+export type EnumIpMapTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.IpMapType | Prisma.EnumIpMapTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.IpMapType[] | Prisma.ListEnumIpMapTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.IpMapType[] | Prisma.ListEnumIpMapTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumIpMapTypeWithAggregatesFilter<$PrismaModel> | $Enums.IpMapType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumIpMapTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumIpMapTypeFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -587,6 +604,23 @@ export type NestedEnumApplicationStatusWithAggregatesFilter<$PrismaModel = never
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumApplicationStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumApplicationStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumIpMapTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.IpMapType | Prisma.EnumIpMapTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.IpMapType[] | Prisma.ListEnumIpMapTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.IpMapType[] | Prisma.ListEnumIpMapTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumIpMapTypeFilter<$PrismaModel> | $Enums.IpMapType
+}
+
+export type NestedEnumIpMapTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.IpMapType | Prisma.EnumIpMapTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.IpMapType[] | Prisma.ListEnumIpMapTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.IpMapType[] | Prisma.ListEnumIpMapTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumIpMapTypeWithAggregatesFilter<$PrismaModel> | $Enums.IpMapType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumIpMapTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumIpMapTypeFilter<$PrismaModel>
 }
 
 

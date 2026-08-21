@@ -405,7 +405,8 @@ export const ModelName = {
   Application: 'Application',
   Account: 'Account',
   Activity: 'Activity',
-  Project: 'Project'
+  Project: 'Project',
+  IpMap: 'IpMap'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -421,7 +422,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "pageSnapshot" | "user" | "interaction" | "snapshotWeb" | "interactionEvent" | "application" | "account" | "activity" | "project"
+    modelProps: "pageSnapshot" | "user" | "interaction" | "snapshotWeb" | "interactionEvent" | "application" | "account" | "activity" | "project" | "ipMap"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1091,6 +1092,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    IpMap: {
+      payload: Prisma.$IpMapPayload<ExtArgs>
+      fields: Prisma.IpMapFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.IpMapFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IpMapPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.IpMapFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IpMapPayload>
+        }
+        findFirst: {
+          args: Prisma.IpMapFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IpMapPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.IpMapFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IpMapPayload>
+        }
+        findMany: {
+          args: Prisma.IpMapFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IpMapPayload>[]
+        }
+        create: {
+          args: Prisma.IpMapCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IpMapPayload>
+        }
+        createMany: {
+          args: Prisma.IpMapCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.IpMapCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IpMapPayload>[]
+        }
+        delete: {
+          args: Prisma.IpMapDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IpMapPayload>
+        }
+        update: {
+          args: Prisma.IpMapUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IpMapPayload>
+        }
+        deleteMany: {
+          args: Prisma.IpMapDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.IpMapUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.IpMapUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IpMapPayload>[]
+        }
+        upsert: {
+          args: Prisma.IpMapUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$IpMapPayload>
+        }
+        aggregate: {
+          args: Prisma.IpMapAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateIpMap>
+        }
+        groupBy: {
+          args: Prisma.IpMapGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.IpMapGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.IpMapCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.IpMapCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1260,6 +1335,22 @@ export const ProjectScalarFieldEnum = {
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
 
 
+export const IpMapScalarFieldEnum = {
+  id: 'id',
+  ipAddress: 'ipAddress',
+  ipType: 'ipType',
+  city: 'city',
+  region: 'region',
+  country: 'country',
+  geoLocation: 'geoLocation',
+  ipInfo: 'ipInfo',
+  moreDetails: 'moreDetails',
+  lastUpdated: 'lastUpdated'
+} as const
+
+export type IpMapScalarFieldEnum = (typeof IpMapScalarFieldEnum)[keyof typeof IpMapScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1409,6 +1500,20 @@ export type EnumApplicationStatusFieldRefInput<$PrismaModel> = FieldRefInputType
  * Reference to a field of type 'ApplicationStatus[]'
  */
 export type ListEnumApplicationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApplicationStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'IpMapType'
+ */
+export type EnumIpMapTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IpMapType'>
+    
+
+
+/**
+ * Reference to a field of type 'IpMapType[]'
+ */
+export type ListEnumIpMapTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IpMapType[]'>
     
 
 /**
@@ -1571,6 +1676,7 @@ export type GlobalOmitConfig = {
   account?: Prisma.AccountOmit
   activity?: Prisma.ActivityOmit
   project?: Prisma.ProjectOmit
+  ipMap?: Prisma.IpMapOmit
 }
 
 /* Types for Logging */

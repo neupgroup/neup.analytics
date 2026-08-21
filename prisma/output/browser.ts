@@ -62,3 +62,8 @@ export type Activity = Prisma.ActivityModel
  * 
  */
 export type Project = Prisma.ProjectModel
+/**
+ * Model IpMap
+ * 
+ */
+export type IpMap = Prisma.IpMapModel

@@ -146,6 +146,23 @@ model Project {
   activities Activity[]
 }
 
+model IpMap {
+  id          String    @id @default(cuid())
+  ipAddress   String
+  ipType      IpMapType
+  city        String?
+  region      String?
+  country     String?
+  geoLocation Json?
+  ipInfo      Json?
+  moreDetails Json?
+  lastUpdated DateTime  @default(now()) @updatedAt
+
+  @@index([ipAddress])
+  @@index([lastUpdated])
+  @@map("ipmap")
+}
+
 enum InteractionEventType {
   mousemove
   click
@@ -160,4 +177,10 @@ enum InteractionEventType {
 enum ApplicationStatus {
   setup
   active
+}
+
+enum IpMapType {
+  ip4
+  ip6
+  dev
 }

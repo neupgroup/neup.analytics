@@ -59,7 +59,8 @@ export const ModelName = {
   Application: 'Application',
   Account: 'Account',
   Activity: 'Activity',
-  Project: 'Project'
+  Project: 'Project',
+  IpMap: 'IpMap'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -206,6 +207,22 @@ export const ProjectScalarFieldEnum = {
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const IpMapScalarFieldEnum = {
+  id: 'id',
+  ipAddress: 'ipAddress',
+  ipType: 'ipType',
+  city: 'city',
+  region: 'region',
+  country: 'country',
+  geoLocation: 'geoLocation',
+  ipInfo: 'ipInfo',
+  moreDetails: 'moreDetails',
+  lastUpdated: 'lastUpdated'
+} as const
+
+export type IpMapScalarFieldEnum = (typeof IpMapScalarFieldEnum)[keyof typeof IpMapScalarFieldEnum]
 
 
 export const SortOrder = {
