@@ -10,7 +10,7 @@ type ActivityEventInput = {
   activityOn?: Date | string;
   moreDetails?: Prisma.InputJsonValue | null;
   agent?: Prisma.InputJsonValue | null;
-  location?: Prisma.InputJsonValue | null;
+  location?: string | null;
   ip?: string;
   userAgent?: string;
   pageUrl?: string;
@@ -165,7 +165,7 @@ function normalizeActivityInput(data: CreateActivityInput): Prisma.ActivityUnche
     activityOn: readDate(data.activityOn) ?? new Date(),
     moreDetails: data.moreDetails ?? undefined,
     agent: data.agent ?? undefined,
-    location: data.location ?? undefined,
+    location: readString(data.location) ?? undefined,
     ip: data.ip?.trim() || undefined,
     userAgent: data.userAgent?.trim() || undefined,
     pageUrl: data.pageUrl?.trim() || undefined,
@@ -194,7 +194,7 @@ export function parseActivityEvents(input: unknown): ActivityEventInput[] {
       activityOn: readDate(record.activityOn),
       moreDetails: readJsonValue(record.moreDetails),
       agent: readJsonValue(record.agent),
-      location: readJsonValue(record.location),
+      location: readString(record.location),
       ip: readString(record.ip),
       userAgent: readString(record.userAgent) ?? readString(record.user_agent),
       pageUrl: readString(record.pageUrl) ?? readString(record.page_url),

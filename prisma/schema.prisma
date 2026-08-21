@@ -118,7 +118,7 @@ model Activity {
   type         String?
   timeSpent    Int?
   agent        Json?
-  location     Json?
+  location     String?  @default("") @db.VarChar(256)
   moreDetails  Json?
   ip           String?
   userAgent    String?
