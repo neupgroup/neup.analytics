@@ -1,4 +1,5 @@
 import { Prisma, prisma } from '@/core/database/prisma';
+import { getFreshIpMapsByAddress } from '@/services/ipmap/getIpMap';
 
 type ActivityEventInput = {
   id?: string;
@@ -10,7 +11,6 @@ type ActivityEventInput = {
   activityOn?: Date | string;
   moreDetails?: Prisma.InputJsonValue | null;
   agent?: Prisma.InputJsonValue | null;
-  location?: string | null;
   ip?: string;
   userAgent?: string;
   pageUrl?: string;
@@ -165,7 +165,6 @@ function normalizeActivityInput(data: CreateActivityInput): Prisma.ActivityUnche
     activityOn: readDate(data.activityOn) ?? new Date(),
     moreDetails: data.moreDetails ?? undefined,
     agent: data.agent ?? undefined,
-    location: readString(data.location) ?? undefined,
     ip: data.ip?.trim() || undefined,
     userAgent: data.userAgent?.trim() || undefined,
     pageUrl: data.pageUrl?.trim() || undefined,
@@ -194,7 +193,6 @@ export function parseActivityEvents(input: unknown): ActivityEventInput[] {
       activityOn: readDate(record.activityOn),
       moreDetails: readJsonValue(record.moreDetails),
       agent: readJsonValue(record.agent),
-      location: readString(record.location),
       ip: readString(record.ip),
       userAgent: readString(record.userAgent) ?? readString(record.user_agent),
       pageUrl: readString(record.pageUrl) ?? readString(record.page_url),
@@ -215,6 +213,7 @@ export function getRecordableActivityEvents(
 
 export async function createActivity(data: CreateActivityInput) {
   const normalized = normalizeActivityInput(data);
+  await getFreshIpMapsByAddress([normalized.ip]);
 
   return prisma.activity.create({
     data: normalized,
@@ -223,14 +222,19 @@ export async function createActivity(data: CreateActivityInput) {
 
 export async function createActivities(projectId: string, data: ActivityEventInput[]) {
   const recordableEvents = getRecordableActivityEvents(data);
+  const normalizedEvents = recordableEvents.map((item) =>
+    normalizeActivityInput({
+      ...item,
+      projectId,
+    })
+  );
+
+  await getFreshIpMapsByAddress(normalizedEvents.map((item) => item.ip));
 
   return prisma.$transaction(
-    recordableEvents.map((item) =>
+    normalizedEvents.map((item) =>
       prisma.activity.create({
-        data: normalizeActivityInput({
-          ...item,
-          projectId,
-        }),
+        data: item,
       })
     )
   );

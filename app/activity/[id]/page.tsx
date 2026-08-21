@@ -4,6 +4,7 @@ import { makeAppPath } from '@/core/appconfig';
 import { formatReadableDateTime } from '@/core/helpers/date';
 import { url } from '@/core/helpers/link/url';
 import { presentActivity } from '@/services/activity/presentActivity';
+import { formatIpMapLocation, getFreshIpMap } from '@/services/ipmap/getIpMap';
 
 type ActivityDetailPageProps = {
   params: Promise<{
@@ -37,6 +38,8 @@ export default async function ActivityDetailPage({
   }
 
   const presentation = presentActivity(activity);
+  const ipMap = await getFreshIpMap(activity.ip);
+  const ipLocation = formatIpMapLocation(ipMap);
 
   return (
     <div className="space-y-8">
@@ -108,6 +111,26 @@ export default async function ActivityDetailPage({
 
           <p className="mt-1 break-all text-sm text-slate-700">
             {activity.ip ?? '—'}
+          </p>
+        </div>
+
+        <div className="border border-t-0 border-slate-200 bg-white px-5 py-4">
+          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+            IP Information
+          </p>
+
+          <p className="mt-1 break-all text-sm text-slate-700">
+            {ipLocation ?? '—'}
+          </p>
+        </div>
+
+        <div className="border border-t-0 border-slate-200 bg-white px-5 py-4">
+          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
+            IP Last Updated
+          </p>
+
+          <p className="mt-1 text-sm text-slate-700">
+            {ipMap ? formatReadableDateTime(ipMap.lastUpdated) : '—'}
           </p>
         </div>
 

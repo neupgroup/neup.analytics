@@ -27,7 +27,7 @@ export type AggregateIpMap = {
 export type IpMapMinAggregateOutputType = {
   id: string | null
   ipAddress: string | null
-  ipType: $Enums.IpMapType | null
+  ipType: string | null
   city: string | null
   region: string | null
   country: string | null
@@ -37,7 +37,7 @@ export type IpMapMinAggregateOutputType = {
 export type IpMapMaxAggregateOutputType = {
   id: string | null
   ipAddress: string | null
-  ipType: $Enums.IpMapType | null
+  ipType: string | null
   city: string | null
   region: string | null
   country: string | null
@@ -168,7 +168,7 @@ export type IpMapGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
 export type IpMapGroupByOutputType = {
   id: string
   ipAddress: string
-  ipType: $Enums.IpMapType
+  ipType: string
   city: string | null
   region: string | null
   country: string | null
@@ -202,7 +202,7 @@ export type IpMapWhereInput = {
   NOT?: Prisma.IpMapWhereInput | Prisma.IpMapWhereInput[]
   id?: Prisma.StringFilter<"IpMap"> | string
   ipAddress?: Prisma.StringFilter<"IpMap"> | string
-  ipType?: Prisma.EnumIpMapTypeFilter<"IpMap"> | $Enums.IpMapType
+  ipType?: Prisma.StringFilter<"IpMap"> | string
   city?: Prisma.StringNullableFilter<"IpMap"> | string | null
   region?: Prisma.StringNullableFilter<"IpMap"> | string | null
   country?: Prisma.StringNullableFilter<"IpMap"> | string | null
@@ -231,7 +231,7 @@ export type IpMapWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.IpMapWhereInput[]
   NOT?: Prisma.IpMapWhereInput | Prisma.IpMapWhereInput[]
   ipAddress?: Prisma.StringFilter<"IpMap"> | string
-  ipType?: Prisma.EnumIpMapTypeFilter<"IpMap"> | $Enums.IpMapType
+  ipType?: Prisma.StringFilter<"IpMap"> | string
   city?: Prisma.StringNullableFilter<"IpMap"> | string | null
   region?: Prisma.StringNullableFilter<"IpMap"> | string | null
   country?: Prisma.StringNullableFilter<"IpMap"> | string | null
@@ -263,7 +263,7 @@ export type IpMapScalarWhereWithAggregatesInput = {
   NOT?: Prisma.IpMapScalarWhereWithAggregatesInput | Prisma.IpMapScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"IpMap"> | string
   ipAddress?: Prisma.StringWithAggregatesFilter<"IpMap"> | string
-  ipType?: Prisma.EnumIpMapTypeWithAggregatesFilter<"IpMap"> | $Enums.IpMapType
+  ipType?: Prisma.StringWithAggregatesFilter<"IpMap"> | string
   city?: Prisma.StringNullableWithAggregatesFilter<"IpMap"> | string | null
   region?: Prisma.StringNullableWithAggregatesFilter<"IpMap"> | string | null
   country?: Prisma.StringNullableWithAggregatesFilter<"IpMap"> | string | null
@@ -276,7 +276,7 @@ export type IpMapScalarWhereWithAggregatesInput = {
 export type IpMapCreateInput = {
   id?: string
   ipAddress: string
-  ipType: $Enums.IpMapType
+  ipType: string
   city?: string | null
   region?: string | null
   country?: string | null
@@ -289,7 +289,7 @@ export type IpMapCreateInput = {
 export type IpMapUncheckedCreateInput = {
   id?: string
   ipAddress: string
-  ipType: $Enums.IpMapType
+  ipType: string
   city?: string | null
   region?: string | null
   country?: string | null
@@ -302,7 +302,7 @@ export type IpMapUncheckedCreateInput = {
 export type IpMapUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
-  ipType?: Prisma.EnumIpMapTypeFieldUpdateOperationsInput | $Enums.IpMapType
+  ipType?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -315,7 +315,7 @@ export type IpMapUpdateInput = {
 export type IpMapUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
-  ipType?: Prisma.EnumIpMapTypeFieldUpdateOperationsInput | $Enums.IpMapType
+  ipType?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -328,7 +328,7 @@ export type IpMapUncheckedUpdateInput = {
 export type IpMapCreateManyInput = {
   id?: string
   ipAddress: string
-  ipType: $Enums.IpMapType
+  ipType: string
   city?: string | null
   region?: string | null
   country?: string | null
@@ -341,7 +341,7 @@ export type IpMapCreateManyInput = {
 export type IpMapUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
-  ipType?: Prisma.EnumIpMapTypeFieldUpdateOperationsInput | $Enums.IpMapType
+  ipType?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -354,7 +354,7 @@ export type IpMapUpdateManyMutationInput = {
 export type IpMapUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   ipAddress?: Prisma.StringFieldUpdateOperationsInput | string
-  ipType?: Prisma.EnumIpMapTypeFieldUpdateOperationsInput | $Enums.IpMapType
+  ipType?: Prisma.StringFieldUpdateOperationsInput | string
   city?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   region?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   country?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -395,10 +395,6 @@ export type IpMapMinOrderByAggregateInput = {
   region?: Prisma.SortOrder
   country?: Prisma.SortOrder
   lastUpdated?: Prisma.SortOrder
-}
-
-export type EnumIpMapTypeFieldUpdateOperationsInput = {
-  set?: $Enums.IpMapType
 }
 
 
@@ -463,7 +459,7 @@ export type $IpMapPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     ipAddress: string
-    ipType: $Enums.IpMapType
+    ipType: string
     city: string | null
     region: string | null
     country: string | null
@@ -896,7 +892,7 @@ export interface Prisma__IpMapClient<T, Null = never, ExtArgs extends runtime.Ty
 export interface IpMapFieldRefs {
   readonly id: Prisma.FieldRef<"IpMap", 'String'>
   readonly ipAddress: Prisma.FieldRef<"IpMap", 'String'>
-  readonly ipType: Prisma.FieldRef<"IpMap", 'IpMapType'>
+  readonly ipType: Prisma.FieldRef<"IpMap", 'String'>
   readonly city: Prisma.FieldRef<"IpMap", 'String'>
   readonly region: Prisma.FieldRef<"IpMap", 'String'>
   readonly country: Prisma.FieldRef<"IpMap", 'String'>

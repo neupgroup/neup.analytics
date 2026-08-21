@@ -118,7 +118,6 @@ model Activity {
   type         String?
   timeSpent    Int?
   agent        Json?
-  location     String?  @default("") @db.VarChar(256)
   moreDetails  Json?
   ip           String?
   userAgent    String?
@@ -149,7 +148,7 @@ model Project {
 model IpMap {
   id          String    @id @default(cuid())
   ipAddress   String
-  ipType      IpMapType
+  ipType      String
   city        String?
   region      String?
   country     String?
@@ -177,10 +176,4 @@ enum InteractionEventType {
 enum ApplicationStatus {
   setup
   active
-}
-
-enum IpMapType {
-  ip4
-  ip6
-  dev
 }

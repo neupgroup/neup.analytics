@@ -1310,7 +1310,6 @@ export const ActivityScalarFieldEnum = {
   type: 'type',
   timeSpent: 'timeSpent',
   agent: 'agent',
-  location: 'location',
   moreDetails: 'moreDetails',
   ip: 'ip',
   userAgent: 'userAgent',
@@ -1500,20 +1499,6 @@ export type EnumApplicationStatusFieldRefInput<$PrismaModel> = FieldRefInputType
  * Reference to a field of type 'ApplicationStatus[]'
  */
 export type ListEnumApplicationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApplicationStatus[]'>
-    
-
-
-/**
- * Reference to a field of type 'IpMapType'
- */
-export type EnumIpMapTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IpMapType'>
-    
-
-
-/**
- * Reference to a field of type 'IpMapType[]'
- */
-export type ListEnumIpMapTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'IpMapType[]'>
     
 
 /**

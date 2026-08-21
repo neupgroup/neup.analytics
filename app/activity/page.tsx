@@ -9,6 +9,7 @@ import { formatReadableDateTime } from '@/core/helpers/date';
 import { makeAppPath } from '@/core/appconfig';
 import { url } from '@/core/helpers/link/url';
 import { presentActivity } from '@/services/activity/presentActivity';
+import { formatIpMapLocation, getFreshIpMapsByAddress } from '@/services/ipmap/getIpMap';
 
 type ActivityPageProps = {
   searchParams: Promise<{
@@ -75,11 +76,15 @@ export default async function ActivityPage({
       activityOn: 'desc',
     },
   });
+  const ipMapsByAddress = await getFreshIpMapsByAddress(
+    activities.map((activity) => activity.ip)
+  );
 
   const presentedActivities = activities
     .map((activity) => ({
       activity,
       presentation: presentActivity(activity),
+      ipMap: activity.ip ? ipMapsByAddress.get(activity.ip) : null,
     }))
     .filter(({ activity, presentation }) => {
       if (selectedActivityType && presentation.type !== selectedActivityType) {
@@ -184,7 +189,7 @@ export default async function ActivityPage({
         </div>
       ) : (
         <div className="space-y-0">
-          {presentedActivities.map(({ activity, presentation }, index) => (
+          {presentedActivities.map(({ activity, presentation, ipMap }, index) => (
             <div
               key={activity.id}
               className={`relative block border border-slate-200 bg-white px-5 py-4 transition-colors duration-200 ease-out hover:bg-sky-50 focus-within:bg-sky-50 ${
@@ -240,6 +245,14 @@ export default async function ActivityPage({
               <p className="pointer-events-none relative z-10 mt-1 text-sm text-slate-500">
                 {formatReadableDateTime(activity.activityOn)}
               </p>
+
+              {ipMap ? (
+                <p className="pointer-events-none relative z-10 mt-1 text-xs text-slate-500">
+                  {formatIpMapLocation(ipMap) ?? activity.ip ?? 'Unknown IP'}
+                  {' · '}
+                  updated {formatReadableDateTime(ipMap.lastUpdated)}
+                </p>
+              ) : null}
             </div>
           ))}
         </div>

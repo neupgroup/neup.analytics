@@ -29,12 +29,3 @@ export const ApplicationStatus = {
 } as const
 
 export type ApplicationStatus = (typeof ApplicationStatus)[keyof typeof ApplicationStatus]
-
-
-export const IpMapType = {
-  ip4: 'ip4',
-  ip6: 'ip6',
-  dev: 'dev'
-} as const
-
-export type IpMapType = (typeof IpMapType)[keyof typeof IpMapType]
