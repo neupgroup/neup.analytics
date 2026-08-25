@@ -8,7 +8,12 @@ type NeupIdLogoProps = {
 };
 
 export function NeupIdLogo({ iconHref, textHref }: NeupIdLogoProps) {
-  const logoSrc = makeAppPath('/logo.svg');
+  // Pass the public base path explicitly because dynamic process.env lookups
+  // are not inlined into the client bundle by Next.js.
+  const logoSrc = makeAppPath(
+    '/logo.svg',
+    process.env.NEXT_PUBLIC_APP_BASEPATH || null,
+  );
 
   return (
     <div className="flex items-center gap-2">

@@ -16,6 +16,17 @@ type Page = {
     siteId: string;
 };
 
+export function PagesSkeleton() {
+    return (
+        <Card aria-busy="true" aria-label="Loading pages">
+            <CardHeader className="space-y-2"><Skeleton className="h-6 w-44" /><Skeleton className="h-4 w-96 max-w-full" /></CardHeader>
+            <CardContent className="space-y-3">
+                {[...Array(4)].map((_, index) => <div key={index} className="flex items-center gap-4 rounded-lg border p-4"><Skeleton className="h-16 w-24 shrink-0 rounded-md" /><div className="min-w-0 flex-1 space-y-2"><Skeleton className="h-4 w-2/3" /><Skeleton className="h-3 w-1/3" /></div><Skeleton className="h-9 w-28" /></div>)}
+            </CardContent>
+        </Card>
+    );
+}
+
 export default function PagesPage() {
     const [pages, setPages] = useState<Page[]>([]);
     const [isLoading, setIsLoading] = useState(true);

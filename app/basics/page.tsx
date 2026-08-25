@@ -17,6 +17,18 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Suspense } from 'react';
+
+export function AnalyticsSkeleton() {
+  return (
+    <div className="space-y-6" aria-busy="true" aria-label="Loading analytics">
+      <div className="grid gap-4 md:grid-cols-3">{[...Array(3)].map((_, index) => <Skeleton key={index} className="h-28 w-full rounded-lg" />)}</div>
+      <Skeleton className="h-64 w-full rounded-lg" />
+      <div className="grid gap-4 lg:grid-cols-2"><Skeleton className="h-56 w-full rounded-lg" /><Skeleton className="h-56 w-full rounded-lg" /></div>
+    </div>
+  );
+}
 
 type InteractionSummary = {
   id: string;
@@ -135,7 +147,23 @@ function getGeoLabel(interaction: InteractionSummary) {
   };
 }
 
-export default async function BasicsPage() {
+export default function BasicsPage() {
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="font-headline text-3xl font-bold tracking-normal">Basics</h1>
+        <p className="text-muted-foreground">
+          Core audience, location, and session-time analytics from collected traffic.
+        </p>
+      </div>
+      <Suspense fallback={<AnalyticsSkeleton />}>
+        <BasicsData />
+      </Suspense>
+    </div>
+  );
+}
+
+async function BasicsData() {
   const interactions = await prisma.interaction.findMany({
     orderBy: { createdAt: 'desc' },
     select: {
@@ -191,13 +219,6 @@ export default async function BasicsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="font-headline text-3xl font-bold tracking-normal">Basics</h1>
-        <p className="text-muted-foreground">
-          Core audience, location, and session-time analytics from collected traffic.
-        </p>
-      </div>
-
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

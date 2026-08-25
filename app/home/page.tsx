@@ -16,12 +16,31 @@ import { url } from '@/core/helpers/link/url';
 import { presentActivity } from '@/services/activity/presentActivity';
 import { getIpLocationLabel } from '@/services/ipmap/getIpMap';
 import { getProjectDashboard } from '@/services/projects/getProjectDashboard';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Suspense } from 'react';
 
 type DashboardPageProps = {
   searchParams?: Promise<{
     selectedProject?: string;
   }>;
 };
+
+function MetricSkeleton() {
+  return <Skeleton className="h-28 w-full rounded-lg" />;
+}
+
+export function HomeSkeleton() {
+  return (
+    <div className="space-y-8" aria-busy="true" aria-label="Loading home">
+      <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+        {[...Array(4)].map((_, index) => <MetricSkeleton key={index} />)}
+      </div>
+      <div className="grid gap-4 lg:grid-cols-3"><Skeleton className="h-64 w-full rounded-lg lg:col-span-2" /><Skeleton className="h-64 w-full rounded-lg" /></div>
+      <div className="grid gap-4 lg:grid-cols-3">{[...Array(3)].map((_, index) => <Skeleton key={index} className="h-48 w-full rounded-lg" />)}</div>
+      <Skeleton className="h-72 w-full rounded-lg" />
+    </div>
+  );
+}
 
 function formatNumber(value: number) {
   return new Intl.NumberFormat('en-US').format(value);
@@ -55,7 +74,23 @@ function activityDetailHref(activityId: string, selectedProject: string) {
     .get();
 }
 
-export default async function DashboardPage({
+export default function DashboardPage({
+  searchParams,
+}: DashboardPageProps) {
+  return (
+    <div className="space-y-8">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">Home</h1>
+        <p className="text-muted-foreground">Live project data for the selected project.</p>
+      </div>
+      <Suspense fallback={<HomeSkeleton />}>
+        <DashboardData searchParams={searchParams} />
+      </Suspense>
+    </div>
+  );
+}
+
+async function DashboardData({
   searchParams,
 }: DashboardPageProps) {
   const params = await searchParams;
@@ -75,13 +110,6 @@ export default async function DashboardPage({
 
   return (
     <div className="space-y-8">
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Home</h1>
-        <p className="text-muted-foreground">
-          Live project data for <span className="font-medium text-foreground">{dashboard.project.path}</span>.
-        </p>
-      </div>
-
       <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
