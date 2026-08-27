@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import { Button } from '@/component/ui/button';
 import { Input } from '@/component/ui/input';
+import { Textarea } from '@/component/ui/textarea';
 import {
   Card,
   CardContent,
@@ -77,12 +78,11 @@ export default function AddProjectPage() {
                 More details
               </label>
 
-              <textarea
+              <Textarea
                 id="moreDetails"
                 name="moreDetails"
                 placeholder="Additional project details"
                 rows={4}
-                className="w-full rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
 

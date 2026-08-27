@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/component/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/component/ui/avatar';
 import { useSession } from '@/core/providers/session';
 
 function getDisplayInitial(displayName: string | null, neupId: string | null): string {

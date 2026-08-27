@@ -14,7 +14,7 @@ import {
 import { Input } from '@/component/ui/input';
 import { Button } from '@/component/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/component/ui/avatar';
 import { AIChatAssistant } from '@/components/ai-chat-assistant';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { getAppLogo, getName } from '@/neupsys';

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/core/database/prisma";
 import { Button } from "@/component/ui/button";
 import { Input } from "@/component/ui/input";
+import { Textarea } from "@/component/ui/textarea";
 
 export default function CreateProjectPage() {
   async function createProject(formData: FormData) {
@@ -81,12 +82,11 @@ export default function CreateProjectPage() {
             More details
           </label>
 
-          <textarea
+          <Textarea
             id="moreDetails"
             name="moreDetails"
             placeholder="Additional project details"
             rows={4}
-            className="w-full rounded-md border px-3 py-2 text-sm"
           />
         </div>
 
