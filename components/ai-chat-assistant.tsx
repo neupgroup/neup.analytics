@@ -11,15 +11,15 @@ import {
   DialogTrigger,
   DialogFooter,
   DialogDescription,
-} from '@/components/ui/dialog';
+} from '@/component/ui/dialog';
 import { Input } from '@/component/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ScrollArea } from '@/component/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/component/ui/avatar';
 import { cn } from '@/core/utils';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormMessage } from './ui/form';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component/ui/form';
 
 // Mock AI function
 async function getAIResponse(message: string) {

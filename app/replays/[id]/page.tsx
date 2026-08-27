@@ -2,15 +2,15 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams } from 'next/navigation';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Skeleton } from '@/component/ui/skeleton';
+import { Alert, AlertDescription, AlertTitle } from '@/component/ui/alert';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/component/ui/card';
 import {
   Monitor,
   Smartphone,
@@ -23,7 +23,7 @@ import {
   MousePointer2,
 } from 'lucide-react';
 import { Button } from '@/component/ui/button';
-import { Progress } from '@/components/ui/progress';
+import { ProgressBar } from '@/component/elements/progressbar';
 import { cn } from '@/core/utils';
 
 type InteractionEvent =
@@ -365,7 +365,7 @@ export default function ReplayDetailPage() {
               <Button onClick={handleReplay} variant="tertiary" size="icon" disabled={totalDuration === 0}>
                 <RotateCcw className="h-5 w-5" />
               </Button>
-              <Progress value={playbackProgress} className="flex-1"/>
+              <ProgressBar value={playbackProgress} className="flex-1"/>
               <span className="text-sm text-muted-foreground font-mono w-24 text-center">
                 {Math.floor(currentTime / 1000)}s / {Math.floor(totalDuration/1000)}s
               </span>

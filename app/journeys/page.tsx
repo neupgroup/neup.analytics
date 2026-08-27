@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/component/ui/card";
 import { GitFork } from "lucide-react";
 
 export default function JourneysPage() {

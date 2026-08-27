@@ -3,12 +3,12 @@
 import Link from 'next/link';
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { Camera, ExternalLink, Eye, FileText, Loader2, RefreshCw } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '@/component/ui/alert';
 import { Button } from '@/component/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/component/ui/card';
 import { Input } from '@/component/ui/input';
-import { Label } from '@/components/ui/label';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Label } from '@/component/ui/label';
+import { Skeleton } from '@/component/ui/skeleton';
 import { useToast } from '@/core/hooks/useToast';
 
 type Snapshot = {

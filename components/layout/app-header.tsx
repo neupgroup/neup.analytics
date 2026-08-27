@@ -10,10 +10,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/component/ui/dropdown-menu';
 import { Input } from '@/component/ui/input';
 import { Button } from '@/component/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger } from '@/component/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/component/ui/avatar';
 import { AIChatAssistant } from '@/components/ai-chat-assistant';
 import { usePathname, useSearchParams } from 'next/navigation';

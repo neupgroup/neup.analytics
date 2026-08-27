@@ -2,7 +2,7 @@
 
 import { ArrowRight, Database, Globe, Layers3 } from 'lucide-react';
 import { createApplication } from '@/actions/application';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/component/ui/badge';
 import { Button } from '@/component/ui/button';
 import {
   Card,
@@ -10,11 +10,11 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/component/ui/card';
 import { Input } from '@/component/ui/input';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Label } from '@/component/ui/label';
+import { Separator } from '@/component/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/component/ui/tabs';
 import { Textarea } from '@/component/ui/textarea';
 
 function EntryForm({

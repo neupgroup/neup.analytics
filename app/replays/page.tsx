@@ -1,10 +1,10 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/component/ui/card";
 // import { useFirestore, useMemoFirebase } from "@/firebase";
 // import { collection, query, orderBy, Timestamp, limit, startAfter, getDocs, Query, DocumentData, QuerySnapshot } from "firebase/firestore";
 import Link from "next/link";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/component/ui/skeleton";
 import { PlaySquare, Clock, Laptop, Smartphone, User, ArrowLeft, ArrowRight } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/component/ui/button";

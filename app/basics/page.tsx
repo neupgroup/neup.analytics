@@ -15,9 +15,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
-import { Skeleton } from '@/components/ui/skeleton';
+} from '@/component/ui/card';
+import { ProgressBar } from '@/component/elements/progressbar';
+import { Skeleton } from '@/component/ui/skeleton';
 import { Suspense } from 'react';
 
 export function AnalyticsSkeleton() {
@@ -297,7 +297,7 @@ async function BasicsData() {
                       <p className="text-xs text-muted-foreground">{percent}%</p>
                     </div>
                   </div>
-                  <Progress value={percent} />
+                  <ProgressBar value={percent} />
                 </div>
               );
             })
@@ -337,7 +337,7 @@ async function BasicsData() {
                         <p className="text-xs text-muted-foreground">{percent}%</p>
                       </div>
                     </div>
-                    <Progress value={percent} />
+                  <ProgressBar value={percent} />
                   </div>
                 );
               })
@@ -376,7 +376,7 @@ async function BasicsData() {
                         <p className="text-xs text-muted-foreground">{percent}%</p>
                       </div>
                     </div>
-                    <Progress value={percent} />
+                  <ProgressBar value={percent} />
                   </div>
                 );
               })

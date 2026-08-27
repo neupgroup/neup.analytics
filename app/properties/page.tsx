@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, Building2, Database, Globe, Layers3 } from 'lucide-react';
 import { prisma } from '@/core/database/prisma';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/component/ui/badge';
 import { Button } from '@/component/ui/button';
 import {
   Card,
@@ -9,8 +9,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+} from '@/component/ui/card';
+import { Separator } from '@/component/ui/separator';
 
 export default async function PropertiesPage() {
   const applications = await prisma.application.findMany({

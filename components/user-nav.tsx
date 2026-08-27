@@ -6,7 +6,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/component/ui/dropdown-menu';
 import { Button } from '@/component/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/component/ui/avatar';
 import { useSession } from '@/core/providers/session';

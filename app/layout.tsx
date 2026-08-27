@@ -4,7 +4,7 @@ import './globals.css';
 import { Toaster } from '@/component/ui/toaster';
 import { cn } from '@/core/utils';
 import { SessionProvider, type SessionUser } from '@/core/providers/session';
-import { ProgressBar } from '@/components/progress-bar';
+import { ProgressBar } from '@/component/elements/progressbar';
 import { Suspense } from 'react';
 import { DashboardLayoutWrapper } from '@/components/dashboard-layout-wrapper';
 import account from '@/logica/account';

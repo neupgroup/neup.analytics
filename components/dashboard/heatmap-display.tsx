@@ -5,9 +5,9 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 import h337 from 'heatmap.js';
 // import { useDoc, useCollection, useFirestore, useMemoFirebase, WithId } from '@/firebase';
 // import { collection, doc, query, where, Timestamp } from 'firebase/firestore';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { Skeleton } from '@/component/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/component/ui/tabs";
+import { Alert, AlertDescription, AlertTitle } from '@/component/ui/alert';
 
 type InteractionEvent =
   | { type: 'mousemove'; x?: number | null; y?: number | null; timestamp: number }

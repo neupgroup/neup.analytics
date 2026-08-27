@@ -6,10 +6,10 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/component/ui/card';
 import { Eye, MousePointer2, User, Wifi, WifiOff } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@/component/ui/skeleton';
 import { cn } from '@/core/utils';
 import { Avatar, AvatarFallback } from '@/component/ui/avatar';
 

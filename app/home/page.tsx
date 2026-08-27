@@ -9,14 +9,14 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/component/ui/card';
 import { formatReadableDateTime } from '@/core/helpers/date';
 import { makeAppPath } from '@/core/appconfig';
 import { url } from '@/core/helpers/link/url';
 import { presentActivity } from '@/services/activity/presentActivity';
 import { getIpLocationLabel } from '@/services/ipmap/getIpMap';
 import { getProjectDashboard } from '@/services/projects/getProjectDashboard';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@/component/ui/skeleton';
 import { Suspense } from 'react';
 
 type DashboardPageProps = {

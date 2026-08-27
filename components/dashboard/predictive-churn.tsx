@@ -4,9 +4,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/component/ui/card';
 import { UserX } from 'lucide-react';
-import { Progress } from '@/components/ui/progress';
+import { ProgressBar } from '@/component/elements/progressbar';
 
 export function PredictiveChurn() {
   return (
@@ -23,7 +23,7 @@ export function PredictiveChurn() {
             <p className="text-sm font-medium">High-Risk Users</p>
             <p className="text-lg font-bold font-headline ml-auto">1,204</p>
         </div>
-        <Progress value={28} aria-label="28% churn risk" />
+        <ProgressBar value={28} aria-label="28% churn risk" />
         <p className="text-xs text-muted-foreground">
             <span className="font-bold text-destructive">28%</span> of power users are showing signs of disengagement.
         </p>

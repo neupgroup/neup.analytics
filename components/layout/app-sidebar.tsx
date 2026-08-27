@@ -20,7 +20,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from '@/component/ui/tooltip';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { getAppLogo, getName } from '@/neupsys';
 import { NavButton } from '@/component/ui/navbutton';

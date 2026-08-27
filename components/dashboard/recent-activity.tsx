@@ -6,7 +6,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/component/ui/card';
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 

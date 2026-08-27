@@ -2,14 +2,14 @@ import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { Code2, Globe, Settings2, Waypoints } from 'lucide-react';
 import { prisma } from '@/core/database/prisma';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/component/ui/badge';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@/component/ui/card';
 import { makeAppPath } from '@/core/appconfig';
 
 type ConfigPageProps = {
