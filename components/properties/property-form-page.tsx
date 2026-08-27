@@ -3,7 +3,7 @@
 import { ArrowRight, Database, Globe, Layers3 } from 'lucide-react';
 import { createApplication } from '@/actions/application';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/component/ui/button';
 import {
   Card,
   CardContent,
@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/component/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -57,7 +57,7 @@ function EntryForm({
           placeholder={description}
         />
       </div>
-      <Button type="submit" className="w-full sm:w-fit">
+      <Button type="submit" variant="primary" className="w-full sm:w-fit">
         {cta}
         <ArrowRight className="ml-2 h-4 w-4" />
       </Button>

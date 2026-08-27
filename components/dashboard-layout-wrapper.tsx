@@ -18,7 +18,7 @@ export function DashboardLayoutWrapper({
   if (loading) {
     return (
       <div className="min-h-screen w-full bg-background text-foreground">
-        <header className="sticky top-0 z-10 flex h-16 items-center border-b bg-background shadow-lg shadow-black/10">
+        <header className="app-interface-shadow sticky top-0 z-10 flex h-16 items-center bg-background">
           <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-4 lg:px-6">
             <NeupIdLogo
               iconHref={process.env.NEXT_PUBLIC_COMPANY_URL || '/'}
@@ -57,7 +57,7 @@ export function DashboardLayoutWrapper({
 
   return (
     <div className="min-h-screen w-full bg-background text-foreground">
-      <header className="sticky top-0 z-10 flex h-16 items-center border-b bg-background shadow-lg shadow-black/10">
+      <header className="app-interface-shadow sticky top-0 z-10 flex h-16 items-center bg-background">
         <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-4 lg:px-6">
           <NeupIdLogo
             iconHref={process.env.NEXT_PUBLIC_COMPANY_URL || '/'}

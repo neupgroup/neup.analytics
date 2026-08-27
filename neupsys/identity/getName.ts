@@ -1,0 +1,2 @@
+export { getName } from './index';
+

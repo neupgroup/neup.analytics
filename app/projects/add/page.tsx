@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/component/ui/button';
+import { Input } from '@/component/ui/input';
 import {
   Card,
   CardContent,
@@ -44,12 +45,11 @@ export default function AddProjectPage() {
                 Path
               </label>
 
-              <input
+              <Input
                 id="path"
                 name="path"
                 type="text"
                 placeholder="example.com"
-                className="w-full rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
 
@@ -61,12 +61,11 @@ export default function AddProjectPage() {
                 Type
               </label>
 
-              <input
+              <Input
                 id="type"
                 name="type"
                 type="text"
                 placeholder="website"
-                className="w-full rounded-md border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
 
@@ -88,12 +87,12 @@ export default function AddProjectPage() {
             </div>
 
             <div className="flex gap-3">
-              <Button type="button">
+              <Button type="button" variant="primary">
                 <Plus className="mr-2 h-4 w-4" />
                 Add Project
               </Button>
 
-              <Button asChild variant="outline">
+              <Button asChild variant="tertiary">
                 <Link href="/projects">
                   Cancel
                 </Link>

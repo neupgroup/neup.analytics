@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/component/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useSession } from '@/core/providers/session';
 
@@ -26,7 +26,7 @@ export function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative flex h-auto items-center gap-3 rounded-full px-2 py-1.5">
+        <Button variant="plain" className="relative flex h-auto items-center gap-3 rounded-full px-2 py-1.5">
           <div className="hidden text-right sm:block">
             <p className="max-w-40 truncate text-sm font-medium leading-none">{displayName}</p>
             {secondaryText ? (

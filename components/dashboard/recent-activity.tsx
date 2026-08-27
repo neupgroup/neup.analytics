@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/component/ui/button';
 import {
   Card,
   CardContent,
@@ -27,7 +27,7 @@ export function RecentActivity() {
             A feed of the latest user interactions.
           </CardDescription>
         </div>
-        <Button asChild size="sm" className="ml-auto gap-1">
+        <Button asChild variant="plain" size="sm" className="ml-auto gap-1">
           <Link href="/live">
             Live View
             <ArrowUpRight className="h-4 w-4" />

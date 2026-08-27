@@ -1,4 +1,5 @@
 import type {NextConfig} from 'next';
+import { getBasePath } from './neupsys/identity';
 
 function normalizeBasePath(value: string | undefined): string {
   if (typeof value !== 'string') return '';
@@ -11,7 +12,7 @@ function normalizeBasePath(value: string | undefined): string {
 }
 
 const basePath = normalizeBasePath(
-  process.env.NEXT_PUBLIC_APP_BASEPATH || process.env.APP_BASEPATH || '/analytics'
+  getBasePath()
 );
 
 const nextConfig: NextConfig = {

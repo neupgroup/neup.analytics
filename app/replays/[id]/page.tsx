@@ -22,7 +22,7 @@ import {
   RotateCcw,
   MousePointer2,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/component/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/core/utils';
 
@@ -354,15 +354,15 @@ export default function ReplayDetailPage() {
             </div>
             <div className="flex items-center gap-4 p-2 rounded-lg border bg-card">
               {isPlaying ? (
-                <Button onClick={handlePause} variant="outline" size="icon">
+                <Button onClick={handlePause} variant="tertiary" size="icon">
                   <Pause className="h-5 w-5 fill-current" />
                 </Button>
               ) : (
-                <Button onClick={handlePlay} variant="outline" size="icon" disabled={totalDuration === 0}>
+                <Button onClick={handlePlay} variant="tertiary" size="icon" disabled={totalDuration === 0}>
                   <Play className="h-5 w-5" />
                 </Button>
               )}
-              <Button onClick={handleReplay} variant="outline" size="icon" disabled={totalDuration === 0}>
+              <Button onClick={handleReplay} variant="tertiary" size="icon" disabled={totalDuration === 0}>
                 <RotateCcw className="h-5 w-5" />
               </Button>
               <Progress value={playbackProgress} className="flex-1"/>

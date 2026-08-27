@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FileText, Search, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/component/ui/button';
 
 type Page = {
     id: string;
@@ -114,7 +114,7 @@ export default function PagesPage() {
                                     </div>
                                 </div>
 
-                                <Button asChild variant="outline" size="sm" className="w-full shrink-0 sm:w-auto">
+                                <Button asChild variant="tertiary" size="sm" className="w-full shrink-0 sm:w-auto">
                                     <Link href={`/pages/${page.id}`}>
                                         View Details
                                         <ArrowRight className="ml-2 h-4 w-4" />

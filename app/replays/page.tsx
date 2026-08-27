@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PlaySquare, Clock, Laptop, Smartphone, User, ArrowLeft, ArrowRight } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/component/ui/button";
 
 // Define interaction type
 type Interaction = {
@@ -131,12 +131,12 @@ export default function ReplaysPage() {
         </div>
 
         <div className="flex justify-end gap-2 mt-4">
-          <Button variant="outline" onClick={handlePrevious} disabled={page <= 1 || isLoading}>
+          <Button variant="tertiary" onClick={handlePrevious} disabled={page <= 1 || isLoading}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Previous
           </Button>
           <Button
-            variant="outline"
+            variant="tertiary"
             onClick={handleNext}
             disabled={isLastPage || isLoading}
           >

@@ -1,17 +1,22 @@
 import type {Metadata} from 'next';
 import { cookies } from 'next/headers';
 import './globals.css';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from '@/component/ui/toaster';
 import { cn } from '@/core/utils';
 import { SessionProvider, type SessionUser } from '@/core/providers/session';
 import { ProgressBar } from '@/components/progress-bar';
 import { Suspense } from 'react';
 import { DashboardLayoutWrapper } from '@/components/dashboard-layout-wrapper';
 import account from '@/logica/account';
+import { getAppLogo, getDescription, getName } from '@/neupsys';
 
 export const metadata: Metadata = {
-  title: 'Neup.Analytics',
-  description: 'Insights into user behavior and performance.',
+  title: getName(),
+  description: getDescription(),
+  icons: {
+    icon: getAppLogo('favicon'),
+    apple: getAppLogo('apple-touch-icon'),
+  },
 };
 
 async function getInitialUser(): Promise<SessionUser | null> {
@@ -52,8 +57,7 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Source+Code+Pro:wght@400;500;700&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" />
       </head>
       <body className={cn("antialiased")}>
         <SessionProvider initialUser={initialUser}>

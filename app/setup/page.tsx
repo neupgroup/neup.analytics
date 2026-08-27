@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Settings } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/component/ui/button';
 import {
   Card,
   CardContent,
@@ -47,7 +47,7 @@ export default function SetupPage() {
               here.
             </p>
 
-            <Button className="mt-5" type="button">
+            <Button variant="primary" className="mt-5" type="button">
               Continue Setup
             </Button>
           </div>

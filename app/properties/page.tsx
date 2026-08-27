@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, Building2, Database, Globe, Layers3 } from 'lucide-react';
 import { prisma } from '@/core/database/prisma';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/component/ui/button';
 import {
   Card,
   CardContent,
@@ -38,7 +38,7 @@ export default async function PropertiesPage() {
             </p>
           </div>
         </div>
-        <Button asChild className="w-full sm:w-fit">
+        <Button asChild variant="primary" className="w-full sm:w-fit">
           <Link href="/properties/add">
             Add property
             <ArrowRight className="ml-2 h-4 w-4" />
@@ -89,7 +89,7 @@ export default async function PropertiesPage() {
                 Add a site or application first, and it will appear here.
               </p>
             </div>
-            <Button asChild>
+            <Button asChild variant="primary">
               <Link href="/properties/add">
                 Create the first property
                 <ArrowRight className="ml-2 h-4 w-4" />
@@ -121,7 +121,7 @@ export default async function PropertiesPage() {
                   >
                     {application.status}
                   </Badge>
-                  <Button asChild variant="outline" size="sm">
+                  <Button asChild variant="tertiary" size="sm">
                     <Link href={`/properties/${application.id}`}>
                       View
                       <ArrowRight className="ml-2 h-4 w-4" />

@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { prisma } from "@/core/database/prisma";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/component/ui/button";
+import { Input } from "@/component/ui/input";
 
 export default function CreateProjectPage() {
   async function createProject(formData: FormData) {
@@ -47,13 +48,13 @@ export default function CreateProjectPage() {
             Path
           </label>
 
-          <input
+          <Input
             id="path"
             name="path"
             type="text"
             placeholder="example.com"
+            validation="linkwithoutprotocol"
             required
-            className="w-full rounded-md border px-3 py-2 text-sm"
           />
 
           <p className="text-sm text-muted-foreground">
@@ -66,13 +67,12 @@ export default function CreateProjectPage() {
             Type
           </label>
 
-          <input
+          <Input
             id="type"
             name="type"
             type="text"
             placeholder="website"
             required
-            className="w-full rounded-md border px-3 py-2 text-sm"
           />
         </div>
 
@@ -91,11 +91,11 @@ export default function CreateProjectPage() {
         </div>
 
         <div className="flex gap-3">
-          <Button type="submit">
+          <Button type="submit" variant="primary">
             Create project
           </Button>
 
-          <Button asChild variant="outline">
+          <Button asChild variant="tertiary">
             <Link href="/projects">
               Cancel
             </Link>

@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { Search, PanelLeft, Bot, LineChart, GitFork, Map, PlaySquare, Users, Eye, Camera } from 'lucide-react';
+import Image from 'next/image';
+import { Search, PanelLeft, LineChart, GitFork, Map, PlaySquare, Users, Eye, Camera } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,13 +11,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Input } from '@/component/ui/input';
+import { Button } from '@/component/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { AIChatAssistant } from '@/components/ai-chat-assistant';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/core/utils';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { getAppLogo, getName } from '@/neupsys';
+import { NavButton } from '@/component/ui/navbutton';
+import { useProjectNavigationGuard } from '@/core/hooks/useProjectNavigationGuard';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LineChart },
@@ -30,12 +33,15 @@ const navItems = [
 
 export function AppHeader() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const selectedProject = searchParams.get('selectedProject') ?? searchParams.get('projectId');
+  const guardProjectNavigation = useProjectNavigationGuard(selectedProject);
 
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-card px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
       <Sheet>
         <SheetTrigger asChild>
-          <Button size="icon" variant="outline" className="sm:hidden">
+          <Button size="icon" variant="tertiary" className="sm:hidden">
             <PanelLeft className="h-5 w-5" />
             <span className="sr-only">Toggle Menu</span>
           </Button>
@@ -46,21 +52,28 @@ export function AppHeader() {
               href="/home"
               className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
             >
-              <Bot className="h-5 w-5 transition-all group-hover:scale-110" />
-              <span className="sr-only">Neup.Analytics</span>
+              <Image
+                src={getAppLogo()}
+                alt=""
+                width={20}
+                height={20}
+                className="h-5 w-5 transition-all group-hover:scale-110"
+              />
+              <span className="sr-only">{getName()}</span>
             </Link>
             {navItems.map((item) => (
-              <Link
+              <NavButton
                 key={item.href}
-                href={item.href}
-                className={cn(
-                  'flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground',
-                  pathname.startsWith(item.href) && 'text-foreground'
-                )}
+                asChild
+                active={pathname.startsWith(item.href)}
+                onClick={(event) => guardProjectNavigation(event, item.label)}
+                className="w-full justify-start gap-4 px-2.5 text-lg"
               >
-                <item.icon className="h-5 w-5" />
-                {item.label}
-              </Link>
+                <Link href={item.href}>
+                  <item.icon className="h-5 w-5" />
+                  {item.label}
+                </Link>
+              </NavButton>
             ))}
           </nav>
         </SheetContent>
@@ -77,7 +90,7 @@ export function AppHeader() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
-            variant="outline"
+            variant="tertiary"
             size="icon"
             className="overflow-hidden rounded-full"
           >

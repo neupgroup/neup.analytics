@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ArrowRight, Building2, Code2, Database, Globe, Layers3, ShieldCheck } from 'lucide-react';
 import { prisma } from '@/core/database/prisma';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/component/ui/button';
 import {
   Card,
   CardContent,
@@ -89,7 +89,7 @@ export default async function PropertyDetailPage({
             </p>
           </div>
         </div>
-        <Button asChild variant="outline" className="w-full sm:w-fit">
+        <Button asChild variant="tertiary" className="w-full sm:w-fit">
           <Link href="/properties">
             Back to properties
             <ArrowRight className="ml-2 h-4 w-4" />

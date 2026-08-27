@@ -1,0 +1,2 @@
+export { getVersion } from './index';
+

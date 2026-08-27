@@ -1,0 +1,2 @@
+export { getId } from './identity';
+

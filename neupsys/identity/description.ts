@@ -1,0 +1,2 @@
+export { description } from './index';
+

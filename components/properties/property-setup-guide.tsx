@@ -3,7 +3,7 @@
 import { useMemo, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/component/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
@@ -158,7 +158,7 @@ export function PropertySetupGuide({
             <p className="text-muted-foreground">Once the snippet is live on the external site, verify that this property is receiving traffic.</p>
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <Button onClick={verifyInstallation} disabled={isPending}>
+            <Button onClick={verifyInstallation} variant="primary" disabled={isPending}>
               {isPending ? 'Verifying...' : 'Verify installation'}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>

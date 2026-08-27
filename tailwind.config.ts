@@ -5,14 +5,15 @@ export default {
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './component/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Outfit', 'sans-serif'],
-        body: ['Outfit', 'sans-serif'],
-        headline: ['Outfit', 'sans-serif'],
-        code: ['Source Code Pro', 'monospace'],
+        sans: ['var(--app-font-family)'],
+        body: ['var(--app-font-family)'],
+        headline: ['var(--app-font-family)'],
+        code: ['var(--app-code-font-family)'],
       },
       colors: {
         background: 'hsl(var(--background))',

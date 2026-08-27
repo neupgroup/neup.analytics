@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Bot, Send } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/component/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -12,7 +12,7 @@ import {
   DialogFooter,
   DialogDescription,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/component/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { cn } from '@/core/utils';
@@ -67,7 +67,7 @@ export function AIChatAssistant() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon" className="rounded-full">
+        <Button variant="tertiary" size="icon" className="rounded-full">
           <Bot className="h-5 w-5" />
           <span className="sr-only">AI Assistant</span>
         </Button>
@@ -143,7 +143,7 @@ export function AIChatAssistant() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" size="icon" disabled={isThinking}>
+              <Button type="submit" variant="primary" size="icon" disabled={isThinking}>
                 <Send className="h-4 w-4" />
                 <span className="sr-only">Send</span>
               </Button>

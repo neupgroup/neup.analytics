@@ -16,7 +16,8 @@ import {
   FileText,
   Camera,
 } from 'lucide-react';
-import { cn } from '@/core/utils';
+import { NavButton } from '@/component/ui/navbutton';
+import { useProjectNavigationGuard } from '@/core/hooks/useProjectNavigationGuard';
 
 const navItems = [
   { href: '/home', label: 'Home', icon: LineChart },
@@ -46,22 +47,24 @@ function createDashboardHref(path: string, selectedProject: string | null): stri
 export function DashboardNav() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const selectedProject = searchParams.get('selectedProject');
+  const selectedProject = searchParams.get('selectedProject') ?? searchParams.get('projectId');
+  const guardProjectNavigation = useProjectNavigationGuard(selectedProject);
 
   return (
     <nav className="grid items-start gap-2">
       {navItems.map((item) => (
-        <Link
+        <NavButton
           key={item.href}
-          href={createDashboardHref(item.href, selectedProject)}
-          className={cn(
-            'flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-muted-foreground transition-all hover:bg-muted hover:text-primary',
-            pathname === item.href && 'bg-muted text-primary'
-          )}
+          asChild
+          active={pathname === item.href}
+          onClick={item.href === '/projects' ? undefined : (event) => guardProjectNavigation(event, item.label)}
+          className="w-full justify-start gap-3 px-3 py-2"
         >
-          <item.icon className="h-4 w-4" />
-          {item.label}
-        </Link>
+          <Link href={createDashboardHref(item.href, selectedProject)}>
+            <item.icon className="h-4 w-4" />
+            {item.label}
+          </Link>
+        </NavButton>
       ))}
     </nav>
   );

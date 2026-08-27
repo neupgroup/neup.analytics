@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Compass, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/component/ui/button';
 
 export default function NotFound() {
   return (
@@ -29,7 +29,7 @@ export default function NotFound() {
           The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
         </p>
 
-        <Button asChild className="group w-full" size="lg">
+        <Button asChild variant="primary" className="group w-full" size="lg">
           <Link href="/home" className="flex items-center justify-center gap-2">
             Back to Home
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

@@ -1,0 +1,2 @@
+export { getBasePath } from './identity';
+

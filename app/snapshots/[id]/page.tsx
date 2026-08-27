@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { ExternalLink, FileText, Loader2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/component/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -220,7 +220,7 @@ export default function SnapshotDetailPage() {
           </div>
 
           {snapshot?.pageUrl && (
-            <Button asChild variant="outline" size="sm" className="shrink-0">
+            <Button asChild variant="tertiary" size="sm" className="shrink-0">
               <a href={snapshot.pageUrl} target="_blank" rel="noreferrer">
                 Open site
                 <ExternalLink className="ml-2 h-4 w-4" />
