@@ -16,6 +16,9 @@ const basePath = normalizeBasePath(
 
 const nextConfig: NextConfig = {
   /* config options here */
+  turbopack: {
+    root: __dirname,
+  },
   typescript: {
     ignoreBuildErrors: true,
   },
