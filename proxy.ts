@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import account from '@/logica/account';
-import { prisma } from '@/core/database/prisma';
-import { APP_BASE_PATH, makeAppPath } from '@/core/appconfig';
+import account from '#/logica/account';
+import { prisma } from '#/core/database/prisma';
+import { APP_BASE_PATH, makeAppPath } from '#/core/appconfig';
 
 function createAuthStartUrl(request: NextRequest): string {
   const authUrl = new URL('https://neupgroup.com/account/auth/start');

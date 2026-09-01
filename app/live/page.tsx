@@ -6,12 +6,12 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/component/ui/card';
+} from '#/components/ui/card';
 import { Eye, MousePointer2, User, Wifi, WifiOff } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { Skeleton } from '@/component/ui/skeleton';
-import { cn } from '@/core/utils';
-import { Avatar, AvatarFallback } from '@/component/ui/avatar';
+import { Skeleton } from '#/components/ui/skeleton';
+import { cn } from '#/core/utils';
+import { Avatar, AvatarFallback } from '#/components/ui/avatar';
 
 type User = {
   id: string;

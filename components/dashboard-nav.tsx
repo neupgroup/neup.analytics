@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { Link } from '#/components/ui/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import {
   Activity,
@@ -16,7 +16,7 @@ import {
   FileText,
   Camera,
 } from 'lucide-react';
-import { NavButton } from '@/component/ui/navbutton';
+import { NavButton } from '#/components/ui/navbutton';
 import { useProjectNavigationGuard } from '@/core/hooks/useProjectNavigationGuard';
 
 const navItems = [
@@ -53,18 +53,16 @@ export function DashboardNav() {
   return (
     <nav className="grid items-start gap-2">
       {navItems.map((item) => (
-        <NavButton
+        <Link
           key={item.href}
-          asChild
-          active={pathname === item.href}
-          onClick={item.href === '/projects' ? undefined : (event) => guardProjectNavigation(event, item.label)}
+                    onClick={item.href === '/projects' ? undefined : (event) = guardProjectNavigation(event, item.label)}
           className="w-full justify-start gap-3 px-3 py-2"
         >
           <Link href={createDashboardHref(item.href, selectedProject)}>
             <item.icon className="h-4 w-4" />
             {item.label}
           </Link>
-        </NavButton>
+        </Link>
       ))}
     </nav>
   );

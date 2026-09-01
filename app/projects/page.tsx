@@ -1,7 +1,7 @@
-import Link from 'next/link';
+import { Link } from '#/components/ui/link';
 import { Plus, Box } from 'lucide-react';
-import { prisma } from '@/core/database/prisma';
-import { Skeleton } from '@/component/ui/skeleton';
+import { prisma } from '#/core/database/prisma';
+import { Skeleton } from '#/components/ui/skeleton';
 import { Suspense } from 'react';
 
 export function ProjectsSkeleton() {

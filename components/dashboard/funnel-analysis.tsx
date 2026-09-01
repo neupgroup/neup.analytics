@@ -4,7 +4,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/component/ui/card';
+} from '#/components/ui/card';
 import { Users, ShoppingCart, CreditCard, PartyPopper, Bot } from 'lucide-react';
 
 const funnelSteps = [

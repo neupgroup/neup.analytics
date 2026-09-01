@@ -1,6 +1,6 @@
-import { prisma } from '@/core/database/prisma';
-import Link from 'next/link';
-import { Card, CardContent, CardHeader, CardTitle } from '@/component/ui/card';
+import { prisma } from '#/core/database/prisma';
+import { Link } from '#/components/ui/link';
+import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/card';
 import { format } from 'date-fns';
 
 export default async function LogsPage() {

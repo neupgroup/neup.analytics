@@ -1,14 +1,14 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/component/ui/avatar';
-import { Button } from '@/component/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar';
+import { Button } from '#/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/component/ui/card';
+} from '#/components/ui/card';
 import { ArrowUpRight } from 'lucide-react';
-import Link from 'next/link';
+import { Link } from '#/components/ui/link';
 
 const activities = [
     { id: 1, user: { name: 'Olivia Martin', avatarSeed: 'olivia' }, action: 'completed a purchase.', details: 'Source: Paid Ad on Facebook', time: '5m ago' },
@@ -27,12 +27,10 @@ export function RecentActivity() {
             A feed of the latest user interactions.
           </CardDescription>
         </div>
-        <Button asChild variant="plain" size="sm" className="ml-auto gap-1">
-          <Link href="/live">
+        <Link variant="plain" size="sm" className="ml-auto gap-1" href="/live">
             Live View
             <ArrowUpRight className="h-4 w-4" />
           </Link>
-        </Button>
       </CardHeader>
       <CardContent className="grid gap-6">
         {activities.map(activity => (

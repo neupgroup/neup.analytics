@@ -1,15 +1,15 @@
-import Link from 'next/link';
+import { Link } from '#/components/ui/link';
 import { Plus } from 'lucide-react';
-import { Button } from '@/component/ui/button';
-import { Input } from '@/component/ui/input';
-import { Textarea } from '@/component/ui/textarea';
+import { Button } from '#/components/ui/button';
+import { Input } from '#/components/ui/input';
+import { Textarea } from '#/components/ui/textarea';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/component/ui/card';
+} from '#/components/ui/card';
 
 export default function AddProjectPage() {
   return (
@@ -87,16 +87,14 @@ export default function AddProjectPage() {
             </div>
 
             <div className="flex gap-3">
-              <Button type="button" variant="primary">
+              <Button htmlType="button" variant="solid">
                 <Plus className="mr-2 h-4 w-4" />
                 Add Project
               </Button>
 
-              <Button asChild variant="tertiary">
-                <Link href="/projects">
+              <Link variant="tinted" href="/projects">
                   Cancel
                 </Link>
-              </Button>
             </div>
           </div>
         </CardContent>

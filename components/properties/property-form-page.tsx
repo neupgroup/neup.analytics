@@ -2,20 +2,20 @@
 
 import { ArrowRight, Database, Globe, Layers3 } from 'lucide-react';
 import { createApplication } from '@/actions/application';
-import { Badge } from '@/component/ui/badge';
-import { Button } from '@/component/ui/button';
+import { Badge } from '#/components/ui/badge';
+import { Button } from '#/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/component/ui/card';
-import { Input } from '@/component/ui/input';
-import { Label } from '@/component/ui/label';
-import { Separator } from '@/component/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/component/ui/tabs';
-import { Textarea } from '@/component/ui/textarea';
+} from '#/components/ui/card';
+import { Input } from '#/components/ui/input';
+import { Label } from '#/components/ui/label';
+import { Separator } from '#/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/components/ui/tabs';
+import { Textarea } from '#/components/ui/textarea';
 
 function EntryForm({
   mode,
@@ -57,7 +57,7 @@ function EntryForm({
           placeholder={description}
         />
       </div>
-      <Button type="submit" variant="primary" className="w-full sm:w-fit">
+      <Button htmlType="submit" variant="solid" className="w-full sm:w-fit">
         {cta}
         <ArrowRight className="ml-2 h-4 w-4" />
       </Button>

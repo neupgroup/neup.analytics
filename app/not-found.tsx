@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
+import { Link } from '#/components/ui/link';
 import { Compass, ArrowRight } from 'lucide-react';
-import { Button } from '@/component/ui/button';
+import { Button } from '#/components/ui/button';
 
 export default function NotFound() {
   return (
@@ -29,12 +29,10 @@ export default function NotFound() {
           The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
         </p>
 
-        <Button asChild variant="primary" className="group w-full" size="lg">
-          <Link href="/home" className="flex items-center justify-center gap-2">
+        <Link variant="solid" className="group flex w-full items-center justify-center gap-2" size="lg" href="/home">
             Back to Home
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
-        </Button>
       </div>
     </div>
   );

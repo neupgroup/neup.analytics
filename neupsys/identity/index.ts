@@ -22,7 +22,7 @@ database dependencies and is safe to import from server and client modules.
 ::end
 */
 
-import { getEnvVariable } from '../../core/helpers/env';
+import { getEnvVariable } from '#/core/helpers/env';
 
 const identityConfig = {
     name: 'Neup.Analytics',

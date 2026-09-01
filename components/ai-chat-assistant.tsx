@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Bot, Send } from 'lucide-react';
-import { Button } from '@/component/ui/button';
+import { Button } from '#/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -11,15 +11,15 @@ import {
   DialogTrigger,
   DialogFooter,
   DialogDescription,
-} from '@/component/ui/dialog';
-import { Input } from '@/component/ui/input';
-import { ScrollArea } from '@/component/ui/scroll-area';
-import { Avatar, AvatarFallback, AvatarImage } from '@/component/ui/avatar';
-import { cn } from '@/core/utils';
+} from '#/components/ui/dialog';
+import { Input } from '#/components/ui/input';
+import { ScrollArea } from '#/components/ui/scroll-area';
+import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar';
+import { cn } from '#/core/utils';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component/ui/form';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '#/components/ui/form';
 
 // Mock AI function
 async function getAIResponse(message: string) {
@@ -67,7 +67,7 @@ export function AIChatAssistant() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="tertiary" size="icon" className="rounded-full">
+        <Button variant="tinted" size="icon" className="rounded-full">
           <Bot className="h-5 w-5" />
           <span className="sr-only">AI Assistant</span>
         </Button>
@@ -143,7 +143,7 @@ export function AIChatAssistant() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" variant="primary" size="icon" disabled={isThinking}>
+              <Button htmlType="submit" variant="solid" size="icon" disabled={isThinking}>
                 <Send className="h-4 w-4" />
                 <span className="sr-only">Send</span>
               </Button>

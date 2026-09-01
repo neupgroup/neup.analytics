@@ -23,7 +23,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "#/*": ["./.neup/*"],
+      "$/*": ["./base/*"]
     }
   },
   "include": [
@@ -31,7 +33,10 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts"
+    ".next/dev/types/**/*.ts",
+    ".neup/**/*.ts",
+    ".neup/**/*.tsx",
+    "base/**/*.ts",
   ],
   "exclude": [
     "node_modules"

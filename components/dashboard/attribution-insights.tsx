@@ -4,7 +4,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/component/ui/card';
+} from '#/components/ui/card';
 
 const attributionData = [
   { channel: 'Organic Search', value: 45, color: 'bg-chart-1' },

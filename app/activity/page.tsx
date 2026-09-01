@@ -1,10 +1,10 @@
-import Link from 'next/link';
+import { Link } from '#/components/ui/link';
 import { redirect } from 'next/navigation';
 import { X } from 'lucide-react';
 import { ActivityFeed } from '@/components/activity-feed';
-import { prisma } from '@/core/database/prisma';
-import { makeAppPath } from '@/core/appconfig';
-import { url } from '@/core/helpers/link/url';
+import { prisma } from '#/core/database/prisma';
+import { makeAppPath } from '#/core/appconfig';
+import { url } from '#/core/helpers/link/url';
 
 type ActivityPageProps = {
   searchParams: Promise<{

@@ -1,13 +1,13 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/component/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "#/components/ui/card";
 // import { useFirestore, useMemoFirebase } from "@/firebase";
 // import { collection, query, orderBy, Timestamp, limit, startAfter, getDocs, Query, DocumentData, QuerySnapshot } from "firebase/firestore";
-import Link from "next/link";
-import { Skeleton } from "@/component/ui/skeleton";
+import { Link } from "#/components/ui/link";
+import { Skeleton } from "#/components/ui/skeleton";
 import { PlaySquare, Clock, Laptop, Smartphone, User, ArrowLeft, ArrowRight } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Button } from "@/component/ui/button";
+import { Button } from "#/components/ui/button";
 
 // Define interaction type
 type Interaction = {
@@ -131,12 +131,12 @@ export default function ReplaysPage() {
         </div>
 
         <div className="flex justify-end gap-2 mt-4">
-          <Button variant="tertiary" onClick={handlePrevious} disabled={page <= 1 || isLoading}>
+          <Button variant="tinted" onClick={handlePrevious} disabled={page <= 1 || isLoading}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Previous
           </Button>
           <Button
-            variant="tertiary"
+            variant="tinted"
             onClick={handleNext}
             disabled={isLastPage || isLoading}
           >

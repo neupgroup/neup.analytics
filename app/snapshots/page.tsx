@@ -1,15 +1,15 @@
 'use client';
 
-import Link from 'next/link';
+import { Link } from '#/components/ui/link';
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { Camera, ExternalLink, Eye, FileText, Loader2, RefreshCw } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/component/ui/alert';
-import { Button } from '@/component/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/component/ui/card';
-import { Input } from '@/component/ui/input';
-import { Label } from '@/component/ui/label';
-import { Skeleton } from '@/component/ui/skeleton';
-import { useToast } from '@/core/hooks/useToast';
+import { Alert, AlertDescription, AlertTitle } from '#/components/ui/alert';
+import { Button } from '#/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '#/components/ui/card';
+import { Input } from '#/components/ui/input';
+import { Label } from '#/components/ui/label';
+import { Skeleton } from '#/components/ui/skeleton';
+import { useToast } from '#/core/hooks/useToast';
 
 type Snapshot = {
   id: string;
@@ -124,7 +124,7 @@ export default function SnapshotsPage() {
                 disabled={isCapturing}
               />
             </div>
-            <Button type="submit" variant="primary" disabled={isCapturing || !url.trim()} className="sm:w-auto">
+            <Button htmlType="submit" variant="solid" disabled={isCapturing || !url.trim()} className="sm:w-auto">
               {isCapturing ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
@@ -142,7 +142,7 @@ export default function SnapshotsPage() {
             <CardTitle className="font-headline">Recent Snapshots</CardTitle>
             <CardDescription>Manual and automatic snapshots saved in the snapshot table.</CardDescription>
           </div>
-          <Button variant="tertiary" size="sm" onClick={fetchSnapshots} disabled={isLoading}>
+          <Button variant="tinted" size="sm" onClick={fetchSnapshots} disabled={isLoading}>
             <RefreshCw className="mr-2 h-4 w-4" />
             Refresh
           </Button>
@@ -209,18 +209,14 @@ export default function SnapshotsPage() {
                   </div>
 
                   <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto">
-                    <Button asChild variant="tertiary" size="sm" className="w-full">
-                      <Link href={`/snapshots/${snapshot.id}`}>
+                    <Link variant="tinted" size="sm" className="w-full" href={`/snapshots/${snapshot.id}`}>
                         View
                         <Eye className="ml-2 h-4 w-4" />
                       </Link>
-                    </Button>
-                    <Button asChild variant="plain" size="sm" className="w-full">
-                      <a href={snapshot.pageUrl} target="_blank" rel="noreferrer">
+                    <Link variant="plain" size="sm" className="w-full" href={snapshot.pageUrl} target="_blank" rel="noreferrer">
                         Open site
                         <ExternalLink className="ml-2 h-4 w-4" />
-                      </a>
-                    </Button>
+                    </Link>
                   </div>
                 </div>
               ))}

@@ -1,13 +1,13 @@
 import type {Metadata} from 'next';
 import { cookies } from 'next/headers';
 import './globals.css';
-import { Toaster } from '@/component/ui/toaster';
-import { cn } from '@/core/utils';
-import { SessionProvider, type SessionUser } from '@/core/providers/session';
-import { ProgressBar } from '@/component/elements/progressbar';
+import { Toaster } from '#/components/ui/toast';
+import { cn } from '#/core/utils';
+import { SessionProvider, type SessionUser } from '#/core/providers/session';
+import { ProgressBar } from '#/components/element/progressbar';
 import { Suspense } from 'react';
 import { DashboardLayoutWrapper } from '@/components/dashboard-layout-wrapper';
-import account from '@/logica/account';
+import account from '#/logica/account';
 import { getAppLogo, getDescription, getName } from '@/neupsys';
 
 export const metadata: Metadata = {

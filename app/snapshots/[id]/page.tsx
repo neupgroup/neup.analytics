@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { ExternalLink, FileText, Loader2 } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/component/ui/alert';
-import { Button } from '@/component/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/component/ui/card';
-import { Skeleton } from '@/component/ui/skeleton';
+import { Alert, AlertDescription, AlertTitle } from '#/components/ui/alert';
+import { Button } from '#/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '#/components/ui/card';
+import { Skeleton } from '#/components/ui/skeleton';
 
 type Snapshot = {
   id: string;
@@ -152,8 +152,8 @@ function SnapshotPreviewPanel({ snapshot }: { snapshot: Snapshot }) {
           return (
             <Button
               key={preset.label}
-              type="button"
-              variant={isActive ? 'default' : 'outline'}
+              htmlType="button"
+              variant={isActive ? 'solid' : 'outlined'}
               size="sm"
               onClick={() => setViewport(preset)}
             >
@@ -220,12 +220,10 @@ export default function SnapshotDetailPage() {
           </div>
 
           {snapshot?.pageUrl && (
-            <Button asChild variant="tertiary" size="sm" className="shrink-0">
-              <a href={snapshot.pageUrl} target="_blank" rel="noreferrer">
+            <Link variant="tinted" size="sm" className="shrink-0" href={snapshot.pageUrl} target="_blank" rel="noreferrer">
                 Open site
                 <ExternalLink className="ml-2 h-4 w-4" />
-              </a>
-            </Button>
+            </Link>
           )}
         </CardHeader>
 

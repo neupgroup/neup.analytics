@@ -1,9 +1,9 @@
-import Link from "next/link";
+import { Link } from "#/components/ui/link";
 import { redirect } from "next/navigation";
-import { prisma } from "@/core/database/prisma";
-import { Button } from "@/component/ui/button";
-import { Input } from "@/component/ui/input";
-import { Textarea } from "@/component/ui/textarea";
+import { prisma } from "#/core/database/prisma";
+import { Button } from "#/components/ui/button";
+import { Input } from "#/components/ui/input";
+import { Textarea } from "#/components/ui/textarea";
 
 export default function CreateProjectPage() {
   async function createProject(formData: FormData) {
@@ -91,15 +91,13 @@ export default function CreateProjectPage() {
         </div>
 
         <div className="flex gap-3">
-          <Button type="submit" variant="primary">
+          <Button htmlType="submit" variant="solid">
             Create project
           </Button>
 
-          <Button asChild variant="tertiary">
-            <Link href="/projects">
+          <Link variant="tinted" href="/projects">
               Cancel
             </Link>
-          </Button>
         </div>
       </form>
     </div>

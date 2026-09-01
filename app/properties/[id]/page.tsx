@@ -1,18 +1,18 @@
 import { notFound } from 'next/navigation';
 import { headers } from 'next/headers';
-import Link from 'next/link';
+import { Link } from '#/components/ui/link';
 import { ArrowRight, Building2, Code2, Database, Globe, Layers3, ShieldCheck } from 'lucide-react';
-import { prisma } from '@/core/database/prisma';
-import { Badge } from '@/component/ui/badge';
-import { Button } from '@/component/ui/button';
+import { prisma } from '#/core/database/prisma';
+import { Badge } from '#/components/ui/badge';
+import { Button } from '#/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/component/ui/card';
-import { Separator } from '@/component/ui/separator';
+} from '#/components/ui/card';
+import { Separator } from '#/components/ui/separator';
 import { PropertySetupGuide } from '@/components/properties/property-setup-guide';
 
 function buildCollectorSnippet(propertyId: string) {
@@ -89,12 +89,10 @@ export default async function PropertyDetailPage({
             </p>
           </div>
         </div>
-        <Button asChild variant="tertiary" className="w-full sm:w-fit">
-          <Link href="/properties">
+        <Link variant="tinted" className="w-full sm:w-fit" href="/properties">
             Back to properties
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
-        </Button>
       </div>
 
       {isActive ? (

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/core/database/prisma';
+import { prisma } from '#/core/database/prisma';
 import { presentActivity } from '@/services/activity/presentActivity';
 import { getFreshIpMapsByAddress, getIpLocationLabel } from '@/services/ipmap/getIpMap';
 

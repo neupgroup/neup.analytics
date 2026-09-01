@@ -1,6 +1,6 @@
-import Link from 'next/link';
+import { Link } from '#/components/ui/link';
 import Image from 'next/image';
-import { makeAppPath } from '@/core/appconfig';
+import { makeAppPath } from '#/core/appconfig';
 import { getAppLogo, getName } from '@/neupsys';
 
 type NeupIdLogoProps = {

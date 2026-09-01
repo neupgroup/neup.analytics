@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/component/ui/card';
-import Link from 'next/link';
-import { Skeleton } from '@/component/ui/skeleton';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '#/components/ui/card';
+import { Link } from '#/components/ui/link';
+import { Skeleton } from '#/components/ui/skeleton';
 import { FileText, Search, ArrowRight } from 'lucide-react';
-import { Button } from '@/component/ui/button';
+import { Button } from '#/components/ui/button';
 
 type Page = {
     id: string;
@@ -114,12 +114,10 @@ export default function PagesPage() {
                                     </div>
                                 </div>
 
-                                <Button asChild variant="tertiary" size="sm" className="w-full shrink-0 sm:w-auto">
-                                    <Link href={`/pages/${page.id}`}>
+                                <Link variant="tinted" size="sm" className="w-full shrink-0 sm:w-auto" href={`/pages/${page.id}`}>
                                         View Details
                                         <ArrowRight className="ml-2 h-4 w-4" />
                                     </Link>
-                                </Button>
                             </div>
                         ))}
                     </div>

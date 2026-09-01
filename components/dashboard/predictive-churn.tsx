@@ -4,9 +4,9 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/component/ui/card';
+} from '#/components/ui/card';
 import { UserX } from 'lucide-react';
-import { ProgressBar } from '@/component/elements/progressbar';
+import { ProgressBar } from '#/components/element/progressbar';
 
 export function PredictiveChurn() {
   return (

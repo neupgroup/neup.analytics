@@ -1,4 +1,4 @@
-import { prisma } from '@/core/database/prisma';
+import { prisma } from '#/core/database/prisma';
 
 type ListApplicationsResult =
   | {

@@ -4,10 +4,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Activity as ActivityIcon } from 'lucide-react';
 import { ActivityCard } from '@/components/activity-card';
 import { ActivitySet } from '@/components/activity-set';
-import { Card, CardContent } from '@/component/ui/card';
-import { Skeleton } from '@/component/ui/skeleton';
-import { makeAppPath } from '@/core/appconfig';
-import { formatReadableDateTime } from '@/core/helpers/date';
+import { Card, CardContent } from '#/components/ui/card';
+import { Skeleton } from '#/components/ui/skeleton';
+import { makeAppPath } from '#/core/appconfig';
+import { formatReadableDateTime } from '#/core/helpers/date';
 
 type ActivityItem = {
   id: string; pageUrl: string | null; activityOn: string; type: string; typeLabel: string;

@@ -1,9 +1,9 @@
-import Link from 'next/link';
+import { Link } from '#/components/ui/link';
 import { redirect } from 'next/navigation';
-import { prisma } from '@/core/database/prisma';
-import { makeAppPath } from '@/core/appconfig';
-import { formatReadableDateTime } from '@/core/helpers/date';
-import { url } from '@/core/helpers/link/url';
+import { prisma } from '#/core/database/prisma';
+import { makeAppPath } from '#/core/appconfig';
+import { formatReadableDateTime } from '#/core/helpers/date';
+import { url } from '#/core/helpers/link/url';
 import { presentActivity } from '@/services/activity/presentActivity';
 import { formatIpMapLocation, getFreshIpMap } from '@/services/ipmap/getIpMap';
 

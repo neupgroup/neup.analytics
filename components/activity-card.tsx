@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import { cn } from '@/core/utils';
+import { Link } from '#/components/ui/link';
+import { cn } from '#/core/utils';
 
 type ActivityCardProps = {
   title: string;

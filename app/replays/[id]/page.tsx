@@ -2,15 +2,15 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams } from 'next/navigation';
-import { Skeleton } from '@/component/ui/skeleton';
-import { Alert, AlertDescription, AlertTitle } from '@/component/ui/alert';
+import { Skeleton } from '#/components/ui/skeleton';
+import { Alert, AlertDescription, AlertTitle } from '#/components/ui/alert';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/component/ui/card';
+} from '#/components/ui/card';
 import {
   Monitor,
   Smartphone,
@@ -22,9 +22,9 @@ import {
   RotateCcw,
   MousePointer2,
 } from 'lucide-react';
-import { Button } from '@/component/ui/button';
-import { ProgressBar } from '@/component/elements/progressbar';
-import { cn } from '@/core/utils';
+import { Button } from '#/components/ui/button';
+import { ProgressBar } from '#/components/element/progressbar';
+import { cn } from '#/core/utils';
 
 type InteractionEvent =
   | { type: 'mousemove'; x: number; y: number; timestamp: number }
@@ -354,15 +354,15 @@ export default function ReplayDetailPage() {
             </div>
             <div className="flex items-center gap-4 p-2 rounded-lg border bg-card">
               {isPlaying ? (
-                <Button onClick={handlePause} variant="tertiary" size="icon">
+                <Button onClick={handlePause} variant="tinted" size="icon">
                   <Pause className="h-5 w-5 fill-current" />
                 </Button>
               ) : (
-                <Button onClick={handlePlay} variant="tertiary" size="icon" disabled={totalDuration === 0}>
+                <Button onClick={handlePlay} variant="tinted" size="icon" disabled={totalDuration === 0}>
                   <Play className="h-5 w-5" />
                 </Button>
               )}
-              <Button onClick={handleReplay} variant="tertiary" size="icon" disabled={totalDuration === 0}>
+              <Button onClick={handleReplay} variant="tinted" size="icon" disabled={totalDuration === 0}>
                 <RotateCcw className="h-5 w-5" />
               </Button>
               <ProgressBar value={playbackProgress} className="flex-1"/>

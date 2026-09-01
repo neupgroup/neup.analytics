@@ -1,16 +1,16 @@
-import Link from 'next/link';
+import { Link } from '#/components/ui/link';
 import { ArrowRight, Building2, Database, Globe, Layers3 } from 'lucide-react';
-import { prisma } from '@/core/database/prisma';
-import { Badge } from '@/component/ui/badge';
-import { Button } from '@/component/ui/button';
+import { prisma } from '#/core/database/prisma';
+import { Badge } from '#/components/ui/badge';
+import { Button } from '#/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/component/ui/card';
-import { Separator } from '@/component/ui/separator';
+} from '#/components/ui/card';
+import { Separator } from '#/components/ui/separator';
 
 export default async function PropertiesPage() {
   const applications = await prisma.application.findMany({
@@ -38,12 +38,10 @@ export default async function PropertiesPage() {
             </p>
           </div>
         </div>
-        <Button asChild variant="primary" className="w-full sm:w-fit">
-          <Link href="/properties/add">
+        <Link variant="solid" className="w-full sm:w-fit" href="/properties/add">
             Add property
             <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
-        </Button>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
@@ -89,12 +87,10 @@ export default async function PropertiesPage() {
                 Add a site or application first, and it will appear here.
               </p>
             </div>
-            <Button asChild variant="primary">
-              <Link href="/properties/add">
+            <Link variant="solid" href="/properties/add">
                 Create the first property
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
-            </Button>
           </CardContent>
         </Card>
       ) : (
@@ -121,12 +117,10 @@ export default async function PropertiesPage() {
                   >
                     {application.status}
                   </Badge>
-                  <Button asChild variant="tertiary" size="sm">
-                    <Link href={`/properties/${application.id}`}>
+                  <Link variant="tinted" size="sm" href={`/properties/${application.id}`}>
                       View
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
-                  </Button>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
