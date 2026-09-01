@@ -1,22 +1,15 @@
 "use client"
 
 import { useCallback, type MouseEvent } from "react"
-
-import { useToast } from "#/core/hooks/useToast"
+import { useRouter } from "next/navigation"
 
 export function useProjectNavigationGuard(projectId: string | null) {
-  const { toast } = useToast()
+  const router = useRouter()
 
-  return useCallback((event: MouseEvent<HTMLElement>, sectionName = 'this section') => {
+  return useCallback((event: MouseEvent<HTMLElement>, _sectionName = 'this section') => {
     if (projectId) return
 
     event.preventDefault()
-    toast({
-      name: "missing_project_navigation",
-      state: "warning",
-      autoDismiss: false,
-      title: "Select a project first",
-      description: `Choose a project before opening ${sectionName} section.`,
-    })
-  }, [projectId, toast])
+    router.push('/projects')
+  }, [projectId, router])
 }
