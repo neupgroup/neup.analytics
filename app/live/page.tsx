@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Skeleton } from '#/components/ui/skeleton';
 import { cn } from '#/core/utils';
 import { Avatar, AvatarFallback } from '#/components/ui/avatar';
+import { timestampToDate, type Timestamp } from '#/core/data/timestamp';
 
 type User = {
   id: string;
@@ -76,7 +77,7 @@ const LiveUserCard = ({ user }: { user: any }) => {
   const timeSince = (timestamp: Timestamp) => {
     if (!timestamp) return '...';
     const seconds = Math.floor(
-      (new Date().getTime() - timestamp.toDate().getTime()) / 1000
+      (new Date().getTime() - timestampToDate(timestamp).getTime()) / 1000
     );
     return `${seconds}s ago`;
   };
@@ -131,7 +132,6 @@ const LiveUserCard = ({ user }: { user: any }) => {
           ref={containerRef}
           className="relative w-full overflow-hidden rounded-lg border bg-muted/20 shadow-inner"
         >
-          {isLoadingPage && <Skeleton className="h-full w-full" />}
           {page?.content ? (
             <div
               className="relative overflow-hidden"
@@ -179,11 +179,9 @@ const LiveUserCard = ({ user }: { user: any }) => {
               </div>
             </div>
           ) : (
-            !isLoadingPage && (
-              <div className="flex h-full items-center justify-center p-4 text-center text-sm text-muted-foreground">
-                Waiting for user to navigate to a recorded page...
-              </div>
-            )
+            <div className="flex h-full items-center justify-center p-4 text-center text-sm text-muted-foreground">
+              Waiting for user to navigate to a recorded page...
+            </div>
           )}
         </div>
         <p className="mt-2 truncate text-center text-xs text-muted-foreground">

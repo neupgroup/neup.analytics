@@ -11,6 +11,10 @@ type InteractionEvent =
   | { type: 'input'; element: string; value: string; timestamp: number }
   | { type: 'keydown'; key: string; element: string; timestamp: number };
 
+type InteractionEventInput<T = InteractionEvent> = T extends unknown
+  ? Omit<T, 'timestamp'>
+  : never;
+
 type Geolocation = {
   ip: string;
   city: string;
@@ -155,7 +159,7 @@ export function useInteractionRecorder() {
   }, [isRecording, resetInactivityTimer]);
 
   const recordEvent = useCallback(
-    (eventData: Omit<InteractionEvent, 'timestamp'>) => {
+    (eventData: InteractionEventInput) => {
       if (!isRecording) return;
       const event = {
         ...eventData,
@@ -169,7 +173,7 @@ export function useInteractionRecorder() {
   );
 
   const recordThrottledEvent = useCallback(
-    (eventData: Omit<InteractionEvent, 'timestamp'>) => {
+    (eventData: InteractionEventInput) => {
       const now = Date.now();
       if (now - lastThrottledEventTimeRef.current > THROTTLE_INTERVAL_MS) {
         lastThrottledEventTimeRef.current = now;

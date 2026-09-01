@@ -16,8 +16,7 @@ import {
   FileText,
   Camera,
 } from 'lucide-react';
-import { NavButton } from '#/components/ui/navbutton';
-import { useProjectNavigationGuard } from '@/core/hooks/useProjectNavigationGuard';
+import { useProjectNavigationGuard } from '@/hooks/useProjectNavigationGuard';
 
 const navItems = [
   { href: '/home', label: 'Home', icon: LineChart },
@@ -55,13 +54,12 @@ export function DashboardNav() {
       {navItems.map((item) => (
         <Link
           key={item.href}
-                    onClick={item.href === '/projects' ? undefined : (event) = guardProjectNavigation(event, item.label)}
+          href={createDashboardHref(item.href, selectedProject)}
+          onClick={item.href === '/projects' ? undefined : (event) => guardProjectNavigation(event, item.label)}
           className="w-full justify-start gap-3 px-3 py-2"
         >
-          <Link href={createDashboardHref(item.href, selectedProject)}>
-            <item.icon className="h-4 w-4" />
-            {item.label}
-          </Link>
+          <item.icon className="h-4 w-4" />
+          {item.label}
         </Link>
       ))}
     </nav>

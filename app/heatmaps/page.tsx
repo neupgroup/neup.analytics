@@ -63,7 +63,7 @@ export default function HeatmapsPage() {
                                 {isLoading && <SelectItem value="loading" disabled>Loading pages...</SelectItem>}
                                 {uniquePages.map((page) => (
                                     <SelectItem key={page.id} value={page.id}>
-                                        {page.page_path}
+                                        {page.pagePath}
                                     </SelectItem>
                                 ))}
                             </SelectContent>
