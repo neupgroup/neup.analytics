@@ -1,2 +1,0 @@
-export { basePath } from './identity';
-

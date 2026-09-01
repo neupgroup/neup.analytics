@@ -1,5 +1,5 @@
 import type {NextConfig} from 'next';
-// import { getBasePath } from './neupsys/identity';
+import application from '$/application.json';
 
 function normalizeBasePath(value: string | undefined): string {
   if (typeof value !== 'string') return '';
@@ -11,12 +11,8 @@ function normalizeBasePath(value: string | undefined): string {
   return withoutTrailingSlash.startsWith('/') ? withoutTrailingSlash : `/${withoutTrailingSlash}`;
 }
 
-// const basePath = normalizeBasePath(
-//   getBasePath()
-// );
-
 const basePath = normalizeBasePath(
-  process.env.APP_BASEPATH || process.env.NEXT_PUBLIC_APP_BASEPATH
+  application.basepath
 );
 
 const nextConfig: NextConfig = {
