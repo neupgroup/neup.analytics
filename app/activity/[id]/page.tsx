@@ -35,17 +35,28 @@ export default async function ActivityDetailPage({
   });
 
   if (!activity) {
-    redirect(url('/activity', '/').addParam('selectedProject', selectedProject).get());
+    redirect(
+      url('/activity', '/')
+        .addParam('selectedProject', selectedProject)
+        .get()
+    );
   }
 
   const presentation = presentActivity(activity);
   const ipMap = await getFreshIpMap(activity.ip);
   const ipLocation = formatIpMapLocation(ipMap);
-  const filterHref = (key: string, value: string | null | undefined) => url('/activity', '/')
-    .addParam('selectedProject', selectedProject)
-    .addParam(key, value ?? undefined)
-    .get();
-  const filterLinkClassName = 'text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4';
+
+  const filterHref = (
+    key: string,
+    value: string | null | undefined
+  ) =>
+    url('/activity', '/')
+      .addParam('selectedProject', selectedProject)
+      .addParam(key, value ?? undefined)
+      .get();
+
+  const filterLinkClassName =
+    'text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4';
 
   return (
     <div className="space-y-8">
@@ -69,11 +80,14 @@ export default async function ActivityDetailPage({
             {activity.pageUrl ? (
               <Link
                 href={filterHref('pageUrl', activity.pageUrl)}
+                basePath={false}
                 className={filterLinkClassName}
               >
                 {activity.pageUrl}
               </Link>
-            ) : '—'}
+            ) : (
+              '—'
+            )}
           </p>
         </div>
 
@@ -95,6 +109,7 @@ export default async function ActivityDetailPage({
           <p className="mt-1 text-sm text-slate-700">
             <Link
               href={filterHref('activityType', presentation.type)}
+              basePath={false}
               className={filterLinkClassName}
             >
               {presentation.type}
@@ -109,7 +124,11 @@ export default async function ActivityDetailPage({
 
           <p className="mt-1 text-sm text-slate-700">
             <Link
-              href={filterHref('agentType', presentation.agentType.toLowerCase())}
+              href={filterHref(
+                'agentType',
+                presentation.agentType.toLowerCase()
+              )}
+              basePath={false}
               className={filterLinkClassName}
             >
               {presentation.agentType}
@@ -125,6 +144,7 @@ export default async function ActivityDetailPage({
           <p className="mt-1 break-all text-sm text-slate-700">
             <Link
               href={filterHref('identifier', activity.identifierId)}
+              basePath={false}
               className={filterLinkClassName}
             >
               {activity.identifierId}
@@ -141,11 +161,14 @@ export default async function ActivityDetailPage({
             {activity.ip ? (
               <Link
                 href={filterHref('ip', activity.ip)}
+                basePath={false}
                 className={filterLinkClassName}
               >
                 {activity.ip}
               </Link>
-            ) : '—'}
+            ) : (
+              '—'
+            )}
           </p>
         </div>
 
@@ -178,11 +201,14 @@ export default async function ActivityDetailPage({
             {activity.referral ? (
               <Link
                 href={filterHref('referral', activity.referral)}
+                basePath={false}
                 className={filterLinkClassName}
               >
                 {activity.referral}
               </Link>
-            ) : '—'}
+            ) : (
+              '—'
+            )}
           </p>
         </div>
 
@@ -195,11 +221,14 @@ export default async function ActivityDetailPage({
             {activity.userAgent ? (
               <Link
                 href={filterHref('userAgent', activity.userAgent)}
+                basePath={false}
                 className={filterLinkClassName}
               >
                 {activity.userAgent}
               </Link>
-            ) : '—'}
+            ) : (
+              '—'
+            )}
           </p>
         </div>
       </div>

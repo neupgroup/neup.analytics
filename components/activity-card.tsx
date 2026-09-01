@@ -31,6 +31,7 @@ export function ActivityCard({
   const titleContent = titleHref ? (
     <Link
       href={titleHref}
+      basePath={false}
       className="pointer-events-auto font-medium text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4"
     >
       {title}
@@ -42,6 +43,7 @@ export function ActivityCard({
   const pageContent = pageHref ? (
     <Link
       href={pageHref}
+      basePath={false}
       className="pointer-events-auto text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4"
     >
       {pageLabel}
@@ -53,6 +55,7 @@ export function ActivityCard({
   const agentContent = agentHref ? (
     <Link
       href={agentHref}
+      basePath={false}
       className="pointer-events-auto text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4"
     >
       {agentLabel}
@@ -71,6 +74,7 @@ export function ActivityCard({
       {detailHref ? (
         <Link
           href={detailHref}
+          basePath={false}
           aria-label={`View activity details for ${title}`}
           className="absolute inset-0 z-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2"
         />

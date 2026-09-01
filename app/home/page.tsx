@@ -217,7 +217,9 @@ async function DashboardData({
               </p>
             </div>
             <div className="pt-2">
-              <Link href={`/activity?selectedProject=${dashboard.project.id}`} className="text-sm font-medium text-sky-700 hover:underline">
+              <Link href={`/activity?selectedProject=${dashboard.project.id}`}
+              basePath={false}
+              className="text-sm font-medium text-sky-700 hover:underline">
                 Open full activity feed
               </Link>
             </div>

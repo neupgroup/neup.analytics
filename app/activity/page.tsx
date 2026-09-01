@@ -52,7 +52,9 @@ export default async function ActivityPage({ searchParams }: ActivityPageProps) 
         <h1 className="text-3xl font-bold tracking-tight">Activity</h1>
         <p className="mt-2 text-muted-foreground">View activity collected for the selected project.</p>
       </div>
-      {activeFilters.length > 0 ? <div className="flex flex-wrap gap-2">{activeFilters.map((filter) => <Link key={filter.key} href={activityHref(project.id, Object.fromEntries(Object.entries(filters).filter(([key]) => key !== filter.key)))} className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-sm text-slate-700"><span>{filter.key}: {filter.value}</span><X className="h-3.5 w-3.5" /></Link>)}</div> : null}
+      {activeFilters.length > 0 ? <div className="flex flex-wrap gap-2">{activeFilters.map((filter) => <Link key={filter.key} href={activityHref(project.id, Object.fromEntries(Object.entries(filters).filter(([key]) => key !== filter.key)))}
+      basePath={false}
+      className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-sm text-slate-700"><span>{filter.key}: {filter.value}</span><X className="h-3.5 w-3.5" /></Link>)}</div> : null}
       <ActivityFeed selectedProject={project.id} filters={filters} />
     </div>
   );
