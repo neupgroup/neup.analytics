@@ -95,7 +95,7 @@ export default function CreateProjectPage() {
             Create project
           </Button>
 
-          <Link variant="tinted" href="/projects">
+          <Link variant="tinted" href="/projects" basePath={false}>
               Cancel
             </Link>
         </div>
