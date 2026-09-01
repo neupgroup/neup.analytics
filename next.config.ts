@@ -1,5 +1,5 @@
 import type {NextConfig} from 'next';
-import { getBasePath } from './neupsys/identity';
+import application from '$/application.json';
 
 function normalizeBasePath(value: string | undefined): string {
   if (typeof value !== 'string') return '';
@@ -12,7 +12,7 @@ function normalizeBasePath(value: string | undefined): string {
 }
 
 const basePath = normalizeBasePath(
-  getBasePath()
+  application.basepath
 );
 
 const nextConfig: NextConfig = {

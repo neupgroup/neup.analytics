@@ -8,14 +8,14 @@ import { ProgressBar } from '#/components/element/progressbar';
 import { Suspense } from 'react';
 import { DashboardLayoutWrapper } from '@/components/dashboard-layout-wrapper';
 import account from '#/logica/account';
-import { getAppLogo, getDescription, getName } from '@/neupsys';
+import { getDescription, getLogo, getName } from '#/core/identity';
 
 export const metadata: Metadata = {
   title: getName(),
   description: getDescription(),
   icons: {
-    icon: getAppLogo('favicon'),
-    apple: getAppLogo('apple-touch-icon'),
+    icon: getLogo(),
+    apple: getLogo(),
   },
 };
 

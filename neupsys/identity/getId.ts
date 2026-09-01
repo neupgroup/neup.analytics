@@ -1,2 +1,0 @@
-export { getId } from './index';
-

@@ -1,2 +1,0 @@
-export { getDescription } from './identity';
-

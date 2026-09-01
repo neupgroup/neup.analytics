@@ -1,7 +1,7 @@
 import { Link } from '#/components/ui/link';
 import Image from 'next/image';
 import { makeAppPath } from '#/core/appconfig';
-import { getAppLogo, getName } from '@/neupsys';
+import { getLogo, getName } from '#/core/identity';
 
 type NeupIdLogoProps = {
   iconHref: string;
@@ -10,7 +10,7 @@ type NeupIdLogoProps = {
 
 export function NeupIdLogo({ iconHref, textHref }: NeupIdLogoProps) {
   const logoSrc = makeAppPath(
-    getAppLogo(),
+    getLogo(),
   );
 
   return (

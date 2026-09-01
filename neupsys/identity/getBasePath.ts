@@ -1,2 +1,0 @@
-export { getBasePath } from './index';
-
