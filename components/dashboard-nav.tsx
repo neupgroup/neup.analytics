@@ -55,6 +55,7 @@ export function DashboardNav() {
         <Link
           key={item.href}
           href={createDashboardHref(item.href, selectedProject)}
+          basePath={false}
           onClick={item.href === '/projects' ? undefined : (event) => guardProjectNavigation(event, item.label)}
           className="w-full justify-start gap-3 px-3 py-2"
         >
