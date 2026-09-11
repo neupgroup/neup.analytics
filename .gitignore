@@ -45,8 +45,7 @@ next-env.d.ts
 
 
 # Neup.Standard Files
-/core
-/neup.core
-/logica
-/neup.logica
-.neup
+.neup/core
+.neup/components
+.neup/logica
+
