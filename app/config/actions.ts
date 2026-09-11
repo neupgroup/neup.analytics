@@ -15,3 +15,34 @@ export async function saveProjectVerifierKey(projectId: string, verifierKey: str
     data: { verifierKey: normalizedVerifierKey },
   });
 }
+
+export async function revokeProjectVerifierKey(projectId: string) {
+  const normalizedProjectId = projectId.trim();
+
+  if (!normalizedProjectId) {
+    throw new Error('Project ID is required.');
+  }
+
+  await prisma.project.update({
+    where: { id: normalizedProjectId },
+    data: { verifierKey: null },
+  });
+}
+
+export async function saveProjectIpAddress(projectId: string, ipAddress: string) {
+  const normalizedProjectId = projectId.trim();
+  const normalizedIpAddress = ipAddress.trim();
+
+  if (!normalizedProjectId) {
+    throw new Error('Project ID is required.');
+  }
+
+  if (normalizedIpAddress.length > 48) {
+    throw new Error('Server address must be 48 characters or fewer.');
+  }
+
+  await prisma.project.update({
+    where: { id: normalizedProjectId },
+    data: { ipAddress: normalizedIpAddress || null },
+  });
+}

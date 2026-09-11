@@ -6,6 +6,7 @@ Fields:
 > moreDetails: json, nullable;
 > token: string, unique;
 > verifierKey: string, nullable, Ed25519 public key in base64 SPKI format;
+> ipAddress: string(48), nullable, server IP address or comma-separated IP addresses;
 > createdOn: timestamp, default: now();
 
 Table: Activity, Model: Activity

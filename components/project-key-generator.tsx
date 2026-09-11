@@ -1,19 +1,31 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, Clipboard, KeyRound, RefreshCw } from 'lucide-react';
+import { Check, Clipboard, KeyRound, ShieldOff } from 'lucide-react';
 import { Button } from '@neup/components/ui/button';
-import { saveProjectVerifierKey } from '@/app/config/actions';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@neup/components/ui/alert-dialog';
+import { revokeProjectVerifierKey, saveProjectVerifierKey } from '@/app/config/actions';
 
 function toBase64(bytes: ArrayBuffer) {
   const binary = Array.from(new Uint8Array(bytes), (byte) => String.fromCharCode(byte)).join('');
   return btoa(binary);
 }
 
-export function ProjectKeyGenerator({ projectId }: { projectId: string }) {
+export function ProjectKeyGenerator({ projectId, hasVerifierKey }: { projectId: string; hasVerifierKey: boolean }) {
   const [privateKey, setPrivateKey] = useState<string>();
+  const [keyExists, setKeyExists] = useState(hasVerifierKey);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string>();
+  const [revokeDialogOpen, setRevokeDialogOpen] = useState(false);
 
   async function generateKey() {
     setError(undefined);
@@ -29,6 +41,7 @@ export function ProjectKeyGenerator({ projectId }: { projectId: string }) {
       const spki = await crypto.subtle.exportKey('spki', keyPair.publicKey);
       await saveProjectVerifierKey(projectId, toBase64(spki));
       setPrivateKey(toBase64(pkcs8));
+      setKeyExists(true);
     } catch {
       setError('This browser could not generate an Ed25519 key. Try the latest version of Chrome, Edge, or Firefox.');
     }
@@ -45,15 +58,34 @@ export function ProjectKeyGenerator({ projectId }: { projectId: string }) {
     window.setTimeout(() => setCopied(false), 2000);
   }
 
+  async function revokeKey() {
+    setError(undefined);
+    try {
+      await revokeProjectVerifierKey(projectId);
+      setPrivateKey(undefined);
+      setKeyExists(false);
+      setCopied(false);
+      setRevokeDialogOpen(false);
+    } catch {
+      setError('The key could not be revoked. Please try again.');
+    }
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-3">
-        <Button variant="solid" preIcon={privateKey ? <RefreshCw className="h-4 w-4" /> : <KeyRound className="h-4 w-4" />} onClick={generateKey}>
-          {privateKey ? 'Generate new key' : 'Generate Ed25519 key'}
-        </Button>
-        {config && (
+        {privateKey ? (
           <Button variant="tinted" preIcon={copied ? <Check className="h-4 w-4" /> : <Clipboard className="h-4 w-4" />} onClick={copyConfig}>
             {copied ? 'Copied' : 'Copy config'}
+          </Button>
+        ) : !keyExists ? (
+          <Button variant="solid" preIcon={<KeyRound className="h-4 w-4" />} onClick={generateKey}>
+            Generate Ed25519 key
+          </Button>
+        ) : null}
+        {keyExists && (
+          <Button variant="solid" convey="danger" preIcon={<ShieldOff className="h-4 w-4" />} onClick={() => setRevokeDialogOpen(true)}>
+            Revoke this key
           </Button>
         )}
       </div>
@@ -64,7 +96,30 @@ export function ProjectKeyGenerator({ projectId }: { projectId: string }) {
         </div>
       )}
       {error && <p className="text-sm text-destructive">{error}</p>}
-      <p className="text-xs text-muted-foreground">The private key is shown only once in this browser session. Save it in your environment or config file before leaving this page.</p>
+      <p className="text-xs text-muted-foreground">
+        {privateKey
+          ? 'The private key is shown only once in this browser session. Save it in your environment or config file before leaving this page.'
+          : keyExists
+            ? 'A key already exists and cannot be recovered. Revoke it to generate a new key.'
+            : 'Generate a key to create project credentials.'}
+      </p>
+
+      <AlertDialog open={revokeDialogOpen} onOpenChange={setRevokeDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Revoke this project key?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Existing signatures created with this key will no longer verify. You will need to generate a new key for this project.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Keep key</AlertDialogCancel>
+            <AlertDialogAction className="bg-red-600 text-white hover:bg-red-700" onClick={revokeKey}>
+              Revoke key
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

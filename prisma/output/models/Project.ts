@@ -30,6 +30,7 @@ export type ProjectMinAggregateOutputType = {
   type: string | null
   token: string | null
   verifierKey: string | null
+  ipAddress: string | null
   createdOn: Date | null
 }
 
@@ -39,6 +40,7 @@ export type ProjectMaxAggregateOutputType = {
   type: string | null
   token: string | null
   verifierKey: string | null
+  ipAddress: string | null
   createdOn: Date | null
 }
 
@@ -49,6 +51,7 @@ export type ProjectCountAggregateOutputType = {
   moreDetails: number
   token: number
   verifierKey: number
+  ipAddress: number
   createdOn: number
   _all: number
 }
@@ -60,6 +63,7 @@ export type ProjectMinAggregateInputType = {
   type?: true
   token?: true
   verifierKey?: true
+  ipAddress?: true
   createdOn?: true
 }
 
@@ -69,6 +73,7 @@ export type ProjectMaxAggregateInputType = {
   type?: true
   token?: true
   verifierKey?: true
+  ipAddress?: true
   createdOn?: true
 }
 
@@ -79,6 +84,7 @@ export type ProjectCountAggregateInputType = {
   moreDetails?: true
   token?: true
   verifierKey?: true
+  ipAddress?: true
   createdOn?: true
   _all?: true
 }
@@ -162,6 +168,7 @@ export type ProjectGroupByOutputType = {
   moreDetails: runtime.JsonValue | null
   token: string
   verifierKey: string | null
+  ipAddress: string | null
   createdOn: Date
   _count: ProjectCountAggregateOutputType | null
   _min: ProjectMinAggregateOutputType | null
@@ -193,6 +200,7 @@ export type ProjectWhereInput = {
   moreDetails?: Prisma.JsonNullableFilter<"Project">
   token?: Prisma.StringFilter<"Project"> | string
   verifierKey?: Prisma.StringNullableFilter<"Project"> | string | null
+  ipAddress?: Prisma.StringNullableFilter<"Project"> | string | null
   createdOn?: Prisma.DateTimeFilter<"Project"> | Date | string
   activities?: Prisma.ActivityListRelationFilter
 }
@@ -204,6 +212,7 @@ export type ProjectOrderByWithRelationInput = {
   moreDetails?: Prisma.SortOrderInput | Prisma.SortOrder
   token?: Prisma.SortOrder
   verifierKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  ipAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   createdOn?: Prisma.SortOrder
   activities?: Prisma.ActivityOrderByRelationAggregateInput
 }
@@ -218,6 +227,7 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   type?: Prisma.StringFilter<"Project"> | string
   moreDetails?: Prisma.JsonNullableFilter<"Project">
   verifierKey?: Prisma.StringNullableFilter<"Project"> | string | null
+  ipAddress?: Prisma.StringNullableFilter<"Project"> | string | null
   createdOn?: Prisma.DateTimeFilter<"Project"> | Date | string
   activities?: Prisma.ActivityListRelationFilter
 }, "id" | "token">
@@ -229,6 +239,7 @@ export type ProjectOrderByWithAggregationInput = {
   moreDetails?: Prisma.SortOrderInput | Prisma.SortOrder
   token?: Prisma.SortOrder
   verifierKey?: Prisma.SortOrderInput | Prisma.SortOrder
+  ipAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   createdOn?: Prisma.SortOrder
   _count?: Prisma.ProjectCountOrderByAggregateInput
   _max?: Prisma.ProjectMaxOrderByAggregateInput
@@ -245,6 +256,7 @@ export type ProjectScalarWhereWithAggregatesInput = {
   moreDetails?: Prisma.JsonNullableWithAggregatesFilter<"Project">
   token?: Prisma.StringWithAggregatesFilter<"Project"> | string
   verifierKey?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
+  ipAddress?: Prisma.StringNullableWithAggregatesFilter<"Project"> | string | null
   createdOn?: Prisma.DateTimeWithAggregatesFilter<"Project"> | Date | string
 }
 
@@ -255,6 +267,7 @@ export type ProjectCreateInput = {
   moreDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   token: string
   verifierKey?: string | null
+  ipAddress?: string | null
   createdOn?: Date | string
   activities?: Prisma.ActivityCreateNestedManyWithoutProjectInput
 }
@@ -266,6 +279,7 @@ export type ProjectUncheckedCreateInput = {
   moreDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   token: string
   verifierKey?: string | null
+  ipAddress?: string | null
   createdOn?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProjectInput
 }
@@ -277,6 +291,7 @@ export type ProjectUpdateInput = {
   moreDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   token?: Prisma.StringFieldUpdateOperationsInput | string
   verifierKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUpdateManyWithoutProjectNestedInput
 }
@@ -288,6 +303,7 @@ export type ProjectUncheckedUpdateInput = {
   moreDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   token?: Prisma.StringFieldUpdateOperationsInput | string
   verifierKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutProjectNestedInput
 }
@@ -299,6 +315,7 @@ export type ProjectCreateManyInput = {
   moreDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   token: string
   verifierKey?: string | null
+  ipAddress?: string | null
   createdOn?: Date | string
 }
 
@@ -309,6 +326,7 @@ export type ProjectUpdateManyMutationInput = {
   moreDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   token?: Prisma.StringFieldUpdateOperationsInput | string
   verifierKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -319,6 +337,7 @@ export type ProjectUncheckedUpdateManyInput = {
   moreDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   token?: Prisma.StringFieldUpdateOperationsInput | string
   verifierKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -334,6 +353,7 @@ export type ProjectCountOrderByAggregateInput = {
   moreDetails?: Prisma.SortOrder
   token?: Prisma.SortOrder
   verifierKey?: Prisma.SortOrder
+  ipAddress?: Prisma.SortOrder
   createdOn?: Prisma.SortOrder
 }
 
@@ -343,6 +363,7 @@ export type ProjectMaxOrderByAggregateInput = {
   type?: Prisma.SortOrder
   token?: Prisma.SortOrder
   verifierKey?: Prisma.SortOrder
+  ipAddress?: Prisma.SortOrder
   createdOn?: Prisma.SortOrder
 }
 
@@ -352,6 +373,7 @@ export type ProjectMinOrderByAggregateInput = {
   type?: Prisma.SortOrder
   token?: Prisma.SortOrder
   verifierKey?: Prisma.SortOrder
+  ipAddress?: Prisma.SortOrder
   createdOn?: Prisma.SortOrder
 }
 
@@ -376,6 +398,7 @@ export type ProjectCreateWithoutActivitiesInput = {
   moreDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   token: string
   verifierKey?: string | null
+  ipAddress?: string | null
   createdOn?: Date | string
 }
 
@@ -386,6 +409,7 @@ export type ProjectUncheckedCreateWithoutActivitiesInput = {
   moreDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   token: string
   verifierKey?: string | null
+  ipAddress?: string | null
   createdOn?: Date | string
 }
 
@@ -412,6 +436,7 @@ export type ProjectUpdateWithoutActivitiesInput = {
   moreDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   token?: Prisma.StringFieldUpdateOperationsInput | string
   verifierKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -422,6 +447,7 @@ export type ProjectUncheckedUpdateWithoutActivitiesInput = {
   moreDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   token?: Prisma.StringFieldUpdateOperationsInput | string
   verifierKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -463,6 +489,7 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   moreDetails?: boolean
   token?: boolean
   verifierKey?: boolean
+  ipAddress?: boolean
   createdOn?: boolean
   activities?: boolean | Prisma.Project$activitiesArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
@@ -475,6 +502,7 @@ export type ProjectSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   moreDetails?: boolean
   token?: boolean
   verifierKey?: boolean
+  ipAddress?: boolean
   createdOn?: boolean
 }, ExtArgs["result"]["project"]>
 
@@ -485,6 +513,7 @@ export type ProjectSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   moreDetails?: boolean
   token?: boolean
   verifierKey?: boolean
+  ipAddress?: boolean
   createdOn?: boolean
 }, ExtArgs["result"]["project"]>
 
@@ -495,10 +524,11 @@ export type ProjectSelectScalar = {
   moreDetails?: boolean
   token?: boolean
   verifierKey?: boolean
+  ipAddress?: boolean
   createdOn?: boolean
 }
 
-export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "path" | "type" | "moreDetails" | "token" | "verifierKey" | "createdOn", ExtArgs["result"]["project"]>
+export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "path" | "type" | "moreDetails" | "token" | "verifierKey" | "ipAddress" | "createdOn", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activities?: boolean | Prisma.Project$activitiesArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
@@ -518,6 +548,7 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     moreDetails: runtime.JsonValue | null
     token: string
     verifierKey: string | null
+    ipAddress: string | null
     createdOn: Date
   }, ExtArgs["result"]["project"]>
   composites: {}
@@ -949,6 +980,7 @@ export interface ProjectFieldRefs {
   readonly moreDetails: Prisma.FieldRef<"Project", 'Json'>
   readonly token: Prisma.FieldRef<"Project", 'String'>
   readonly verifierKey: Prisma.FieldRef<"Project", 'String'>
+  readonly ipAddress: Prisma.FieldRef<"Project", 'String'>
   readonly createdOn: Prisma.FieldRef<"Project", 'DateTime'>
 }
     

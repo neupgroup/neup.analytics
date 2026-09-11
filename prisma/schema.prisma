@@ -141,6 +141,7 @@ model Project {
   moreDetails Json?
   token       String   @unique
   verifierKey String?
+  ipAddress   String?  @db.VarChar(48)
   createdOn   DateTime @default(now())
 
   activities Activity[]

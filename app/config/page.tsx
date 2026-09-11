@@ -12,6 +12,8 @@ import {
 } from '@neup/components/ui/card';
 import { makeAppPath } from '@neup/core/appconfig';
 import { ProjectKeyGenerator } from '@/components/project-key-generator';
+import { ServerAddressForm } from '@/components/server-address-form';
+import { FrameworkSelector } from '@/components/framework-selector';
 
 type ConfigPageProps = {
   searchParams?: Promise<{
@@ -131,8 +133,20 @@ export default async function ConfigPage({ searchParams }: ConfigPageProps) {
         </Card>
       </div>
 
-      <Card className="border-border/60 bg-card shadow-sm">
-        <CardHeader>
+      <Card className="border-0 bg-transparent shadow-none">
+        <CardHeader className="p-0">
+          <CardTitle className="font-headline text-2xl">Choose your language or framework</CardTitle>
+          <CardDescription>
+            Select the language or framework your site or app is built with to get the right setup instructions.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-0">
+          <FrameworkSelector />
+        </CardContent>
+      </Card>
+
+      <Card className="border-0 bg-transparent shadow-none">
+        <CardHeader className="p-0">
           <CardTitle className="flex items-center gap-2 font-headline text-2xl">
             <Globe className="h-5 w-5 text-primary" />
             Install snippet
@@ -141,7 +155,7 @@ export default async function ConfigPage({ searchParams }: ConfigPageProps) {
             Add this script to the target site for the selected project. It keeps the SDK auto-capture layer active for page views and outbound requests.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 p-0 pt-4">
           <div className="rounded-xl border bg-muted/20 p-4">
             <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-xs leading-6 text-muted-foreground">
               {snippet}
@@ -158,8 +172,8 @@ export default async function ConfigPage({ searchParams }: ConfigPageProps) {
         </CardContent>
       </Card>
 
-      <Card className="border-border/60 bg-card shadow-sm">
-        <CardHeader>
+      <Card className="border-0 bg-transparent shadow-none">
+        <CardHeader className="p-0">
           <CardTitle className="flex items-center gap-2 font-headline text-2xl">
             <KeyRound className="h-5 w-5 text-primary" />
             Project credentials
@@ -168,8 +182,20 @@ export default async function ConfigPage({ searchParams }: ConfigPageProps) {
             Generate an Ed25519 private key for authenticated analytics requests. The private key is generated locally and is never saved here.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <ProjectKeyGenerator projectId={project.id} />
+        <CardContent className="p-0">
+          <ProjectKeyGenerator projectId={project.id} hasVerifierKey={Boolean(project.verifierKey)} />
+        </CardContent>
+      </Card>
+
+      <Card className="border-0 bg-transparent shadow-none">
+        <CardHeader className="p-0">
+          <CardTitle className="font-headline text-2xl">Server Address</CardTitle>
+          <CardDescription>
+            Add the IP address or IP addresses of the server for this project.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-0">
+          <ServerAddressForm projectId={project.id} initialIpAddress={project.ipAddress ?? ''} />
         </CardContent>
       </Card>
 
