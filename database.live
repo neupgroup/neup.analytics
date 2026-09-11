@@ -21,6 +21,8 @@ Fields:
 > userAgent: string, nullable;
 > pageUrl: string, nullable;
 > referral: string, nullable;
+> contextId: string, nullable;
+> geoLocation: string, nullable;
 > activityOn: timestamp, default: now();
 > projectId: string, references Project.id;
 

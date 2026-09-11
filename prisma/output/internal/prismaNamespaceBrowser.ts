@@ -189,6 +189,8 @@ export const ActivityScalarFieldEnum = {
   userAgent: 'userAgent',
   pageUrl: 'pageUrl',
   referral: 'referral',
+  contextId: 'contextId',
+  geoLocation: 'geoLocation',
   activityOn: 'activityOn',
   projectId: 'projectId'
 } as const

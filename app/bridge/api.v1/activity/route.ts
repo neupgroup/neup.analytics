@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import crypto from 'node:crypto';
 import { prisma } from '@neup/core/database/prisma';
 import {
   createActivities,
@@ -32,12 +33,38 @@ function getRequestIp(request: Request): string | undefined {
   return request.headers.get('x-real-ip')?.trim() || undefined;
 }
 
+function isValidServerIp(configured: string | null, requestIp?: string) {
+  if (!configured || !requestIp) return false;
+  return configured.split(',').map((value) => value.trim()).filter(Boolean).includes(requestIp);
+}
+
+function verifySignedContext(value: string | undefined, verifierKey: string | null) {
+  if (!value || !verifierKey) return null;
+  const separator = value.lastIndexOf('.');
+  if (separator <= 0) return null;
+  const contextId = value.slice(0, separator);
+  const signature = value.slice(separator + 1);
+  try {
+    const valid = crypto.verify(
+      null,
+      Buffer.from(contextId),
+      crypto.createPublicKey({ key: Buffer.from(verifierKey, 'base64'), format: 'der', type: 'spki' }),
+      Buffer.from(signature, 'base64url'),
+    );
+    return valid ? contextId : null;
+  } catch {
+    return null;
+  }
+}
+
 export async function POST(request: Request) {
   let allowedOrigin: string | undefined;
 
   try {
     const { searchParams } = new URL(request.url);
-    const projectId = searchParams.get('project')?.trim();
+    const body = await request.json();
+    const bodyRecord = body && typeof body === 'object' && !Array.isArray(body) ? body as Record<string, unknown> : null;
+    const projectId = searchParams.get('project')?.trim() || (typeof bodyRecord?.projectId === 'string' ? bodyRecord.projectId.trim() : undefined);
 
     if (!projectId) {
       return NextResponse.json(
@@ -56,6 +83,8 @@ export async function POST(request: Request) {
       select: {
         id: true,
         path: true,
+        ipAddress: true,
+        verifierKey: true,
       },
     });
 
@@ -70,11 +99,10 @@ export async function POST(request: Request) {
     }
 
     const requestOrigin = getRequestOrigin(request);
+    const requestIp = getRequestIp(request);
+    const serverRequest = isValidServerIp(project.ipAddress, requestIp);
 
-    if (
-      requestOrigin
-      && !isProjectOriginAllowed(project.path, requestOrigin, request.url)
-    ) {
+    if (!serverRequest && (!requestOrigin || !isProjectOriginAllowed(project.path, requestOrigin, request.url))) {
       return NextResponse.json(
         {
           success: false,
@@ -86,7 +114,6 @@ export async function POST(request: Request) {
 
     allowedOrigin = requestOrigin;
 
-    const body = await request.json();
     const events = parseActivityEvents(body);
 
     if (events.length === 0) {
@@ -99,10 +126,20 @@ export async function POST(request: Request) {
       );
     }
 
-    const ip = getRequestIp(request);
+    const signedContext = typeof bodyRecord?.contextId === 'string' ? bodyRecord.contextId : typeof bodyRecord?.signedContextId === 'string' ? bodyRecord.signedContextId : undefined;
+    const verifiedContextId = serverRequest ? verifySignedContext(signedContext, project.verifierKey) : null;
+    if (serverRequest && signedContext && !verifiedContextId) {
+      return NextResponse.json({ success: false, message: 'Invalid signed context' }, { status: 403, headers: getCorsHeaders(allowedOrigin) });
+    }
+    if (serverRequest && !signedContext) {
+      return NextResponse.json({ success: false, message: 'Signed context is required for server requests' }, { status: 403, headers: getCorsHeaders(allowedOrigin) });
+    }
+    const ip = requestIp;
     const userAgent = request.headers.get('user-agent')?.trim() || undefined;
     const activityEvents = events.map((event) => ({
       ...event,
+      identifierId: event.identifierId ?? event.identifier ?? verifiedContextId ?? event.contextId ?? crypto.randomUUID(),
+      contextId: verifiedContextId ?? event.contextId,
       ip: event.ip ?? ip,
       userAgent: event.userAgent ?? userAgent,
     }));

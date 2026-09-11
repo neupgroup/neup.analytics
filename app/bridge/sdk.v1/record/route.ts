@@ -33,6 +33,13 @@ const sdkSource = String.raw`(function () {
     var collect = collectAttr ? collectAttr.split(',').map(function (s) { return s.trim(); }) : ['pageview'];
     var endpointAttr = script && (script.getAttribute('data-endpoint') || script.dataset.endpoint || '');
     var modeAttr = script && (script.getAttribute('data-mode') || script.dataset.mode || '');
+    var contextId = script && (script.getAttribute('data-context-id') || script.dataset.contextId || '');
+    var geoLocation = '';
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function (position) {
+        geoLocation = position.coords.latitude + ',' + position.coords.longitude;
+      }, function () {}, { maximumAge: 300000, timeout: 3000 });
+    }
 
     if (!siteId) return;
 
@@ -148,10 +155,16 @@ const sdkSource = String.raw`(function () {
     function buildActivityEvent(event) {
       return {
         identifierId: sessionId,
+        contextId: contextId || undefined,
+        projectId: siteId,
         type: event.type || 'activity',
         timeSpent: typeof event.elapsedMs === 'number' ? Math.max(0, Math.round(event.elapsedMs)) : undefined,
         pageUrl: pageUrl,
+        url: pageUrl,
+        path: location.pathname,
         referral: document.referrer || undefined,
+        referrer: document.referrer || undefined,
+        geoLocation: geoLocation || undefined,
         userAgent: navigator.userAgent,
         moreDetails: {
           siteId: siteId,

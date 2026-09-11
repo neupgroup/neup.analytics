@@ -32,10 +32,7 @@ function signContextId(contextId: string): string {
     );
   }
 
-  const signature = crypto
-    .createHmac("sha256", projectKey)
-    .update(contextId)
-    .digest("hex");
+  const signature = crypto.sign(null, Buffer.from(contextId), crypto.createPrivateKey({ key: Buffer.from(projectKey, "base64"), format: "der", type: "pkcs8" })).toString("base64url");
 
   return `${contextId}.${signature}`;
 }
@@ -159,7 +156,7 @@ export async function logActivity(
   activity: string,
   data?: Record<string, unknown>
 ): Promise<void> {
-  if (!ANALYTICS_PROJECT_KEY) {
+  if (!process.env.NEUP_ANALYTICS_PROJECT_KEY) {
     return;
   }
 
@@ -192,13 +189,24 @@ export async function logActivity(
   const body: {
     _neuptraceid?: string;
     contextId?: string;
-    activity: string;
-    data?: Record<string, unknown>;
-    agent: string;
+    projectId: string;
+    event: string;
+    url: string;
+    path: string;
+    referrer: string;
+    timestamp: string;
+    userAgent: string;
     ipAddress: string;
+    geoLocation?: string;
+    data?: Record<string, unknown>;
   } = {
-    activity,
-    agent,
+    projectId,
+    event: activity,
+    url: typeof data?.url === "string" ? data.url : requestHeaders.get("referer") ?? "",
+    path: typeof data?.path === "string" ? data.path : typeof data?.pagePath === "string" ? data.pagePath : "",
+    referrer: requestHeaders.get("referer") ?? "",
+    timestamp: new Date().toISOString(),
+    userAgent: agent,
     ipAddress,
   };
 

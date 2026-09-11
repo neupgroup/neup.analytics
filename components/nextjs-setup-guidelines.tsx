@@ -10,24 +10,36 @@ import { cookies, headers } from "next/headers";
 
 const projectId = "${projectId}";
 
+function generateTraceId(): string {
+  return \`${Date.now()}.\${crypto.randomBytes(24).toString("hex")}\`;
+}
+
+function generateContextId(traceId: string): string {
+  const projectKey = process.env.NEUP_ANALYTICS_PROJECT_KEY;
+  if (!projectKey) throw new Error("NEUP_ANALYTICS_PROJECT_KEY is not configured.");
+  return crypto.createHmac("sha256", projectKey).update(traceId).digest("hex");
+}
+
 function signContextId(contextId: string) {
   const projectKey = process.env.NEUP_ANALYTICS_PROJECT_KEY;
   if (!projectKey) throw new Error("NEUP_ANALYTICS_PROJECT_KEY is not configured.");
-  return \`\${contextId}.\${crypto.createHmac("sha256", projectKey).update(contextId).digest("hex")}\`;
+  return \`\${contextId}.\${crypto.sign(null, Buffer.from(contextId), crypto.createPrivateKey({ key: Buffer.from(projectKey, "base64"), format: "der", type: "pkcs8" })).toString("base64url")}\`;
 }
 
 export async function getAnalyticsContext() {
   const cookieStore = await cookies();
   let traceId = cookieStore.get("_neuptraceid")?.value;
   if (!traceId) {
-    traceId = \`${Date.now()}.\${crypto.randomBytes(24).toString("hex")}\`;
+    traceId = generateTraceId();
     cookieStore.set({ name: "_neuptraceid", value: traceId, httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/" });
   }
-  const contextId = signContextId(traceId);
+  const contextId = generateContextId(traceId);
   return { traceId, contextId, signedContextId: signContextId(contextId), projectId };
 }
 
 export async function logPageActivity(contextId: string, pageUrl: string): Promise<void> {
+  const projectKey = process.env.NEUP_ANALYTICS_PROJECT_KEY;
+  if (!projectKey) return;
   const { traceId } = await getAnalyticsContext();
   const requestHeaders = await headers();
   try {
@@ -43,6 +55,8 @@ export async function logPageActivity(contextId: string, pageUrl: string): Promi
 }
 
 export async function logActivity(activity: string, data?: Record<string, unknown>): Promise<void> {
+  const projectKey = process.env.NEUP_ANALYTICS_PROJECT_KEY;
+  if (!projectKey) return;
   const { contextId, traceId } = await getAnalyticsContext();
   const requestHeaders = await headers();
   await fetch(
@@ -68,13 +82,16 @@ export async function logClientActivity(activity: string, data?: Record<string, 
 }
 
 function buildLayoutCode(projectId: string) {
-  return `import { getAnalyticsContext, logPageActivity } from "@/analytics";
+  return `import { headers } from "next/headers";
+import { getAnalyticsContext, logPageActivity } from "@/analytics";
 
 const projectId = "${projectId}";
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const { contextId, signedContextId } = await getAnalyticsContext();
-  await logPageActivity(contextId, "/");
+  const requestHeaders = await headers();
+  const pagePath = requestHeaders.get("x-invoke-path") ?? requestHeaders.get("next-url") ?? "/";
+  await logPageActivity(contextId, pagePath);
 
   return (
     <html lang="en">

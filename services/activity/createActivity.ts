@@ -15,6 +15,12 @@ type ActivityEventInput = {
   userAgent?: string;
   pageUrl?: string;
   referral?: string;
+  contextId?: string;
+  geoLocation?: string;
+  url?: string;
+  path?: string;
+  referrer?: string;
+  timestamp?: Date | string;
 };
 
 type CreateActivityInput = ActivityEventInput & {
@@ -169,13 +175,15 @@ function normalizeActivityInput(data: CreateActivityInput): Prisma.ActivityUnche
       typeof timeSpent === 'number' && Number.isInteger(timeSpent)
         ? timeSpent
         : undefined,
-    activityOn: readDate(data.activityOn) ?? new Date(),
     moreDetails: data.moreDetails ?? undefined,
     agent: data.agent ?? undefined,
     ip: data.ip?.trim() || undefined,
     userAgent: data.userAgent?.trim() || undefined,
-    pageUrl: data.pageUrl?.trim() || undefined,
-    referral: data.referral?.trim() || undefined,
+    contextId: data.contextId?.trim() || undefined,
+    geoLocation: data.geoLocation?.trim() || undefined,
+    pageUrl: data.pageUrl?.trim() || data.url?.trim() || undefined,
+    referral: data.referral?.trim() || data.referrer?.trim() || undefined,
+    activityOn: readDate(data.activityOn ?? data.timestamp) ?? new Date(),
     projectId: data.projectId.trim(),
   };
 }
@@ -194,7 +202,7 @@ export function parseActivityEvents(input: unknown): ActivityEventInput[] {
       id: readString(record.id),
       identifier: readString(record.identifier),
       identifierId: readString(record.identifierId),
-      type: readString(record.type),
+      type: readString(record.type) ?? readString(record.event),
       timeSpent: readInteger(record.timeSpent),
       timespent: readInteger(record.timespent),
       activityOn: readDate(record.activityOn),
@@ -202,8 +210,14 @@ export function parseActivityEvents(input: unknown): ActivityEventInput[] {
       agent: readJsonValue(record.agent),
       ip: readString(record.ip),
       userAgent: readString(record.userAgent) ?? readString(record.user_agent),
-      pageUrl: readString(record.pageUrl) ?? readString(record.page_url),
-      referral: readString(record.referral),
+      pageUrl: readString(record.pageUrl) ?? readString(record.page_url) ?? readString(record.url),
+      referral: readString(record.referral) ?? readString(record.referrer),
+      contextId: readString(record.contextId),
+      geoLocation: readString(record.geoLocation),
+      url: readString(record.url),
+      path: readString(record.path),
+      referrer: readString(record.referrer),
+      timestamp: readDate(record.timestamp),
     };
   });
 }

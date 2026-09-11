@@ -123,6 +123,8 @@ model Activity {
   userAgent    String?
   pageUrl      String?
   referral     String?
+  contextId    String?
+  geoLocation  String?
   activityOn   DateTime @default(now())
   projectId    String
   project      Project  @relation(fields: [projectId], references: [id])
@@ -132,6 +134,7 @@ model Activity {
   @@index([projectId])
   @@index([activityOn])
   @@index([pageUrl])
+  @@index([contextId])
 }
 
 model Project {
