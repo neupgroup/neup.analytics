@@ -1,0 +1,241 @@
+import crypto from "node:crypto";
+import { cookies, headers } from "next/headers";
+
+function generateTraceId(): string {
+  const timestamp = Date.now();
+  const randomToken = crypto.randomBytes(24).toString("hex");
+
+  return `${timestamp}.${randomToken}`;
+}
+
+function generateContextId(traceId: string): string {
+  const projectKey = process.env.NEUP_ANALYTICS_PROJECT_KEY;
+
+  if (!projectKey) {
+    throw new Error(
+      "NEUP_ANALYTICS_PROJECT_KEY is not configured."
+    );
+  }
+
+  return crypto
+    .createHmac("sha256", projectKey)
+    .update(traceId)
+    .digest("hex");
+}
+
+function signContextId(contextId: string): string {
+  const projectKey = process.env.NEUP_ANALYTICS_PROJECT_KEY;
+
+  if (!projectKey) {
+    throw new Error(
+      "NEUP_ANALYTICS_PROJECT_KEY is not configured."
+    );
+  }
+
+  const signature = crypto
+    .createHmac("sha256", projectKey)
+    .update(contextId)
+    .digest("hex");
+
+  return `${contextId}.${signature}`;
+}
+
+/**
+ * Gets the existing analytics trace cookie.
+ * Creates it when it does not exist.
+ *
+ * Server-side only.
+ */
+export async function getAnalyticsContext() {
+  const cookieStore = await cookies();
+
+  let traceId = cookieStore.get("_neuptraceid")?.value;
+
+  if (!traceId) {
+    traceId = generateTraceId();
+
+    cookieStore.set({
+      name: "_neuptraceid",
+      value: traceId,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+    });
+  }
+
+  const contextId = generateContextId(traceId);
+  const signedContextId = signContextId(contextId);
+
+  return {
+    traceId,
+    contextId,
+    signedContextId,
+  };
+}
+
+/**
+ * Logs a page activity from the server.
+ *
+ * The _neuptraceid cookie is included only when it exists.
+ */
+export async function logPageActivity(
+  projectId: string,
+  contextId: string,
+  pageUrl: string
+): Promise<void> {
+  const projectKey = process.env.NEUP_ANALYTICS_PROJECT_KEY;
+
+  if (!projectKey) {
+    return;
+  }
+
+  const requestHeaders = await headers();
+  const cookieStore = await cookies();
+
+  const traceId =
+    cookieStore.get("_neuptraceid")?.value;
+
+  const agent =
+    requestHeaders.get("user-agent") ?? "";
+
+  const forwardedFor =
+    requestHeaders.get("x-forwarded-for");
+
+  const ipAddress =
+    forwardedFor?.split(",")[0]?.trim() ||
+    requestHeaders.get("x-real-ip") ||
+    "";
+
+  const body: {
+    _neuptraceid?: string;
+    contextId: string;
+    pageUrl: string;
+    agent: string;
+    ipAddress: string;
+  } = {
+    contextId: signContextId(contextId),
+    pageUrl,
+    agent,
+    ipAddress,
+  };
+
+  if (traceId) {
+    body._neuptraceid = traceId;
+  }
+
+  try {
+    await fetch(
+      `https://neupgroup.com/analytics/bridge/api.v1/activity?project=${encodeURIComponent(projectId)}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+        cache: "no-store",
+      }
+    );
+  } catch {
+    // Analytics failures must never break the application.
+  }
+}
+
+/**
+ * Logs a generic server-side activity.
+ *
+ * Examples:
+ * - button_press
+ * - form_submit
+ * - login
+ * - logout
+ * - property_view
+ * - property_contact
+ * - search
+ * - signup
+ */
+export async function logActivity(
+  projectId: string,
+  activity: string,
+  data?: Record<string, unknown>
+): Promise<void> {
+  if (!ANALYTICS_PROJECT_KEY) {
+    return;
+  }
+
+  const requestHeaders = await headers();
+  const cookieStore = await cookies();
+
+  const traceId =
+    cookieStore.get("_neuptraceid")?.value;
+
+  /*
+   * The Context ID is derived from the server-side
+   * trace ID, so server activities remain connected
+   * to the same browsing context.
+   */
+  const contextId = traceId
+    ? generateContextId(traceId)
+    : null;
+
+  const agent =
+    requestHeaders.get("user-agent") ?? "";
+
+  const forwardedFor =
+    requestHeaders.get("x-forwarded-for");
+
+  const ipAddress =
+    forwardedFor?.split(",")[0]?.trim() ||
+    requestHeaders.get("x-real-ip") ||
+    "";
+
+  const body: {
+    _neuptraceid?: string;
+    contextId?: string;
+    activity: string;
+    data?: Record<string, unknown>;
+    agent: string;
+    ipAddress: string;
+  } = {
+    activity,
+    agent,
+    ipAddress,
+  };
+
+  /*
+   * Only include the trace ID when the cookie exists.
+   */
+  if (traceId) {
+    body._neuptraceid = traceId;
+  }
+
+  /*
+   * Only include a Context ID when there is a trace
+   * cookie from which it can be derived.
+   */
+  if (contextId) {
+    body.contextId = signContextId(contextId);
+  }
+
+  if (data !== undefined) {
+    body.data = data;
+  }
+
+  try {
+    await fetch(
+      `https://neupgroup.com/analytics/bridge/api.v1/activity?project=${encodeURIComponent(projectId)}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+        cache: "no-store",
+      }
+    );
+  } catch {
+    /*
+     * Analytics must never break the application.
+     */
+  }
+}

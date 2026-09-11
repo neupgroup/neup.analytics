@@ -1,0 +1,35 @@
+import {
+  getAnalyticsContext,
+  logPageActivity,
+} from "@/analytics";
+
+export default async function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  const {
+    contextId,
+    signedContextId,
+  } = await getAnalyticsContext();
+
+  await logPageActivity(
+    contextId,
+    "/"
+  );
+
+  return (
+    <html lang="en">
+      <body>
+        {children}
+
+        <script
+          src="https://neupgroup.com/analytics/sdk.v1/record"
+          data-context-id={signedContextId}
+          data-project-id={projectId}
+          defer
+        />
+      </body>
+    </html>
+  );
+}

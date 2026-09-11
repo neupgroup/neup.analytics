@@ -36,7 +36,7 @@
     ".next/dev/types/**/*.ts",
     ".neup/**/*.ts",
     ".neup/**/*.tsx",
-    "base/**/*.ts",
+    "base/**/*.ts", "setup/nextjs/analytics.block",
   ],
   "exclude": [
     "node_modules"

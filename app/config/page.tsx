@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { Code2, Globe, KeyRound, Settings2, Waypoints } from 'lucide-react';
+import { Code2, Settings2, Waypoints } from 'lucide-react';
 import { prisma } from '@neup/core/database/prisma';
 import { Badge } from '@neup/components/ui/badge';
 import {
@@ -14,6 +14,8 @@ import { makeAppPath } from '@neup/core/appconfig';
 import { ProjectKeyGenerator } from '@/components/project-key-generator';
 import { ServerAddressForm } from '@/components/server-address-form';
 import { FrameworkSelector } from '@/components/framework-selector';
+import { NextJsSetupGuidelines } from '@/components/nextjs-setup-guidelines';
+import { LinkButton } from '@neup/components/ui/link-button';
 
 type ConfigPageProps = {
   searchParams?: Promise<{
@@ -87,7 +89,7 @@ export default async function ConfigPage({ searchParams }: ConfigPageProps) {
   });
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
       <div className="space-y-3">
         <Badge variant="secondary" className="w-fit">
           Project config
@@ -135,7 +137,7 @@ export default async function ConfigPage({ searchParams }: ConfigPageProps) {
 
       <Card className="border-0 bg-transparent shadow-none">
         <CardHeader className="p-0">
-          <CardTitle className="font-headline text-2xl">Choose your language or framework</CardTitle>
+          <CardTitle className="font-headline text-2xl"><span className="mr-2">1.</span>Choose your language or framework</CardTitle>
           <CardDescription>
             Select the language or framework your site or app is built with to get the right setup instructions.
           </CardDescription>
@@ -147,71 +149,52 @@ export default async function ConfigPage({ searchParams }: ConfigPageProps) {
 
       <Card className="border-0 bg-transparent shadow-none">
         <CardHeader className="p-0">
-          <CardTitle className="flex items-center gap-2 font-headline text-2xl">
-            <Globe className="h-5 w-5 text-primary" />
-            Install snippet
-          </CardTitle>
+          <CardTitle className="font-headline text-2xl"><span className="mr-2">2.</span>Setup Project credentials</CardTitle>
           <CardDescription>
-            Add this script to the target site for the selected project. It keeps the SDK auto-capture layer active for page views and outbound requests.
+            Generate an Signing Key for Authenticated Analytics requests. The private key is generated locally and is never saved here.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4 p-0 pt-4">
-          <div className="rounded-xl border bg-muted/20 p-4">
-            <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-xs leading-6 text-muted-foreground">
-              {snippet}
-            </pre>
-          </div>
-          <div className="grid gap-3 text-sm text-muted-foreground md:grid-cols-2">
-            <div className="rounded-lg border bg-background p-4">
-              `pageview` records which page the visitor opened.
-            </div>
-            <div className="rounded-lg border bg-background p-4">
-              `requests` records browser fetch and XHR calls made during the session.
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="border-0 bg-transparent shadow-none">
-        <CardHeader className="p-0">
-          <CardTitle className="flex items-center gap-2 font-headline text-2xl">
-            <KeyRound className="h-5 w-5 text-primary" />
-            Project credentials
-          </CardTitle>
-          <CardDescription>
-            Generate an Ed25519 private key for authenticated analytics requests. The private key is generated locally and is never saved here.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="p-0">
+        <CardContent className="p-0 pt-4">
           <ProjectKeyGenerator projectId={project.id} hasVerifierKey={Boolean(project.verifierKey)} />
         </CardContent>
       </Card>
 
       <Card className="border-0 bg-transparent shadow-none">
         <CardHeader className="p-0">
-          <CardTitle className="font-headline text-2xl">Server Address</CardTitle>
+          <CardTitle className="font-headline text-2xl"><span className="mr-2">3.</span>Server Address</CardTitle>
           <CardDescription>
-            Add the IP address or IP addresses of the server for this project.
+            Add the IP address or IP addresses of the server for this project in CSV format.
           </CardDescription>
         </CardHeader>
-        <CardContent className="p-0">
+        <CardContent className="p-0 pt-4">
           <ServerAddressForm projectId={project.id} initialIpAddress={project.ipAddress ?? ''} />
         </CardContent>
       </Card>
 
-      <Card className="border-border/60 bg-card shadow-sm">
-        <CardHeader>
-          <CardTitle className="font-headline text-2xl">Project details</CardTitle>
+      <Card className="border-0 bg-transparent shadow-none">
+        <CardHeader className="p-0">
+          <CardTitle className="font-headline text-2xl"><span className="mr-2">4.</span>Setup to configure Snippet</CardTitle>
           <CardDescription>
-            This config stays tied to the current `selectedProject`.
+            Add this script to the target site for the selected project.
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-3 text-sm text-muted-foreground">
-          <p><span className="font-medium text-foreground">Project ID:</span> {project.id}</p>
-          <p><span className="font-medium text-foreground">Path:</span> {project.path}</p>
-          <p><span className="font-medium text-foreground">Created:</span> {project.createdOn.toLocaleString()}</p>
+        <CardContent className="space-y-4 p-0 pt-4">
+          <NextJsSetupGuidelines projectId={project.id} />
         </CardContent>
       </Card>
+
+      <Card className="border-0 bg-transparent shadow-none">
+        <CardHeader className="p-0">
+          <CardTitle className="font-headline text-2xl"><span className="mr-2">5.</span>Complete setup</CardTitle>
+          <CardDescription>Your project configuration is ready. Add the credentials and snippet to your application to start collecting analytics.</CardDescription>
+        </CardHeader>
+        <CardContent className="p-0 pt-4">
+          <LinkButton variant="solid" href={`${makeAppPath('/activity')}?selectedProject=${encodeURIComponent(project.id)}`}>
+            View Activities
+          </LinkButton>
+        </CardContent>
+      </Card>
+
     </div>
   );
 }

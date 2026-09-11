@@ -18,13 +18,19 @@ const frameworks = [
 export function FrameworkSelector() {
   const [framework, setFramework] = useState('');
 
+  function selectFramework(value: string) {
+    setFramework(value);
+    window.localStorage.setItem('neup-config-framework', value);
+    window.dispatchEvent(new CustomEvent('neup-config-framework-change', { detail: value }));
+  }
+
   return (
     <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
       {frameworks.map(([value, label, Icon]) => (
         <button
           key={value}
           type="button"
-          onClick={() => setFramework(value)}
+          onClick={() => selectFramework(value)}
           className={`rounded-xl border bg-background p-4 text-left text-sm font-medium transition-colors hover:border-primary/60 hover:bg-primary/5 ${framework === value ? 'border-2 border-primary bg-primary/5 text-primary' : 'border-border/60'}`}
           aria-pressed={framework === value}
         >

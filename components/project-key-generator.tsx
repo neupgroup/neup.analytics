@@ -85,7 +85,7 @@ export function ProjectKeyGenerator({ projectId, hasVerifierKey }: { projectId: 
         ) : null}
         {keyExists && (
           <Button variant="solid" convey="danger" preIcon={<ShieldOff className="h-4 w-4" />} onClick={() => setRevokeDialogOpen(true)}>
-            Revoke this key
+            Revoke old Key
           </Button>
         )}
       </div>
@@ -96,13 +96,12 @@ export function ProjectKeyGenerator({ projectId, hasVerifierKey }: { projectId: 
         </div>
       )}
       {error && <p className="text-sm text-destructive">{error}</p>}
-      <p className="text-xs text-muted-foreground">
-        {privateKey
-          ? 'The private key is shown only once in this browser session. Save it in your environment or config file before leaving this page.'
-          : keyExists
-            ? 'A key already exists and cannot be recovered. Revoke it to generate a new key.'
-            : 'Generate a key to create project credentials.'}
-      </p>
+      {!keyExists && !privateKey && (
+        <p className="text-xs text-muted-foreground">Generate a key to create project credentials.</p>
+      )}
+      {privateKey && (
+        <p className="text-xs text-muted-foreground">The private key is shown only once in this browser session. Save it in your environment or config file before leaving this page.</p>
+      )}
 
       <AlertDialog open={revokeDialogOpen} onOpenChange={setRevokeDialogOpen}>
         <AlertDialogContent>
