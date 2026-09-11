@@ -202,6 +202,7 @@ export const ProjectScalarFieldEnum = {
   type: 'type',
   moreDetails: 'moreDetails',
   token: 'token',
+  verifierKey: 'verifierKey',
   createdOn: 'createdOn'
 } as const
 

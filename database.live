@@ -1,0 +1,115 @@
+Table: Project, Model: Project
+Fields:
+> id: string, cuid, primary key;
+> path: string;
+> type: string;
+> moreDetails: json, nullable;
+> token: string, unique;
+> verifierKey: string, nullable, Ed25519 public key in base64 SPKI format;
+> createdOn: timestamp, default: now();
+
+Table: Activity, Model: Activity
+Fields:
+> id: string, cuid, primary key;
+> identifierId: string;
+> type: string, nullable;
+> timeSpent: int, nullable;
+> agent: json, nullable;
+> moreDetails: json, nullable;
+> ip: string, nullable;
+> userAgent: string, nullable;
+> pageUrl: string, nullable;
+> referral: string, nullable;
+> activityOn: timestamp, default: now();
+> projectId: string, references Project.id;
+
+Table: PageSnapshot, Model: PageSnapshot
+Fields:
+> id: string, cuid, primary key;
+> pagePath: string;
+> siteId: string;
+> content: string;
+> version: int, default: 1;
+> recordedOn: timestamp, default: now();
+
+Table: User, Model: User
+Fields:
+> id: string, cuid, primary key;
+> createdAt: timestamp, default: now();
+> updatedAt: timestamp, auto-updated;
+> lastSeen: timestamp, nullable;
+> pagePath: string, nullable;
+> isLive: boolean, default: false;
+> lastInteraction: json, nullable;
+
+Table: Interaction, Model: Interaction
+Fields:
+> id: string, cuid, primary key;
+> createdAt: timestamp, default: now();
+> userId: string, nullable, references User.id;
+> pageId: string, nullable, references PageSnapshot.id;
+> pagePath: string;
+> windowWidth: int;
+> windowHeight: int;
+> userAgent: string, nullable;
+> ip: string, nullable;
+> city: string, nullable;
+> region: string, nullable;
+> country: string, nullable;
+> latitude: float, nullable;
+> longitude: float, nullable;
+
+Table: InteractionEvent, Model: InteractionEvent
+Fields:
+> id: string, cuid, primary key;
+> interactionId: string, references Interaction.id;
+> type: InteractionEventType;
+> x: int, nullable;
+> y: int, nullable;
+> scrollX: int, nullable;
+> scrollY: int, nullable;
+> element: string, nullable;
+> value: string, nullable;
+> key: string, nullable;
+> timestamp: int;
+
+Table: SnapshotWeb, Model: SnapshotWeb
+Fields:
+> id: string, cuid, primary key;
+> sessionId: string, nullable, references Interaction.id;
+> pageUrl: string;
+> data: string;
+> details: json, nullable;
+> createdOn: timestamp, default: now();
+
+Table: Application, Model: Application
+Fields:
+> id: string, cuid, primary key;
+> name: string;
+> sites: string[];
+> details: string, nullable;
+> status: ApplicationStatus, default: setup;
+
+Table: Account, Model: Account
+Fields:
+> id: string, primary key;
+> connectionId: string;
+> type: string;
+> displayName: string;
+> displayImage: string;
+> createdOn: timestamp, default: now();
+> status: string;
+> moreDetails: json, nullable;
+
+Table: IpMap, Model: IpMap
+Fields:
+> id: string, cuid, primary key;
+> ipAddress: string;
+> ipType: string;
+> city: string, nullable;
+> region: string, nullable;
+> country: string, nullable;
+> geoLocation: json, nullable;
+> ipInfo: json, nullable;
+> moreDetails: json, nullable;
+> lastUpdated: timestamp, default: now, auto-updated;

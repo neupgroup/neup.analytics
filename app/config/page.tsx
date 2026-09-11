@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { Code2, Globe, Settings2, Waypoints } from 'lucide-react';
+import { Code2, Globe, KeyRound, Settings2, Waypoints } from 'lucide-react';
 import { prisma } from '@neup/core/database/prisma';
 import { Badge } from '@neup/components/ui/badge';
 import {
@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from '@neup/components/ui/card';
 import { makeAppPath } from '@neup/core/appconfig';
+import { ProjectKeyGenerator } from '@/components/project-key-generator';
 
 type ConfigPageProps = {
   searchParams?: Promise<{
@@ -154,6 +155,21 @@ export default async function ConfigPage({ searchParams }: ConfigPageProps) {
               `requests` records browser fetch and XHR calls made during the session.
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border-border/60 bg-card shadow-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 font-headline text-2xl">
+            <KeyRound className="h-5 w-5 text-primary" />
+            Project credentials
+          </CardTitle>
+          <CardDescription>
+            Generate an Ed25519 private key for authenticated analytics requests. The private key is generated locally and is never saved here.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ProjectKeyGenerator projectId={project.id} />
         </CardContent>
       </Card>
 

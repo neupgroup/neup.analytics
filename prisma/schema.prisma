@@ -140,6 +140,7 @@ model Project {
   type        String
   moreDetails Json?
   token       String   @unique
+  verifierKey String?
   createdOn   DateTime @default(now())
 
   activities Activity[]
