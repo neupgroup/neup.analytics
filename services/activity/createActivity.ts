@@ -133,9 +133,16 @@ export function isProjectOriginAllowed(
       hasConfiguredProtocol ? normalizedPath : `https://${normalizedPath}`
     );
 
+    const isConfiguredHostname =
+      originUrl.hostname === projectUrl.hostname
+      || originUrl.hostname.endsWith(`.${projectUrl.hostname}`);
+    const hasMatchingPort = originUrl.port === projectUrl.port;
+
     return hasConfiguredProtocol
-      ? projectUrl.origin === originUrl.origin
-      : projectUrl.host === originUrl.host;
+      ? projectUrl.protocol === originUrl.protocol
+        && isConfiguredHostname
+        && hasMatchingPort
+      : isConfiguredHostname && hasMatchingPort;
   } catch {
     return false;
   }
