@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from '@neup/components/ui/card';
 import { ArrowUpRight } from 'lucide-react';
-import { Link } from '@neup/components/ui/link';
+import { LinkButton } from '@neup/components/ui/link-button';
 
 const activities = [
     { id: 1, user: { name: 'Olivia Martin', avatarSeed: 'olivia' }, action: 'completed a purchase.', details: 'Source: Paid Ad on Facebook', time: '5m ago' },
@@ -27,10 +27,10 @@ export function RecentActivity() {
             A feed of the latest user interactions.
           </CardDescription>
         </div>
-        <Link variant="plain" size="sm" className="ml-auto gap-1" href="/live">
+        <LinkButton variant="plain" size="sm" className="ml-auto gap-1" href="/live">
             Live View
             <ArrowUpRight className="h-4 w-4" />
-          </Link>
+          </LinkButton>
       </CardHeader>
       <CardContent className="grid gap-6">
         {activities.map(activity => (

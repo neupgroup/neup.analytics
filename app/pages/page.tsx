@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@neup/components/ui/card';
-import { Link } from '@neup/components/ui/link';
+import { LinkButton } from '@neup/components/ui/link-button';
 import { Skeleton } from '@neup/components/ui/skeleton';
 import { FileText, Search, ArrowRight } from 'lucide-react';
 import { Button } from '@neup/components/ui/button';
@@ -114,10 +114,10 @@ export default function PagesPage() {
                                     </div>
                                 </div>
 
-                                <Link variant="tinted" size="sm" className="w-full shrink-0 sm:w-auto" href={`/pages/${page.id}`}>
+                                <LinkButton variant="tinted" size="sm" className="w-full shrink-0 sm:w-auto" href={`/pages/${page.id}`}>
                                         View Details
                                         <ArrowRight className="ml-2 h-4 w-4" />
-                                    </Link>
+                                    </LinkButton>
                             </div>
                         ))}
                     </div>

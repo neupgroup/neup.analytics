@@ -1,4 +1,4 @@
-import { Link } from "@neup/components/ui/link";
+import { LinkButton } from "@neup/components/ui/link-button";
 import { redirect } from "next/navigation";
 import { prisma } from "@neup/core/database/prisma";
 import { Button } from "@neup/components/ui/button";
@@ -95,9 +95,9 @@ export default function CreateProjectPage() {
             Create project
           </Button>
 
-          <Link variant="tinted" href="/projects">
+          <LinkButton variant="tinted" href="/projects">
               Cancel
-            </Link>
+            </LinkButton>
         </div>
       </form>
     </div>

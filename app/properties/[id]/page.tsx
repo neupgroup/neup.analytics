@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { headers } from 'next/headers';
-import { Link } from '@neup/components/ui/link';
+import { LinkButton } from '@neup/components/ui/link-button';
 import { ArrowRight, Building2, Code2, Database, Globe, Layers3, ShieldCheck } from 'lucide-react';
 import { prisma } from '@neup/core/database/prisma';
 import { Badge } from '@neup/components/ui/badge';
@@ -89,10 +89,10 @@ export default async function PropertyDetailPage({
             </p>
           </div>
         </div>
-        <Link variant="tinted" className="w-full sm:w-fit" href="/properties">
+        <LinkButton variant="tinted" className="w-full sm:w-fit" href="/properties">
             Back to properties
             <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
+          </LinkButton>
       </div>
 
       {isActive ? (

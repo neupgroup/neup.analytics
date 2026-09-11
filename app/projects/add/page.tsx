@@ -1,4 +1,4 @@
-import { Link } from '@neup/components/ui/link';
+import { LinkButton } from '@neup/components/ui/link-button';
 import { Plus } from 'lucide-react';
 import { Button } from '@neup/components/ui/button';
 import { Input } from '@neup/components/ui/input';
@@ -92,9 +92,9 @@ export default function AddProjectPage() {
                 Add Project
               </Button>
 
-              <Link variant="tinted" href="/projects">
+              <LinkButton variant="tinted" href="/projects">
                   Cancel
-                </Link>
+                </LinkButton>
             </div>
           </div>
         </CardContent>

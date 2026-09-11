@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { ExternalLink, FileText, Loader2 } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@neup/components/ui/alert';
-import { Link } from '@neup/components/ui/link';
+import { LinkButton } from '@neup/components/ui/link-button';
 import { Button } from '@neup/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@neup/components/ui/card';
 import { Skeleton } from '@neup/components/ui/skeleton';
@@ -221,10 +221,10 @@ export default function SnapshotDetailPage() {
           </div>
 
           {snapshot?.pageUrl && (
-            <Link variant="tinted" size="sm" className="shrink-0" href={snapshot.pageUrl} target="_blank" rel="noreferrer">
+            <LinkButton variant="tinted" size="sm" className="shrink-0" href={snapshot.pageUrl} target="_blank" rel="noreferrer">
                 Open site
                 <ExternalLink className="ml-2 h-4 w-4" />
-            </Link>
+            </LinkButton>
           )}
         </CardHeader>
 

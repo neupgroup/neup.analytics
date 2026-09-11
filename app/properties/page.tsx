@@ -1,4 +1,4 @@
-import { Link } from '@neup/components/ui/link';
+import { LinkButton } from '@neup/components/ui/link-button';
 import { ArrowRight, Building2, Database, Globe, Layers3 } from 'lucide-react';
 import { prisma } from '@neup/core/database/prisma';
 import { Badge } from '@neup/components/ui/badge';
@@ -38,10 +38,10 @@ export default async function PropertiesPage() {
             </p>
           </div>
         </div>
-        <Link variant="solid" className="w-full sm:w-fit" href="/properties/add">
+            <LinkButton variant="solid" className="w-full sm:w-fit" href="/properties/add">
             Add property
             <ArrowRight className="ml-2 h-4 w-4" />
-          </Link>
+          </LinkButton>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
@@ -87,10 +87,10 @@ export default async function PropertiesPage() {
                 Add a site or application first, and it will appear here.
               </p>
             </div>
-            <Link variant="solid" href="/properties/add">
+            <LinkButton variant="solid" href="/properties/add">
                 Create the first property
                 <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
+              </LinkButton>
           </CardContent>
         </Card>
       ) : (
@@ -117,10 +117,10 @@ export default async function PropertiesPage() {
                   >
                     {application.status}
                   </Badge>
-                  <Link variant="tinted" size="sm" href={`/properties/${application.id}`}>
+                  <LinkButton variant="tinted" size="sm" href={`/properties/${application.id}`}>
                       View
                       <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
+                    </LinkButton>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">

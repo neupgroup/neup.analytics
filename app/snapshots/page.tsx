@@ -1,6 +1,6 @@
 'use client';
 
-import { Link } from '@neup/components/ui/link';
+import { LinkButton } from '@neup/components/ui/link-button';
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { Camera, ExternalLink, Eye, FileText, Loader2, RefreshCw } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@neup/components/ui/alert';
@@ -209,14 +209,14 @@ export default function SnapshotsPage() {
                   </div>
 
                   <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto">
-                    <Link variant="tinted" size="sm" className="w-full" href={`/snapshots/${snapshot.id}`}>
+                    <LinkButton variant="tinted" size="sm" className="w-full" href={`/snapshots/${snapshot.id}`}>
                         View
                         <Eye className="ml-2 h-4 w-4" />
-                      </Link>
-                    <Link variant="plain" size="sm" className="w-full" href={snapshot.pageUrl} target="_blank" rel="noreferrer">
+                      </LinkButton>
+                    <LinkButton variant="plain" size="sm" className="w-full" href={snapshot.pageUrl} target="_blank" rel="noreferrer">
                         Open site
                         <ExternalLink className="ml-2 h-4 w-4" />
-                    </Link>
+                    </LinkButton>
                   </div>
                 </div>
               ))}
