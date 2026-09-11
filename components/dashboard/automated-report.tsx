@@ -4,7 +4,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '#/components/ui/card';
+} from '@neup/components/ui/card';
 import { Bot } from 'lucide-react';
 
 export function AutomatedReport() {

@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '#/components/ui/card';
-import { Link } from '#/components/ui/link';
-import { Skeleton } from '#/components/ui/skeleton';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@neup/components/ui/card';
+import { Link } from '@neup/components/ui/link';
+import { Skeleton } from '@neup/components/ui/skeleton';
 import { FileText, Search, ArrowRight } from 'lucide-react';
-import { Button } from '#/components/ui/button';
+import { Button } from '@neup/components/ui/button';
 
 type Page = {
     id: string;

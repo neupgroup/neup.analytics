@@ -2,11 +2,11 @@
 
 import { useMemo, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { Badge } from '#/components/ui/badge';
-import { Button } from '#/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '#/components/ui/card';
-import { Checkbox } from '#/components/ui/checkbox';
-import { Separator } from '#/components/ui/separator';
+import { Badge } from '@neup/components/ui/badge';
+import { Button } from '@neup/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@neup/components/ui/card';
+import { Checkbox } from '@neup/components/ui/checkbox';
+import { Separator } from '@neup/components/ui/separator';
 import { ArrowRight, CheckCircle2, Code2, ShieldCheck } from 'lucide-react';
 
 type CollectionOption = {

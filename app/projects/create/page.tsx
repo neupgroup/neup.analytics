@@ -1,9 +1,9 @@
-import { Link } from "#/components/ui/link";
+import { Link } from "@neup/components/ui/link";
 import { redirect } from "next/navigation";
-import { prisma } from "#/core/database/prisma";
-import { Button } from "#/components/ui/button";
-import { Input } from "#/components/ui/input";
-import { Textarea } from "#/components/ui/textarea";
+import { prisma } from "@neup/core/database/prisma";
+import { Button } from "@neup/components/ui/button";
+import { Input } from "@neup/components/ui/input";
+import { Textarea } from "@neup/components/ui/textarea";
 
 export default function CreateProjectPage() {
   async function createProject(formData: FormData) {
@@ -95,7 +95,7 @@ export default function CreateProjectPage() {
             Create project
           </Button>
 
-          <Link variant="tinted" href="/projects" basePath={false}>
+          <Link variant="tinted" href="/projects">
               Cancel
             </Link>
         </div>

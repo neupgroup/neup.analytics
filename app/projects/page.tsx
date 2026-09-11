@@ -1,7 +1,7 @@
-import { Link } from '#/components/ui/link';
+import { Link } from '@neup/components/ui/link';
 import { Plus, Box } from 'lucide-react';
-import { prisma } from '#/core/database/prisma';
-import { Skeleton } from '#/components/ui/skeleton';
+import { prisma } from '@neup/core/database/prisma';
+import { Skeleton } from '@neup/components/ui/skeleton';
 import { Suspense } from 'react';
 
 export function ProjectsSkeleton() {
@@ -36,7 +36,6 @@ export default async function ProjectsPage({
 
       <Link
         href="/projects/create"
-        basePath={false}
         className="flex min-h-[76px] w-full items-center rounded-xl border border-slate-200 bg-white px-5 py-4 transition-colors duration-200 ease-out hover:bg-sky-50"
       >
         <div className="flex min-w-0 items-center gap-3">
@@ -96,7 +95,6 @@ async function ProjectsData({ selectedProject }: { selectedProject?: string }) {
             <Link
               key={project.id}
               href={createProjectSelectionHref(project.id)}
-              basePath={false}
               className={`flex min-h-[76px] w-full items-center border px-5 py-4 transition-colors duration-200 ease-out ${
                 selectedProject === project.id
                   ? 'border-sky-200 bg-sky-100 hover:bg-sky-200'

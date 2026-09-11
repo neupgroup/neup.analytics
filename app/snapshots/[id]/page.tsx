@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { ExternalLink, FileText, Loader2 } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '#/components/ui/alert';
-import { Link } from '#/components/ui/link';
-import { Button } from '#/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '#/components/ui/card';
-import { Skeleton } from '#/components/ui/skeleton';
+import { Alert, AlertDescription, AlertTitle } from '@neup/components/ui/alert';
+import { Link } from '@neup/components/ui/link';
+import { Button } from '@neup/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@neup/components/ui/card';
+import { Skeleton } from '@neup/components/ui/skeleton';
 
 type Snapshot = {
   id: string;

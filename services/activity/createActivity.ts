@@ -1,4 +1,4 @@
-import { Prisma, prisma } from '#/core/database/prisma';
+import { Prisma, prisma } from '@neup/core/database/prisma';
 import { getFreshIpMapsByAddress } from '@/services/ipmap/getIpMap';
 
 type ActivityEventInput = {

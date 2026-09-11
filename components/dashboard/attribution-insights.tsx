@@ -4,7 +4,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '#/components/ui/card';
+} from '@neup/components/ui/card';
 
 const attributionData = [
   { channel: 'Organic Search', value: 45, color: 'bg-chart-1' },

@@ -1,6 +1,6 @@
 'use client';
 
-import { Link } from '#/components/ui/link';
+import { NavLink } from '@neup/components/ui/nav-link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import {
   Activity,
@@ -52,16 +52,16 @@ export function DashboardNav() {
   return (
     <nav className="grid items-start gap-2">
       {navItems.map((item) => (
-        <Link
+        <NavLink
           key={item.href}
           href={createDashboardHref(item.href, selectedProject)}
-          basePath={false}
+          active={pathname === item.href || pathname.startsWith(`${item.href}/`)}
           onClick={item.href === '/projects' ? undefined : (event) => guardProjectNavigation(event, item.label)}
-          className="w-full justify-start gap-3 px-3 py-2"
+          className="w-full gap-3 px-3 py-2"
         >
           <item.icon className="h-4 w-4" />
           {item.label}
-        </Link>
+        </NavLink>
       ))}
     </nav>
   );

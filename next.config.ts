@@ -1,5 +1,5 @@
 import type {NextConfig} from 'next';
-import application from '$/application.json';
+import application from '@base/application.json';
 
 function normalizeBasePath(value: string | undefined): string {
   if (typeof value !== 'string') return '';

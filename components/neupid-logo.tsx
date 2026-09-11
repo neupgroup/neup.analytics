@@ -1,7 +1,7 @@
-import { Link } from '#/components/ui/link';
+import { Link } from '@neup/components/ui/link';
 import Image from 'next/image';
-import { makeAppPath } from '#/core/appconfig';
-import { getLogo, getName } from '#/core/identity';
+import { makeAppPath } from '@neup/core/appconfig';
+import { getLogo, getName } from '@neup/core/identity';
 
 type NeupIdLogoProps = {
   iconHref: string;

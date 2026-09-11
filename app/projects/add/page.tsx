@@ -1,15 +1,15 @@
-import { Link } from '#/components/ui/link';
+import { Link } from '@neup/components/ui/link';
 import { Plus } from 'lucide-react';
-import { Button } from '#/components/ui/button';
-import { Input } from '#/components/ui/input';
-import { Textarea } from '#/components/ui/textarea';
+import { Button } from '@neup/components/ui/button';
+import { Input } from '@neup/components/ui/input';
+import { Textarea } from '@neup/components/ui/textarea';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '#/components/ui/card';
+} from '@neup/components/ui/card';
 
 export default function AddProjectPage() {
   return (

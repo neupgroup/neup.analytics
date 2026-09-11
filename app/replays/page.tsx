@@ -1,13 +1,13 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "#/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@neup/components/ui/card";
 // import { useFirestore, useMemoFirebase } from "@/firebase";
 // import { collection, query, orderBy, Timestamp, limit, startAfter, getDocs, Query, DocumentData, QuerySnapshot } from "firebase/firestore";
-import { Link } from "#/components/ui/link";
-import { Skeleton } from "#/components/ui/skeleton";
+import { Link } from "@neup/components/ui/link";
+import { Skeleton } from "@neup/components/ui/skeleton";
 import { PlaySquare, Clock, Laptop, Smartphone, User, ArrowLeft, ArrowRight } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Button } from "#/components/ui/button";
+import { Button } from "@neup/components/ui/button";
 
 // Define interaction type
 type Interaction = {

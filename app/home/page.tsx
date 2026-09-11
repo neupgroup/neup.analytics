@@ -1,4 +1,4 @@
-import { Link } from '#/components/ui/link';
+import { Link } from '@neup/components/ui/link';
 import { redirect } from 'next/navigation';
 import { Activity, Globe, MousePointerClick, Radar, Users } from 'lucide-react';
 import { ActivityCard } from '@/components/activity-card';
@@ -9,14 +9,14 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '#/components/ui/card';
-import { formatReadableDateTime } from '#/core/helpers/date';
-import { makeAppPath } from '#/core/appconfig';
-import { url } from '#/core/helpers/link/url';
+} from '@neup/components/ui/card';
+import { formatReadableDateTime } from '@neup/core/helpers/date';
+import { makeAppPath } from '@neup/core/appconfig';
+import { url } from '@neup/core/helpers/link/url';
 import { presentActivity } from '@/services/activity/presentActivity';
 import { getIpLocationLabel } from '@/services/ipmap/getIpMap';
 import { getProjectDashboard } from '@/services/projects/getProjectDashboard';
-import { Skeleton } from '#/components/ui/skeleton';
+import { Skeleton } from '@neup/components/ui/skeleton';
 import { Suspense } from 'react';
 
 type DashboardPageProps = {
@@ -218,7 +218,6 @@ async function DashboardData({
             </div>
             <div className="pt-2">
               <Link href={`/activity?selectedProject=${dashboard.project.id}`}
-              basePath={false}
               className="text-sm font-medium text-sky-700 hover:underline">
                 Open full activity feed
               </Link>

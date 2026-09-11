@@ -1,9 +1,9 @@
-import { Link } from '#/components/ui/link';
+import { Link } from '@neup/components/ui/link';
 import { redirect } from 'next/navigation';
-import { prisma } from '#/core/database/prisma';
-import { makeAppPath } from '#/core/appconfig';
-import { formatReadableDateTime } from '#/core/helpers/date';
-import { url } from '#/core/helpers/link/url';
+import { prisma } from '@neup/core/database/prisma';
+import { makeAppPath } from '@neup/core/appconfig';
+import { formatReadableDateTime } from '@neup/core/helpers/date';
+import { url } from '@neup/core/helpers/link/url';
 import { presentActivity } from '@/services/activity/presentActivity';
 import { formatIpMapLocation, getFreshIpMap } from '@/services/ipmap/getIpMap';
 
@@ -80,7 +80,6 @@ export default async function ActivityDetailPage({
             {activity.pageUrl ? (
               <Link
                 href={filterHref('pageUrl', activity.pageUrl)}
-                basePath={false}
                 className={filterLinkClassName}
               >
                 {activity.pageUrl}
@@ -109,7 +108,6 @@ export default async function ActivityDetailPage({
           <p className="mt-1 text-sm text-slate-700">
             <Link
               href={filterHref('activityType', presentation.type)}
-              basePath={false}
               className={filterLinkClassName}
             >
               {presentation.type}
@@ -128,7 +126,6 @@ export default async function ActivityDetailPage({
                 'agentType',
                 presentation.agentType.toLowerCase()
               )}
-              basePath={false}
               className={filterLinkClassName}
             >
               {presentation.agentType}
@@ -144,7 +141,6 @@ export default async function ActivityDetailPage({
           <p className="mt-1 break-all text-sm text-slate-700">
             <Link
               href={filterHref('identifier', activity.identifierId)}
-              basePath={false}
               className={filterLinkClassName}
             >
               {activity.identifierId}
@@ -161,7 +157,6 @@ export default async function ActivityDetailPage({
             {activity.ip ? (
               <Link
                 href={filterHref('ip', activity.ip)}
-                basePath={false}
                 className={filterLinkClassName}
               >
                 {activity.ip}
@@ -201,7 +196,6 @@ export default async function ActivityDetailPage({
             {activity.referral ? (
               <Link
                 href={filterHref('referral', activity.referral)}
-                basePath={false}
                 className={filterLinkClassName}
               >
                 {activity.referral}
@@ -221,7 +215,6 @@ export default async function ActivityDetailPage({
             {activity.userAgent ? (
               <Link
                 href={filterHref('userAgent', activity.userAgent)}
-                basePath={false}
                 className={filterLinkClassName}
               >
                 {activity.userAgent}

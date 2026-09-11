@@ -1,5 +1,5 @@
 import { Children, cloneElement, isValidElement, ReactElement, ReactNode } from 'react';
-import { cn } from '#/core/utils';
+import { cn } from '@neup/core/utils';
 
 type ActivitySetProps = {
   children: ReactNode;

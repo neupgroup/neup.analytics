@@ -1,7 +1,7 @@
 'use server';
 
 import { redirect } from 'next/navigation';
-import { prisma } from '#/core/database/prisma';
+import { prisma } from '@neup/core/database/prisma';
 
 function parseSites(value: FormDataEntryValue | null) {
   if (typeof value !== 'string') {

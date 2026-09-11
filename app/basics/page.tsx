@@ -8,16 +8,16 @@ import {
   Tablet,
   Users,
 } from 'lucide-react';
-import { prisma } from '#/core/database/prisma';
+import { prisma } from '@neup/core/database/prisma';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '#/components/ui/card';
-import { ProgressBar } from '#/components/element/progressbar';
-import { Skeleton } from '#/components/ui/skeleton';
+} from '@neup/components/ui/card';
+import { ProgressBar } from '@neup/components/element/progressbar';
+import { Skeleton } from '@neup/components/ui/skeleton';
 import { Suspense } from 'react';
 
 export function AnalyticsSkeleton() {

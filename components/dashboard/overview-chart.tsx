@@ -7,7 +7,7 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from '#/components/ui/chart'
+} from '@neup/components/ui/chart'
 
 const chartData = [
   { month: 'January', users: 1860 },

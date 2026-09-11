@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Bot, Send } from 'lucide-react';
-import { Button } from '#/components/ui/button';
+import { Button } from '@neup/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -11,15 +11,15 @@ import {
   DialogTrigger,
   DialogFooter,
   DialogDescription,
-} from '#/components/ui/dialog';
-import { Input } from '#/components/ui/input';
-import { ScrollArea } from '#/components/ui/scroll-area';
-import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar';
-import { cn } from '#/core/utils';
+} from '@neup/components/ui/dialog';
+import { Input } from '@neup/components/ui/input';
+import { ScrollArea } from '@neup/components/ui/scroll-area';
+import { Avatar, AvatarFallback, AvatarImage } from '@neup/components/ui/avatar';
+import { cn } from '@neup/core/utils';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '#/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@neup/components/ui/form';
 
 // Mock AI function
 async function getAIResponse(message: string) {

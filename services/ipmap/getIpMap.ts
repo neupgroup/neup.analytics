@@ -1,4 +1,4 @@
-import { Prisma, prisma } from '#/core/database/prisma';
+import { Prisma, prisma } from '@neup/core/database/prisma';
 
 const IPMAP_REFRESH_INTERVAL_MS = 24 * 60 * 60 * 1000;
 

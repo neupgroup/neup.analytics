@@ -1,16 +1,16 @@
-import { Link } from '#/components/ui/link';
+import { Link } from '@neup/components/ui/link';
 import { ArrowRight, Building2, Database, Globe, Layers3 } from 'lucide-react';
-import { prisma } from '#/core/database/prisma';
-import { Badge } from '#/components/ui/badge';
-import { Button } from '#/components/ui/button';
+import { prisma } from '@neup/core/database/prisma';
+import { Badge } from '@neup/components/ui/badge';
+import { Button } from '@neup/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '#/components/ui/card';
-import { Separator } from '#/components/ui/separator';
+} from '@neup/components/ui/card';
+import { Separator } from '@neup/components/ui/separator';
 
 export default async function PropertiesPage() {
   const applications = await prisma.application.findMany({

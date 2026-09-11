@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '#/core/database/prisma';
+import { prisma } from '@neup/core/database/prisma';
 
 export async function GET() {
   const users = await prisma.user.findMany({

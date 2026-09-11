@@ -1,14 +1,14 @@
-import { Avatar, AvatarFallback, AvatarImage } from '#/components/ui/avatar';
-import { Button } from '#/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@neup/components/ui/avatar';
+import { Button } from '@neup/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '#/components/ui/card';
+} from '@neup/components/ui/card';
 import { ArrowUpRight } from 'lucide-react';
-import { Link } from '#/components/ui/link';
+import { Link } from '@neup/components/ui/link';
 
 const activities = [
     { id: 1, user: { name: 'Olivia Martin', avatarSeed: 'olivia' }, action: 'completed a purchase.', details: 'Source: Paid Ad on Facebook', time: '5m ago' },

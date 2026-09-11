@@ -1,9 +1,9 @@
 'use client';
 
 import { use, useEffect, useState } from 'react';
-import { Alert, AlertDescription, AlertTitle } from '#/components/ui/alert';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '#/components/ui/card';
-import { Skeleton } from '#/components/ui/skeleton';
+import { Alert, AlertDescription, AlertTitle } from '@neup/components/ui/alert';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@neup/components/ui/card';
+import { Skeleton } from '@neup/components/ui/skeleton';
 import { Monitor, Smartphone, Tablet } from 'lucide-react';
 
 type PageSnapshot = {

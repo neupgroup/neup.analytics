@@ -2,12 +2,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "#/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@neup/components/ui/card";
 // import { useCollection, useFirestore, useMemoFirebase, WithId } from "@/firebase";
 // import { collection, query, orderBy, Timestamp } from "firebase/firestore";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "#/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@neup/components/ui/select";
 import { HeatmapDisplay } from '@/components/dashboard/heatmap-display';
-import { Skeleton } from '#/components/ui/skeleton';
+import { Skeleton } from '@neup/components/ui/skeleton';
 import { Search } from 'lucide-react';
 
 type Page = {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '#/core/database/prisma';
+import { prisma } from '@neup/core/database/prisma';
 
 function normalizeTimestamp(value: unknown) {
   const maxInt32 = 2147483647;

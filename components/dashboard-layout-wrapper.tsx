@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { DashboardNav } from '@/components/dashboard-nav';
-import { UserNav } from '#/components/ui/user-nav';
+import { UserNav } from '@neup/components/ui/user-nav';
 import { NeupIdLogo } from '@/components/neupid-logo';
-import { useSession } from '#/core/providers/session';
-import { Skeleton } from '#/components/ui/skeleton';
+import { useSession } from '@neup/core/providers/session';
+import { Skeleton } from '@neup/components/ui/skeleton';
 import { MobilePageBack } from '@/components/mobile-page-back';
 
 export function DashboardLayoutWrapper({

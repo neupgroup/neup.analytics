@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Link } from '#/components/ui/link';
+import { Link } from '@neup/components/ui/link';
 import { Compass, ArrowRight } from 'lucide-react';
-import { Button } from '#/components/ui/button';
+import { Button } from '@neup/components/ui/button';
 
 export default function NotFound() {
   return (

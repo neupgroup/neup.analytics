@@ -1,13 +1,13 @@
-import { Link } from '#/components/ui/link';
+import { Link } from '@neup/components/ui/link';
 import { Settings } from 'lucide-react';
-import { Button } from '#/components/ui/button';
+import { Button } from '@neup/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '#/components/ui/card';
+} from '@neup/components/ui/card';
 
 export default function SetupPage() {
   return (

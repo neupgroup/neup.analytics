@@ -2,20 +2,20 @@
 
 import { ArrowRight, Database, Globe, Layers3 } from 'lucide-react';
 import { createApplication } from '@/actions/application';
-import { Badge } from '#/components/ui/badge';
-import { Button } from '#/components/ui/button';
+import { Badge } from '@neup/components/ui/badge';
+import { Button } from '@neup/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '#/components/ui/card';
-import { Input } from '#/components/ui/input';
-import { Label } from '#/components/ui/label';
-import { Separator } from '#/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/components/ui/tabs';
-import { Textarea } from '#/components/ui/textarea';
+} from '@neup/components/ui/card';
+import { Input } from '@neup/components/ui/input';
+import { Label } from '@neup/components/ui/label';
+import { Separator } from '@neup/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@neup/components/ui/tabs';
+import { Textarea } from '@neup/components/ui/textarea';
 
 function EntryForm({
   mode,

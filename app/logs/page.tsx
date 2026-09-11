@@ -1,6 +1,6 @@
-import { prisma } from '#/core/database/prisma';
-import { Link } from '#/components/ui/link';
-import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/card';
+import { prisma } from '@neup/core/database/prisma';
+import { Link } from '@neup/components/ui/link';
+import { Card, CardContent, CardHeader, CardTitle } from '@neup/components/ui/card';
 import { format } from 'date-fns';
 
 export default async function LogsPage() {

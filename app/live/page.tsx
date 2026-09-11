@@ -6,13 +6,13 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '#/components/ui/card';
+} from '@neup/components/ui/card';
 import { Eye, MousePointer2, User, Wifi, WifiOff } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { Skeleton } from '#/components/ui/skeleton';
-import { cn } from '#/core/utils';
-import { Avatar, AvatarFallback } from '#/components/ui/avatar';
-import { timestampToDate, type Timestamp } from '#/core/data/timestamp';
+import { Skeleton } from '@neup/components/ui/skeleton';
+import { cn } from '@neup/core/utils';
+import { Avatar, AvatarFallback } from '@neup/components/ui/avatar';
+import { timestampToDate, type Timestamp } from '@neup/core/data/timestamp';
 
 type User = {
   id: string;

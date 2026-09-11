@@ -1,15 +1,15 @@
 'use client';
 
-import { Link } from '#/components/ui/link';
+import { Link } from '@neup/components/ui/link';
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { Camera, ExternalLink, Eye, FileText, Loader2, RefreshCw } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '#/components/ui/alert';
-import { Button } from '#/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '#/components/ui/card';
-import { Input } from '#/components/ui/input';
-import { Label } from '#/components/ui/label';
-import { Skeleton } from '#/components/ui/skeleton';
-import { useToast } from '#/core/hooks/useToast';
+import { Alert, AlertDescription, AlertTitle } from '@neup/components/ui/alert';
+import { Button } from '@neup/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@neup/components/ui/card';
+import { Input } from '@neup/components/ui/input';
+import { Label } from '@neup/components/ui/label';
+import { Skeleton } from '@neup/components/ui/skeleton';
+import { useToast } from '@neup/core/hooks/useToast';
 
 type Snapshot = {
   id: string;

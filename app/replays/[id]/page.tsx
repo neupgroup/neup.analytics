@@ -2,15 +2,15 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams } from 'next/navigation';
-import { Skeleton } from '#/components/ui/skeleton';
-import { Alert, AlertDescription, AlertTitle } from '#/components/ui/alert';
+import { Skeleton } from '@neup/components/ui/skeleton';
+import { Alert, AlertDescription, AlertTitle } from '@neup/components/ui/alert';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '#/components/ui/card';
+} from '@neup/components/ui/card';
 import {
   Monitor,
   Smartphone,
@@ -22,9 +22,9 @@ import {
   RotateCcw,
   MousePointer2,
 } from 'lucide-react';
-import { Button } from '#/components/ui/button';
-import { ProgressBar } from '#/components/element/progressbar';
-import { cn } from '#/core/utils';
+import { Button } from '@neup/components/ui/button';
+import { ProgressBar } from '@neup/components/element/progressbar';
+import { cn } from '@neup/core/utils';
 
 type InteractionEvent =
   | { type: 'mousemove'; x: number; y: number; timestamp: number }

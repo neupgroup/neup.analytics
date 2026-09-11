@@ -4,7 +4,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from '#/components/ui/card';
+} from '@neup/components/ui/card';
 import { Users, ShoppingCart, CreditCard, PartyPopper, Bot } from 'lucide-react';
 
 const funnelSteps = [
