@@ -45,6 +45,11 @@ export default async function ActivityDetailPage({
   const presentation = presentActivity(activity);
   const ipMap = await getFreshIpMap(activity.ip);
   const ipLocation = formatIpMapLocation(ipMap);
+  const locationParts = [
+    ipMap?.city ? { label: ipMap.city, href: url('/activity', '/').addParam('selectedProject', selectedProject).addParam('country', ipMap.country ?? undefined).addParam('region', ipMap.region ?? undefined).addParam('area', [ipMap.city, ipMap.region, ipMap.country].filter(Boolean).join(', ')).get() } : null,
+    ipMap?.region ? { label: ipMap.region, href: url('/activity', '/').addParam('selectedProject', selectedProject).addParam('country', ipMap.country ?? undefined).addParam('region', ipMap.region).get() } : null,
+    ipMap?.country ? { label: ipMap.country, href: url('/activity', '/').addParam('selectedProject', selectedProject).addParam('country', ipMap.country).get() } : null,
+  ].filter((part): part is { label: string; href: string } => Boolean(part));
 
   const filterHref = (
     key: string,
@@ -173,7 +178,12 @@ export default async function ActivityDetailPage({
           </p>
 
           <p className="mt-1 break-all text-sm text-slate-700">
-            {ipLocation ?? '—'}
+            {locationParts.length ? locationParts.map((part, index) => (
+              <span key={`${part.label}-${index}`}>
+                {index ? ', ' : null}
+                <Link href={part.href} className={filterLinkClassName}>{part.label}</Link>
+              </span>
+            )) : (ipLocation ?? '—')}
           </p>
         </div>
 
