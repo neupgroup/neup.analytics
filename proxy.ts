@@ -44,6 +44,17 @@ function canAccessWithoutSelectedProject(pathname: string): boolean {
   );
 }
 
+function isKnownApplicationPath(pathname: string): boolean {
+  const normalizedPathname = normalizeRequestPathname(pathname);
+  const knownPrefixes = [
+    '/home', '/activity', '/basics', '/config', '/heatmaps', '/journeys',
+    '/live', '/logs', '/pages', '/projects', '/properties', '/replays',
+    '/reports', '/settings', '/setup', '/snapshots', '/users', '/add', '/api', '/bridge',
+  ];
+
+  return knownPrefixes.some((prefix) => normalizedPathname === prefix || normalizedPathname.startsWith(`${prefix}/`));
+}
+
 async function hasValidSelectedProject(request: NextRequest): Promise<boolean> {
   const selectedProject = request.nextUrl.searchParams.get('selectedProject')?.trim();
 
@@ -69,10 +80,13 @@ export async function proxy(request: NextRequest) {
 
   // SDK loading and activity collection must be available to external sites.
   if (
-    normalizedPathname === '/bridge/api.v1/activity'
-    || normalizedPathname === '/bridge/webhook.v1/activity'
-    || normalizedPathname === '/bridge/sdk.v1/tracker'
+    normalizedPathname === '/bridge'
+    || normalizedPathname.startsWith('/bridge/')
   ) {
+    return NextResponse.next();
+  }
+
+  if (!isKnownApplicationPath(pathname)) {
     return NextResponse.next();
   }
 

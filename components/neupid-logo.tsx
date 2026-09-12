@@ -21,7 +21,7 @@ export function NeupIdLogo({ iconHref, textHref }: NeupIdLogoProps) {
           alt={`${getName()} logo`}
           width={32}
           height={32}
-          className="h-8 w-8 rounded-lg"
+          className="h-8 w-8"
           priority
         />
       </Link>

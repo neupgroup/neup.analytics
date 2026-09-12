@@ -1,19 +1,8 @@
 import type {NextConfig} from 'next';
-import application from '@base/application.json';
+import { getEnvVariable } from '@neup/core/helpers/env';
 
-function normalizeBasePath(value: string | undefined): string {
-  if (typeof value !== 'string') return '';
-
-  const trimmed = value.trim();
-  if (!trimmed || trimmed === '/') return '';
-
-  const withoutTrailingSlash = trimmed.replace(/\/+$/, '');
-  return withoutTrailingSlash.startsWith('/') ? withoutTrailingSlash : `/${withoutTrailingSlash}`;
-}
-
-const basePath = normalizeBasePath(
-  application.basepath
-);
+const basePath = getEnvVariable('APP_BASEPATH', true);
+const assetPrefix = getEnvVariable('APP_BASEPATH', true);
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -21,29 +10,22 @@ const nextConfig: NextConfig = {
     root: __dirname,
   },
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
-  basePath,
+  basePath: basePath,
+  assetPrefix: assetPrefix,
+
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'placehold.co',
-        port: '',
-        pathname: '/**',
+        hostname: 'neupcdn.com',
       },
       {
         protocol: 'https',
-        hostname: 'images.unsplash.com',
-        port: '',
-        pathname: '/**',
+        hostname: 'neupgroup.com',
       },
-      {
-        protocol: 'https',
-        hostname: 'picsum.photos',
-        port: '',
-        pathname: '/**',
-      },
+
     ],
   },
 };
