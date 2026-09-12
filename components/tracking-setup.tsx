@@ -44,6 +44,7 @@ export function TrackingSetup({ projectId }: { projectId: string }) {
     {trackMore && <>
     <section className="space-y-3">
       <h3 className="font-semibold">2. Add the cookie fields to track</h3>
+      <div className="space-y-3 rounded-xl border p-4">
       <h4 className="text-sm font-medium">Browser-readable cookies</h4>
       <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={options.allCookies} onChange={(event) => setOptions({ ...options, allCookies: event.target.checked })} />Track all browser-readable cookies</label>
       <p className="text-sm text-muted-foreground">HttpOnly cookies cannot be read by the tracker. Do not select authentication or session secrets; “all” sends every cookie JavaScript can read.</p>
@@ -52,7 +53,8 @@ export function TrackingSetup({ projectId }: { projectId: string }) {
         <button className="rounded-md border px-3 py-2 text-sm" type="submit">Add cookie</button>
       </form>}
       <div className="flex flex-wrap gap-2">{options.cookies.map((name) => <button key={name} type="button" aria-label={`Remove cookie ${name}`} onClick={() => setOptions({ ...options, cookies: options.cookies.filter((key) => key !== name) })} className="rounded-full border px-3 py-1 text-sm">{name} ×</button>)}</div>
-      <div className="space-y-3 border-t pt-4">
+      </div>
+      <div className="space-y-3 rounded-xl border p-4">
         <h4 className="text-sm font-medium">Server-readable cookies</h4>
         <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={options.allServerCookies} onChange={(event) => setOptions({ ...options, allServerCookies: event.target.checked })} />Track all server-readable cookies</label>
         <p className="text-sm text-muted-foreground">Read from requests on your server, including HttpOnly cookies. Values are sent directly to analytics for storage and are not added to the browser snippet.</p>
@@ -75,7 +77,7 @@ export function TrackingSetup({ projectId }: { projectId: string }) {
     </section>
     {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
     </>}
-    <div className="border-t pt-6">
+    <div className="pt-6">
       <SetupGuidelines projectId={projectId} tracking={activeOptions} startStep={trackMore ? 4 : 2} />
     </div>
   </div>;

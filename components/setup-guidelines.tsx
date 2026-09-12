@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Check, Clipboard } from 'lucide-react';
+import styles from './setup-guidelines.module.css';
 import { defaultTrackingOptions, trackingFields, type TrackingOptions } from '@/components/tracking-options';
 
 function buildAnalyticsCode(projectId: string, tracking: TrackingOptions) {
@@ -372,7 +373,7 @@ export function SetupGuidelines({ projectId, tracking = defaultTrackingOptions, 
     {examples.map((example, index) => <section key={example.title} className="space-y-2">
       <h3 className="text-base font-semibold">{startStep + index}. {example.title.replace(/^\d+\.\s*/, '')}</h3>
       <p className="text-sm text-muted-foreground">{example.description}</p>
-      <div className="relative">
+      <div className="relative rounded-xl border bg-muted/20 p-4 pr-16">
       <button type="button" aria-label={copied === index ? 'Code copied' : 'Copy code'} title={copied === index ? 'Copied' : 'Copy code'} className="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-md border bg-background text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" onClick={async () => {
         try {
           await navigator.clipboard.writeText(example.code);
@@ -380,7 +381,7 @@ export function SetupGuidelines({ projectId, tracking = defaultTrackingOptions, 
           setError('');
         } catch { setError('Clipboard unavailable. Select and copy the code below.'); }
       }}>{copied === index ? <Check className="h-4 w-4" aria-hidden="true" /> : <Clipboard className="h-4 w-4" aria-hidden="true" />}</button>
-      <pre className="max-h-96 overflow-auto whitespace-pre-wrap break-words rounded-xl border bg-muted/20 p-4 pr-16 font-mono text-xs leading-6 text-muted-foreground">{example.code}</pre>
+      <pre tabIndex={0} aria-label={`${example.title.replace(/^\d+\.\s*/, '')} code`} className={`${styles.codeViewport} whitespace-pre-wrap break-words font-mono text-xs text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring`}><code>{example.code}</code></pre>
       </div>
     </section>)}
   </div>;

@@ -16,6 +16,7 @@ const examples = load('components/setup-guidelines.tsx', {
   '@/components/tracking-options': options,
   // Snippet generation does not render icons; avoid loading their browser bundle.
   'lucide-react': {},
+  './setup-guidelines.module.css': {},
 });
 
 test('language snippets embed cookie choices and named server placeholders', () => {
