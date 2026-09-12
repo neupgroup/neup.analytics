@@ -13,10 +13,10 @@ const sdkSource = String.raw`(function () {
 
     var script = document.currentScript;
     if (!script) {
-      // Fallback: find the last script with sdk.js in src
+      // Fallback: find the SDK route or a legacy sdk.js script.
       var scripts = document.getElementsByTagName('script');
       for (var i = scripts.length - 1; i >= 0; i--) {
-        if (scripts[i].src && /\/sdk\.js(\?.*)?$/.test(scripts[i].src)) {
+        if (scripts[i].src && /\/(?:bridge\/sdk\.v1\/interactions\/?|sdk\.js)(?:[?#].*)?$/.test(scripts[i].src)) {
           script = scripts[i];
           break;
         }
@@ -105,8 +105,8 @@ const sdkSource = String.raw`(function () {
     var scriptUrl = (script && script.src) ? new URL(script.src) : null;
     var analyticsOrigin = scriptUrl ? scriptUrl.origin : window.location.origin;
     var defaultEndpointPath = scriptUrl
-      ? scriptUrl.pathname.replace(/\/bridge\/sdk\.v1\/record\/?$/, '/bridge/webhook.v1/activity')
-      : '/bridge/webhook.v1/activity';
+      ? scriptUrl.pathname.replace(/\/(?:bridge\/sdk\.v1\/interactions\/?|sdk\.js)$/, '/bridge/api.v1/activity')
+      : '/bridge/api.v1/activity';
     var endpoint = endpointAttr
       ? (new URL(endpointAttr, analyticsOrigin)).toString()
       : (new URL(defaultEndpointPath, analyticsOrigin)).toString() + '?project=' + encodeURIComponent(siteId);

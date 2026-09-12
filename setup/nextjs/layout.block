@@ -24,7 +24,7 @@ export default async function RootLayout({
         {children}
 
         <script
-          src="https://neupgroup.com/analytics/sdk.v1/record"
+          src="https://neupgroup.com/analytics/bridge/sdk.v1/interactions"
           data-context-id={signedContextId}
           data-project-id="cmtx8ocvh0000bup9m18a09z1"
           defer

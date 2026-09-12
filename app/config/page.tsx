@@ -27,12 +27,12 @@ async function getScriptUrls(projectId: string) {
   const requestHeaders = await headers();
   const host = requestHeaders.get('x-forwarded-host') || requestHeaders.get('host');
   const protocol = requestHeaders.get('x-forwarded-proto') || 'https';
-  const sdkPath = '/bridge/sdk.v1/record';
+  const sdkPath = '/bridge/sdk.v1/interactions';
 
   if (!host) {
     return {
       sdkUrl: makeAppPath(sdkPath),
-      activityEndpoint: `/bridge/webhook.v1/activity?project=${encodeURIComponent(projectId)}`,
+      activityEndpoint: `/bridge/api.v1/activity?project=${encodeURIComponent(projectId)}`,
     };
   }
 
@@ -40,7 +40,7 @@ async function getScriptUrls(projectId: string) {
 
   return {
     sdkUrl: `${origin}${makeAppPath(sdkPath)}`,
-    activityEndpoint: `${origin}${makeAppPath(`/bridge/webhook.v1/activity?project=${encodeURIComponent(projectId)}`)}`,
+    activityEndpoint: `${origin}${makeAppPath(`/bridge/api.v1/activity?project=${encodeURIComponent(projectId)}`)}`,
   };
 }
 
