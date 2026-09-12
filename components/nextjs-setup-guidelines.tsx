@@ -8,8 +8,6 @@ function buildAnalyticsCode(projectId: string) {
   return `import crypto from "node:crypto";
 import { cookies, headers } from "next/headers";
 
-const projectId = "${projectId}";
-
 function generateTraceId(): string {
   return \`\${Date.now()}.\${crypto.randomBytes(24).toString("hex")}\`;
 }
@@ -35,7 +33,7 @@ export async function getAnalyticsContext() {
     cookieStore.set({ name: "_neuptraceid", value: traceId, httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/" });
   }
   const contextId = generateContextId(traceId);
-  return { traceId, contextId, signedContextId: signContextId(contextId), projectId };
+  return { traceId, contextId, signedContextId: signContextId(contextId), projectId: "${projectId}" };
 }
 
 export async function logPageActivity(contextId: string, pageUrl: string): Promise<void> {
@@ -44,7 +42,7 @@ export async function logPageActivity(contextId: string, pageUrl: string): Promi
   const { traceId } = await getAnalyticsContext();
   const requestHeaders = await headers();
   try {
-    await fetch(\`https://neupgroup.com/analytics/bridge/api.v1/activity?project=\${encodeURIComponent(projectId)}\`, {
+    await fetch("https://neupgroup.com/analytics/bridge/api.v1/activity?project=${encodeURIComponent(projectId)}", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ _neuptraceid: traceId, contextId: signContextId(contextId), pageUrl, agent: requestHeaders.get("user-agent") ?? "", ipAddress: requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ?? requestHeaders.get("x-real-ip") ?? "" }),
@@ -61,7 +59,7 @@ export async function logActivity(activity: string, data?: Record<string, unknow
   const { contextId, traceId } = await getAnalyticsContext();
   const requestHeaders = await headers();
   await fetch(
-    \`https://neupgroup.com/analytics/bridge/api.v1/activity?project=\${encodeURIComponent(projectId)}\`,
+    "https://neupgroup.com/analytics/bridge/api.v1/activity?project=${encodeURIComponent(projectId)}",
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -73,7 +71,7 @@ export async function logActivity(activity: string, data?: Record<string, unknow
 
 export async function logClientActivity(activity: string, data?: Record<string, unknown>): Promise<void> {
   if (typeof window === "undefined") return;
-  await fetch(\`https://neupgroup.com/analytics/bridge/api.v1/activity?project=\${encodeURIComponent(projectId)}\`, {
+  await fetch("https://neupgroup.com/analytics/bridge/api.v1/activity?project=${encodeURIComponent(projectId)}", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ activity, data, agent: navigator.userAgent, pageUrl: window.location.href }),
@@ -86,8 +84,6 @@ export async function logClientActivity(activity: string, data?: Record<string, 
 function buildLayoutCode(projectId: string) {
   return `import { headers } from "next/headers";
 import { getAnalyticsContext, logPageActivity } from "@/analytics";
-
-const projectId = "${projectId}";
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const { contextId, signedContextId } = await getAnalyticsContext();
@@ -102,7 +98,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <script
           src="https://neupgroup.com/analytics/sdk.v1/record"
           data-context-id={signedContextId}
-          data-project-id={projectId}
+          data-project-id="${projectId}"
           defer
         />
       </body>

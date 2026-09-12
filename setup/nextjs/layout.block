@@ -26,7 +26,7 @@ export default async function RootLayout({
         <script
           src="https://neupgroup.com/analytics/sdk.v1/record"
           data-context-id={signedContextId}
-          data-project-id={projectId}
+          data-project-id="cmtx8ocvh0000bup9m18a09z1"
           defer
         />
       </body>
