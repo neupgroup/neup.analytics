@@ -1,4 +1,3 @@
-import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { Code2, Settings2, Waypoints } from 'lucide-react';
 import { prisma } from '@neup/core/database/prisma';
@@ -24,19 +23,8 @@ type ConfigPageProps = {
 };
 
 async function getScriptUrls(projectId: string) {
-  const requestHeaders = await headers();
-  const host = requestHeaders.get('x-forwarded-host') || requestHeaders.get('host');
-  const protocol = requestHeaders.get('x-forwarded-proto') || 'https';
+  const origin = 'https://neupgroup.com';
   const sdkPath = '/bridge/sdk.v1/tracker';
-
-  if (!host) {
-    return {
-      sdkUrl: makeAppPath(sdkPath),
-      activityEndpoint: `/bridge/api.v1/activity?project=${encodeURIComponent(projectId)}`,
-    };
-  }
-
-  const origin = `${protocol}://${host}`;
 
   return {
     sdkUrl: `${origin}${makeAppPath(sdkPath)}`,
