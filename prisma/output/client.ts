@@ -87,6 +87,11 @@ export type Activity = Prisma.ActivityModel
  */
 export type Project = Prisma.ProjectModel
 /**
+ * Model AnalyticsContext
+ * 
+ */
+export type AnalyticsContext = Prisma.AnalyticsContextModel
+/**
  * Model IpMap
  * 
  */

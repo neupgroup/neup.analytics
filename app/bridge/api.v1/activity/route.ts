@@ -38,20 +38,21 @@ function isValidServerIp(configured: string | null, requestIp?: string) {
   return configured.split(',').map((value) => value.trim()).filter(Boolean).includes(requestIp);
 }
 
-function verifySignedContext(value: string | undefined, verifierKey: string | null) {
-  if (!value || !verifierKey) return null;
-  const separator = value.lastIndexOf('.');
-  if (separator <= 0) return null;
-  const contextId = value.slice(0, separator);
-  const signature = value.slice(separator + 1);
+function decryptContext(value: string | undefined) {
+  const privateKey = process.env.NEUP_ANALYTICS_PROJECT_KEY;
+  if (!value || !privateKey) return null;
+  const parts = value.split('.');
+  if (parts.length !== 4) return null;
   try {
-    const valid = crypto.verify(
-      null,
-      Buffer.from(contextId),
-      crypto.createPublicKey({ key: Buffer.from(verifierKey, 'base64'), format: 'der', type: 'spki' }),
-      Buffer.from(signature, 'base64url'),
-    );
-    return valid ? contextId : null;
+    const [ephemeralPublic, iv, authTag, ciphertext] = parts.map((part) => Buffer.from(part, 'base64url'));
+    const sharedSecret = crypto.diffieHellman({
+      privateKey: crypto.createPrivateKey({ key: Buffer.from(privateKey, 'base64'), format: 'der', type: 'pkcs8' }),
+      publicKey: crypto.createPublicKey({ key: ephemeralPublic, format: 'der', type: 'spki' }),
+    });
+    const decipher = crypto.createDecipheriv('aes-256-gcm', crypto.createHash('sha256').update(sharedSecret).digest(), iv);
+    decipher.setAuthTag(authTag);
+    const payload = JSON.parse(Buffer.concat([decipher.update(ciphertext), decipher.final()]).toString('utf8')) as { contextId?: unknown };
+    return typeof payload.contextId === 'string' ? payload.contextId : null;
   } catch {
     return null;
   }
@@ -84,7 +85,6 @@ export async function POST(request: Request) {
         id: true,
         path: true,
         ipAddress: true,
-        verifierKey: true,
       },
     });
 
@@ -127,19 +127,31 @@ export async function POST(request: Request) {
     }
 
     const signedContext = typeof bodyRecord?.contextId === 'string' ? bodyRecord.contextId : typeof bodyRecord?.signedContextId === 'string' ? bodyRecord.signedContextId : undefined;
-    const verifiedContextId = serverRequest ? verifySignedContext(signedContext, project.verifierKey) : null;
+    const verifiedContextId = serverRequest ? decryptContext(signedContext) : null;
     if (serverRequest && signedContext && !verifiedContextId) {
       return NextResponse.json({ success: false, message: 'Invalid signed context' }, { status: 403, headers: getCorsHeaders(allowedOrigin) });
     }
     if (serverRequest && !signedContext) {
       return NextResponse.json({ success: false, message: 'Signed context is required for server requests' }, { status: 403, headers: getCorsHeaders(allowedOrigin) });
     }
+    const suppliedTraceId = typeof bodyRecord?._neuptraceid === 'string' ? bodyRecord._neuptraceid.trim() : undefined;
+    if (verifiedContextId && suppliedTraceId) {
+      await prisma.analyticsContext.upsert({
+        where: { contextId: verifiedContextId },
+        create: { contextId: verifiedContextId, traceId: suppliedTraceId, projectId: project.id },
+        update: { traceId: suppliedTraceId },
+      });
+    }
+    const storedContext = verifiedContextId
+      ? await prisma.analyticsContext.findUnique({ where: { contextId: verifiedContextId }, select: { traceId: true } })
+      : null;
     const ip = requestIp;
     const userAgent = request.headers.get('user-agent')?.trim() || undefined;
     const activityEvents = events.map((event) => ({
       ...event,
       identifierId: event.identifierId ?? event.identifier ?? verifiedContextId ?? event.contextId ?? crypto.randomUUID(),
       contextId: verifiedContextId ?? event.contextId,
+      traceId: suppliedTraceId ?? storedContext?.traceId,
       ip: event.ip ?? ip,
       userAgent: event.userAgent ?? userAgent,
     }));

@@ -5,7 +5,7 @@ Fields:
 > type: string;
 > moreDetails: json, nullable;
 > token: string, unique;
-> verifierKey: string, nullable, Ed25519 public key in base64 SPKI format;
+> verifierKey: string, nullable, X25519 public key in base64 SPKI format for encrypting signed_context_id payloads;
 > ipAddress: string(48), nullable, server IP address or comma-separated IP addresses;
 > createdOn: timestamp, default: now();
 
@@ -22,9 +22,18 @@ Fields:
 > pageUrl: string, nullable;
 > referral: string, nullable;
 > contextId: string, nullable;
+> traceId: string, nullable;
 > geoLocation: string, nullable;
 > activityOn: timestamp, default: now();
 > projectId: string, references Project.id;
+
+Table: AnalyticsContext, Model: AnalyticsContext
+Fields:
+> id: string, cuid, primary key;
+> contextId: string, unique;
+> traceId: string;
+> projectId: string, references Project.id;
+> createdOn: timestamp, default: now();
 
 Table: PageSnapshot, Model: PageSnapshot
 Fields:

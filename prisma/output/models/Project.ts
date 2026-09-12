@@ -203,6 +203,7 @@ export type ProjectWhereInput = {
   ipAddress?: Prisma.StringNullableFilter<"Project"> | string | null
   createdOn?: Prisma.DateTimeFilter<"Project"> | Date | string
   activities?: Prisma.ActivityListRelationFilter
+  contexts?: Prisma.AnalyticsContextListRelationFilter
 }
 
 export type ProjectOrderByWithRelationInput = {
@@ -215,6 +216,7 @@ export type ProjectOrderByWithRelationInput = {
   ipAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   createdOn?: Prisma.SortOrder
   activities?: Prisma.ActivityOrderByRelationAggregateInput
+  contexts?: Prisma.AnalyticsContextOrderByRelationAggregateInput
 }
 
 export type ProjectWhereUniqueInput = Prisma.AtLeast<{
@@ -230,6 +232,7 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   ipAddress?: Prisma.StringNullableFilter<"Project"> | string | null
   createdOn?: Prisma.DateTimeFilter<"Project"> | Date | string
   activities?: Prisma.ActivityListRelationFilter
+  contexts?: Prisma.AnalyticsContextListRelationFilter
 }, "id" | "token">
 
 export type ProjectOrderByWithAggregationInput = {
@@ -270,6 +273,7 @@ export type ProjectCreateInput = {
   ipAddress?: string | null
   createdOn?: Date | string
   activities?: Prisma.ActivityCreateNestedManyWithoutProjectInput
+  contexts?: Prisma.AnalyticsContextCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateInput = {
@@ -282,6 +286,7 @@ export type ProjectUncheckedCreateInput = {
   ipAddress?: string | null
   createdOn?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProjectInput
+  contexts?: Prisma.AnalyticsContextUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUpdateInput = {
@@ -294,6 +299,7 @@ export type ProjectUpdateInput = {
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUpdateManyWithoutProjectNestedInput
+  contexts?: Prisma.AnalyticsContextUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateInput = {
@@ -306,6 +312,7 @@ export type ProjectUncheckedUpdateInput = {
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutProjectNestedInput
+  contexts?: Prisma.AnalyticsContextUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectCreateManyInput = {
@@ -391,6 +398,20 @@ export type ProjectUpdateOneRequiredWithoutActivitiesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutActivitiesInput, Prisma.ProjectUpdateWithoutActivitiesInput>, Prisma.ProjectUncheckedUpdateWithoutActivitiesInput>
 }
 
+export type ProjectCreateNestedOneWithoutContextsInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutContextsInput, Prisma.ProjectUncheckedCreateWithoutContextsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutContextsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+}
+
+export type ProjectUpdateOneRequiredWithoutContextsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutContextsInput, Prisma.ProjectUncheckedCreateWithoutContextsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutContextsInput
+  upsert?: Prisma.ProjectUpsertWithoutContextsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutContextsInput, Prisma.ProjectUpdateWithoutContextsInput>, Prisma.ProjectUncheckedUpdateWithoutContextsInput>
+}
+
 export type ProjectCreateWithoutActivitiesInput = {
   id?: string
   path: string
@@ -400,6 +421,7 @@ export type ProjectCreateWithoutActivitiesInput = {
   verifierKey?: string | null
   ipAddress?: string | null
   createdOn?: Date | string
+  contexts?: Prisma.AnalyticsContextCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectUncheckedCreateWithoutActivitiesInput = {
@@ -411,6 +433,7 @@ export type ProjectUncheckedCreateWithoutActivitiesInput = {
   verifierKey?: string | null
   ipAddress?: string | null
   createdOn?: Date | string
+  contexts?: Prisma.AnalyticsContextUncheckedCreateNestedManyWithoutProjectInput
 }
 
 export type ProjectCreateOrConnectWithoutActivitiesInput = {
@@ -438,6 +461,7 @@ export type ProjectUpdateWithoutActivitiesInput = {
   verifierKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contexts?: Prisma.AnalyticsContextUpdateManyWithoutProjectNestedInput
 }
 
 export type ProjectUncheckedUpdateWithoutActivitiesInput = {
@@ -449,6 +473,71 @@ export type ProjectUncheckedUpdateWithoutActivitiesInput = {
   verifierKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  contexts?: Prisma.AnalyticsContextUncheckedUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectCreateWithoutContextsInput = {
+  id?: string
+  path: string
+  type: string
+  moreDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  token: string
+  verifierKey?: string | null
+  ipAddress?: string | null
+  createdOn?: Date | string
+  activities?: Prisma.ActivityCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectUncheckedCreateWithoutContextsInput = {
+  id?: string
+  path: string
+  type: string
+  moreDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  token: string
+  verifierKey?: string | null
+  ipAddress?: string | null
+  createdOn?: Date | string
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectCreateOrConnectWithoutContextsInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutContextsInput, Prisma.ProjectUncheckedCreateWithoutContextsInput>
+}
+
+export type ProjectUpsertWithoutContextsInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutContextsInput, Prisma.ProjectUncheckedUpdateWithoutContextsInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutContextsInput, Prisma.ProjectUncheckedCreateWithoutContextsInput>
+  where?: Prisma.ProjectWhereInput
+}
+
+export type ProjectUpdateToOneWithWhereWithoutContextsInput = {
+  where?: Prisma.ProjectWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutContextsInput, Prisma.ProjectUncheckedUpdateWithoutContextsInput>
+}
+
+export type ProjectUpdateWithoutContextsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  path?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  moreDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  token?: Prisma.StringFieldUpdateOperationsInput | string
+  verifierKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectUncheckedUpdateWithoutContextsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  path?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  moreDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  token?: Prisma.StringFieldUpdateOperationsInput | string
+  verifierKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProjectNestedInput
 }
 
 
@@ -458,10 +547,12 @@ export type ProjectUncheckedUpdateWithoutActivitiesInput = {
 
 export type ProjectCountOutputType = {
   activities: number
+  contexts: number
 }
 
 export type ProjectCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activities?: boolean | ProjectCountOutputTypeCountActivitiesArgs
+  contexts?: boolean | ProjectCountOutputTypeCountContextsArgs
 }
 
 /**
@@ -481,6 +572,13 @@ export type ProjectCountOutputTypeCountActivitiesArgs<ExtArgs extends runtime.Ty
   where?: Prisma.ActivityWhereInput
 }
 
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeCountContextsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AnalyticsContextWhereInput
+}
+
 
 export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -492,6 +590,7 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   ipAddress?: boolean
   createdOn?: boolean
   activities?: boolean | Prisma.Project$activitiesArgs<ExtArgs>
+  contexts?: boolean | Prisma.Project$contextsArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["project"]>
 
@@ -531,6 +630,7 @@ export type ProjectSelectScalar = {
 export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "path" | "type" | "moreDetails" | "token" | "verifierKey" | "ipAddress" | "createdOn", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activities?: boolean | Prisma.Project$activitiesArgs<ExtArgs>
+  contexts?: boolean | Prisma.Project$contextsArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProjectIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -540,6 +640,7 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "Project"
   objects: {
     activities: Prisma.$ActivityPayload<ExtArgs>[]
+    contexts: Prisma.$AnalyticsContextPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -945,6 +1046,7 @@ readonly fields: ProjectFieldRefs;
 export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   activities<T extends Prisma.Project$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  contexts<T extends Prisma.Project$contextsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$contextsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AnalyticsContextPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1396,6 +1498,30 @@ export type Project$activitiesArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.ActivityScalarFieldEnum | Prisma.ActivityScalarFieldEnum[]
+}
+
+/**
+ * Project.contexts
+ */
+export type Project$contextsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AnalyticsContext
+   */
+  select?: Prisma.AnalyticsContextSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AnalyticsContext
+   */
+  omit?: Prisma.AnalyticsContextOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AnalyticsContextInclude<ExtArgs> | null
+  where?: Prisma.AnalyticsContextWhereInput
+  orderBy?: Prisma.AnalyticsContextOrderByWithRelationInput | Prisma.AnalyticsContextOrderByWithRelationInput[]
+  cursor?: Prisma.AnalyticsContextWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AnalyticsContextScalarFieldEnum | Prisma.AnalyticsContextScalarFieldEnum[]
 }
 
 /**

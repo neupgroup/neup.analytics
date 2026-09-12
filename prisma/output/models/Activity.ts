@@ -44,6 +44,7 @@ export type ActivityMinAggregateOutputType = {
   pageUrl: string | null
   referral: string | null
   contextId: string | null
+  traceId: string | null
   geoLocation: string | null
   activityOn: Date | null
   projectId: string | null
@@ -59,6 +60,7 @@ export type ActivityMaxAggregateOutputType = {
   pageUrl: string | null
   referral: string | null
   contextId: string | null
+  traceId: string | null
   geoLocation: string | null
   activityOn: Date | null
   projectId: string | null
@@ -76,6 +78,7 @@ export type ActivityCountAggregateOutputType = {
   pageUrl: number
   referral: number
   contextId: number
+  traceId: number
   geoLocation: number
   activityOn: number
   projectId: number
@@ -101,6 +104,7 @@ export type ActivityMinAggregateInputType = {
   pageUrl?: true
   referral?: true
   contextId?: true
+  traceId?: true
   geoLocation?: true
   activityOn?: true
   projectId?: true
@@ -116,6 +120,7 @@ export type ActivityMaxAggregateInputType = {
   pageUrl?: true
   referral?: true
   contextId?: true
+  traceId?: true
   geoLocation?: true
   activityOn?: true
   projectId?: true
@@ -133,6 +138,7 @@ export type ActivityCountAggregateInputType = {
   pageUrl?: true
   referral?: true
   contextId?: true
+  traceId?: true
   geoLocation?: true
   activityOn?: true
   projectId?: true
@@ -237,6 +243,7 @@ export type ActivityGroupByOutputType = {
   pageUrl: string | null
   referral: string | null
   contextId: string | null
+  traceId: string | null
   geoLocation: string | null
   activityOn: Date
   projectId: string
@@ -277,6 +284,7 @@ export type ActivityWhereInput = {
   pageUrl?: Prisma.StringNullableFilter<"Activity"> | string | null
   referral?: Prisma.StringNullableFilter<"Activity"> | string | null
   contextId?: Prisma.StringNullableFilter<"Activity"> | string | null
+  traceId?: Prisma.StringNullableFilter<"Activity"> | string | null
   geoLocation?: Prisma.StringNullableFilter<"Activity"> | string | null
   activityOn?: Prisma.DateTimeFilter<"Activity"> | Date | string
   projectId?: Prisma.StringFilter<"Activity"> | string
@@ -295,6 +303,7 @@ export type ActivityOrderByWithRelationInput = {
   pageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   referral?: Prisma.SortOrderInput | Prisma.SortOrder
   contextId?: Prisma.SortOrderInput | Prisma.SortOrder
+  traceId?: Prisma.SortOrderInput | Prisma.SortOrder
   geoLocation?: Prisma.SortOrderInput | Prisma.SortOrder
   activityOn?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
@@ -316,6 +325,7 @@ export type ActivityWhereUniqueInput = Prisma.AtLeast<{
   pageUrl?: Prisma.StringNullableFilter<"Activity"> | string | null
   referral?: Prisma.StringNullableFilter<"Activity"> | string | null
   contextId?: Prisma.StringNullableFilter<"Activity"> | string | null
+  traceId?: Prisma.StringNullableFilter<"Activity"> | string | null
   geoLocation?: Prisma.StringNullableFilter<"Activity"> | string | null
   activityOn?: Prisma.DateTimeFilter<"Activity"> | Date | string
   projectId?: Prisma.StringFilter<"Activity"> | string
@@ -334,6 +344,7 @@ export type ActivityOrderByWithAggregationInput = {
   pageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   referral?: Prisma.SortOrderInput | Prisma.SortOrder
   contextId?: Prisma.SortOrderInput | Prisma.SortOrder
+  traceId?: Prisma.SortOrderInput | Prisma.SortOrder
   geoLocation?: Prisma.SortOrderInput | Prisma.SortOrder
   activityOn?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
@@ -359,6 +370,7 @@ export type ActivityScalarWhereWithAggregatesInput = {
   pageUrl?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
   referral?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
   contextId?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
+  traceId?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
   geoLocation?: Prisma.StringNullableWithAggregatesFilter<"Activity"> | string | null
   activityOn?: Prisma.DateTimeWithAggregatesFilter<"Activity"> | Date | string
   projectId?: Prisma.StringWithAggregatesFilter<"Activity"> | string
@@ -376,6 +388,7 @@ export type ActivityCreateInput = {
   pageUrl?: string | null
   referral?: string | null
   contextId?: string | null
+  traceId?: string | null
   geoLocation?: string | null
   activityOn?: Date | string
   project: Prisma.ProjectCreateNestedOneWithoutActivitiesInput
@@ -393,6 +406,7 @@ export type ActivityUncheckedCreateInput = {
   pageUrl?: string | null
   referral?: string | null
   contextId?: string | null
+  traceId?: string | null
   geoLocation?: string | null
   activityOn?: Date | string
   projectId: string
@@ -410,6 +424,7 @@ export type ActivityUpdateInput = {
   pageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referral?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contextId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  traceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   geoLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   project?: Prisma.ProjectUpdateOneRequiredWithoutActivitiesNestedInput
@@ -427,6 +442,7 @@ export type ActivityUncheckedUpdateInput = {
   pageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referral?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contextId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  traceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   geoLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -444,6 +460,7 @@ export type ActivityCreateManyInput = {
   pageUrl?: string | null
   referral?: string | null
   contextId?: string | null
+  traceId?: string | null
   geoLocation?: string | null
   activityOn?: Date | string
   projectId: string
@@ -461,6 +478,7 @@ export type ActivityUpdateManyMutationInput = {
   pageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referral?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contextId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  traceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   geoLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -477,6 +495,7 @@ export type ActivityUncheckedUpdateManyInput = {
   pageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referral?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contextId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  traceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   geoLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   projectId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -494,6 +513,7 @@ export type ActivityCountOrderByAggregateInput = {
   pageUrl?: Prisma.SortOrder
   referral?: Prisma.SortOrder
   contextId?: Prisma.SortOrder
+  traceId?: Prisma.SortOrder
   geoLocation?: Prisma.SortOrder
   activityOn?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
@@ -513,6 +533,7 @@ export type ActivityMaxOrderByAggregateInput = {
   pageUrl?: Prisma.SortOrder
   referral?: Prisma.SortOrder
   contextId?: Prisma.SortOrder
+  traceId?: Prisma.SortOrder
   geoLocation?: Prisma.SortOrder
   activityOn?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
@@ -528,6 +549,7 @@ export type ActivityMinOrderByAggregateInput = {
   pageUrl?: Prisma.SortOrder
   referral?: Prisma.SortOrder
   contextId?: Prisma.SortOrder
+  traceId?: Prisma.SortOrder
   geoLocation?: Prisma.SortOrder
   activityOn?: Prisma.SortOrder
   projectId?: Prisma.SortOrder
@@ -601,6 +623,7 @@ export type ActivityCreateWithoutProjectInput = {
   pageUrl?: string | null
   referral?: string | null
   contextId?: string | null
+  traceId?: string | null
   geoLocation?: string | null
   activityOn?: Date | string
 }
@@ -617,6 +640,7 @@ export type ActivityUncheckedCreateWithoutProjectInput = {
   pageUrl?: string | null
   referral?: string | null
   contextId?: string | null
+  traceId?: string | null
   geoLocation?: string | null
   activityOn?: Date | string
 }
@@ -662,6 +686,7 @@ export type ActivityScalarWhereInput = {
   pageUrl?: Prisma.StringNullableFilter<"Activity"> | string | null
   referral?: Prisma.StringNullableFilter<"Activity"> | string | null
   contextId?: Prisma.StringNullableFilter<"Activity"> | string | null
+  traceId?: Prisma.StringNullableFilter<"Activity"> | string | null
   geoLocation?: Prisma.StringNullableFilter<"Activity"> | string | null
   activityOn?: Prisma.DateTimeFilter<"Activity"> | Date | string
   projectId?: Prisma.StringFilter<"Activity"> | string
@@ -679,6 +704,7 @@ export type ActivityCreateManyProjectInput = {
   pageUrl?: string | null
   referral?: string | null
   contextId?: string | null
+  traceId?: string | null
   geoLocation?: string | null
   activityOn?: Date | string
 }
@@ -695,6 +721,7 @@ export type ActivityUpdateWithoutProjectInput = {
   pageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referral?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contextId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  traceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   geoLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -711,6 +738,7 @@ export type ActivityUncheckedUpdateWithoutProjectInput = {
   pageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referral?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contextId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  traceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   geoLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -727,6 +755,7 @@ export type ActivityUncheckedUpdateManyWithoutProjectInput = {
   pageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   referral?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   contextId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  traceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   geoLocation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   activityOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -745,6 +774,7 @@ export type ActivitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   pageUrl?: boolean
   referral?: boolean
   contextId?: boolean
+  traceId?: boolean
   geoLocation?: boolean
   activityOn?: boolean
   projectId?: boolean
@@ -763,6 +793,7 @@ export type ActivitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   pageUrl?: boolean
   referral?: boolean
   contextId?: boolean
+  traceId?: boolean
   geoLocation?: boolean
   activityOn?: boolean
   projectId?: boolean
@@ -781,6 +812,7 @@ export type ActivitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   pageUrl?: boolean
   referral?: boolean
   contextId?: boolean
+  traceId?: boolean
   geoLocation?: boolean
   activityOn?: boolean
   projectId?: boolean
@@ -799,12 +831,13 @@ export type ActivitySelectScalar = {
   pageUrl?: boolean
   referral?: boolean
   contextId?: boolean
+  traceId?: boolean
   geoLocation?: boolean
   activityOn?: boolean
   projectId?: boolean
 }
 
-export type ActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "identifierId" | "type" | "timeSpent" | "agent" | "moreDetails" | "ip" | "userAgent" | "pageUrl" | "referral" | "contextId" | "geoLocation" | "activityOn" | "projectId", ExtArgs["result"]["activity"]>
+export type ActivityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "identifierId" | "type" | "timeSpent" | "agent" | "moreDetails" | "ip" | "userAgent" | "pageUrl" | "referral" | "contextId" | "traceId" | "geoLocation" | "activityOn" | "projectId", ExtArgs["result"]["activity"]>
 export type ActivityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   project?: boolean | Prisma.ProjectDefaultArgs<ExtArgs>
 }
@@ -832,6 +865,7 @@ export type $ActivityPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     pageUrl: string | null
     referral: string | null
     contextId: string | null
+    traceId: string | null
     geoLocation: string | null
     activityOn: Date
     projectId: string
@@ -1270,6 +1304,7 @@ export interface ActivityFieldRefs {
   readonly pageUrl: Prisma.FieldRef<"Activity", 'String'>
   readonly referral: Prisma.FieldRef<"Activity", 'String'>
   readonly contextId: Prisma.FieldRef<"Activity", 'String'>
+  readonly traceId: Prisma.FieldRef<"Activity", 'String'>
   readonly geoLocation: Prisma.FieldRef<"Activity", 'String'>
   readonly activityOn: Prisma.FieldRef<"Activity", 'DateTime'>
   readonly projectId: Prisma.FieldRef<"Activity", 'String'>

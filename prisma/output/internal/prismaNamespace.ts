@@ -406,6 +406,7 @@ export const ModelName = {
   Account: 'Account',
   Activity: 'Activity',
   Project: 'Project',
+  AnalyticsContext: 'AnalyticsContext',
   IpMap: 'IpMap'
 } as const
 
@@ -422,7 +423,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "pageSnapshot" | "user" | "interaction" | "snapshotWeb" | "interactionEvent" | "application" | "account" | "activity" | "project" | "ipMap"
+    modelProps: "pageSnapshot" | "user" | "interaction" | "snapshotWeb" | "interactionEvent" | "application" | "account" | "activity" | "project" | "analyticsContext" | "ipMap"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1092,6 +1093,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AnalyticsContext: {
+      payload: Prisma.$AnalyticsContextPayload<ExtArgs>
+      fields: Prisma.AnalyticsContextFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AnalyticsContextFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsContextPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AnalyticsContextFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsContextPayload>
+        }
+        findFirst: {
+          args: Prisma.AnalyticsContextFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsContextPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AnalyticsContextFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsContextPayload>
+        }
+        findMany: {
+          args: Prisma.AnalyticsContextFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsContextPayload>[]
+        }
+        create: {
+          args: Prisma.AnalyticsContextCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsContextPayload>
+        }
+        createMany: {
+          args: Prisma.AnalyticsContextCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AnalyticsContextCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsContextPayload>[]
+        }
+        delete: {
+          args: Prisma.AnalyticsContextDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsContextPayload>
+        }
+        update: {
+          args: Prisma.AnalyticsContextUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsContextPayload>
+        }
+        deleteMany: {
+          args: Prisma.AnalyticsContextDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AnalyticsContextUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AnalyticsContextUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsContextPayload>[]
+        }
+        upsert: {
+          args: Prisma.AnalyticsContextUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AnalyticsContextPayload>
+        }
+        aggregate: {
+          args: Prisma.AnalyticsContextAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAnalyticsContext>
+        }
+        groupBy: {
+          args: Prisma.AnalyticsContextGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnalyticsContextGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AnalyticsContextCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AnalyticsContextCountAggregateOutputType> | number
+        }
+      }
+    }
     IpMap: {
       payload: Prisma.$IpMapPayload<ExtArgs>
       fields: Prisma.IpMapFieldRefs
@@ -1316,6 +1391,7 @@ export const ActivityScalarFieldEnum = {
   pageUrl: 'pageUrl',
   referral: 'referral',
   contextId: 'contextId',
+  traceId: 'traceId',
   geoLocation: 'geoLocation',
   activityOn: 'activityOn',
   projectId: 'projectId'
@@ -1336,6 +1412,17 @@ export const ProjectScalarFieldEnum = {
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const AnalyticsContextScalarFieldEnum = {
+  id: 'id',
+  contextId: 'contextId',
+  traceId: 'traceId',
+  projectId: 'projectId',
+  createdOn: 'createdOn'
+} as const
+
+export type AnalyticsContextScalarFieldEnum = (typeof AnalyticsContextScalarFieldEnum)[keyof typeof AnalyticsContextScalarFieldEnum]
 
 
 export const IpMapScalarFieldEnum = {
@@ -1665,6 +1752,7 @@ export type GlobalOmitConfig = {
   account?: Prisma.AccountOmit
   activity?: Prisma.ActivityOmit
   project?: Prisma.ProjectOmit
+  analyticsContext?: Prisma.AnalyticsContextOmit
   ipMap?: Prisma.IpMapOmit
 }
 

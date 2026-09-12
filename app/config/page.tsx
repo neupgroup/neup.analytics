@@ -151,7 +151,7 @@ export default async function ConfigPage({ searchParams }: ConfigPageProps) {
         <CardHeader className="p-0">
           <CardTitle className="font-headline text-2xl"><span className="mr-2">2.</span>Setup Project credentials</CardTitle>
           <CardDescription>
-            Generate an Signing Key for Authenticated Analytics requests. The private key is generated locally and is never saved here.
+            Generate an encryption key for authenticated analytics trace IDs. The private key is generated locally and is never saved here.
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0 pt-4">

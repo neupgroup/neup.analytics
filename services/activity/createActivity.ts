@@ -16,6 +16,7 @@ type ActivityEventInput = {
   pageUrl?: string;
   referral?: string;
   contextId?: string;
+  traceId?: string;
   geoLocation?: string;
   url?: string;
   path?: string;
@@ -180,6 +181,7 @@ function normalizeActivityInput(data: CreateActivityInput): Prisma.ActivityUnche
     ip: data.ip?.trim() || undefined,
     userAgent: data.userAgent?.trim() || undefined,
     contextId: data.contextId?.trim() || undefined,
+    traceId: data.traceId?.trim() || undefined,
     geoLocation: data.geoLocation?.trim() || undefined,
     pageUrl: data.pageUrl?.trim() || data.url?.trim() || undefined,
     referral: data.referral?.trim() || data.referrer?.trim() || undefined,

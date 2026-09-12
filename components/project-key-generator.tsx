@@ -22,6 +22,7 @@ function toBase64(bytes: ArrayBuffer) {
 
 export function ProjectKeyGenerator({ projectId, hasVerifierKey }: { projectId: string; hasVerifierKey: boolean }) {
   const [privateKey, setPrivateKey] = useState<string>();
+  const [publicKey, setPublicKey] = useState<string>();
   const [keyExists, setKeyExists] = useState(hasVerifierKey);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string>();
@@ -33,22 +34,23 @@ export function ProjectKeyGenerator({ projectId, hasVerifierKey }: { projectId: 
 
     try {
       const keyPair = await crypto.subtle.generateKey(
-        { name: 'Ed25519' },
+        { name: 'X25519' },
         true,
-        ['sign', 'verify'],
+        ['deriveBits'],
       ) as CryptoKeyPair;
       const pkcs8 = await crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
       const spki = await crypto.subtle.exportKey('spki', keyPair.publicKey);
       await saveProjectVerifierKey(projectId, toBase64(spki));
       setPrivateKey(toBase64(pkcs8));
+      setPublicKey(toBase64(spki));
       setKeyExists(true);
     } catch {
-      setError('This browser could not generate an Ed25519 key. Try the latest version of Chrome, Edge, or Firefox.');
+      setError('This browser could not generate an X25519 key. Try the latest version of Chrome, Edge, or Firefox.');
     }
   }
 
   const config = privateKey
-    ? `NEUP_ANALYTICS_PROJECT_ID="${projectId}"\nNEUP_ANALYTICS_PROJECT_KEY="${privateKey}"`
+    ? `NEUP_ANALYTICS_PROJECT_ID="${projectId}"\nNEUP_ANALYTICS_PROJECT_KEY="${privateKey}"\nNEXT_PUBLIC_NEUP_ANALYTICS_PROJECT_PUBLIC_KEY="${publicKey ?? ''}"`
     : '';
 
   async function copyConfig() {
@@ -63,6 +65,7 @@ export function ProjectKeyGenerator({ projectId, hasVerifierKey }: { projectId: 
     try {
       await revokeProjectVerifierKey(projectId);
       setPrivateKey(undefined);
+      setPublicKey(undefined);
       setKeyExists(false);
       setCopied(false);
       setRevokeDialogOpen(false);
@@ -80,12 +83,12 @@ export function ProjectKeyGenerator({ projectId, hasVerifierKey }: { projectId: 
           </Button>
         ) : !keyExists ? (
           <Button variant="solid" preIcon={<KeyRound className="h-4 w-4" />} onClick={generateKey}>
-            Generate Ed25519 key
+            Generate X25519 encryption key
           </Button>
         ) : null}
         {keyExists && (
           <Button variant="solid" convey="danger" preIcon={<ShieldOff className="h-4 w-4" />} onClick={() => setRevokeDialogOpen(true)}>
-            Revoke old Key
+            Revoke encryption key
           </Button>
         )}
       </div>
@@ -106,9 +109,9 @@ export function ProjectKeyGenerator({ projectId, hasVerifierKey }: { projectId: 
       <AlertDialog open={revokeDialogOpen} onOpenChange={setRevokeDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Revoke this project key?</AlertDialogTitle>
+            <AlertDialogTitle>Revoke this encryption key?</AlertDialogTitle>
             <AlertDialogDescription>
-              Existing signatures created with this key will no longer verify. You will need to generate a new key for this project.
+              Existing encrypted trace IDs created with this key will no longer decrypt. You will need to generate a new key for this project.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

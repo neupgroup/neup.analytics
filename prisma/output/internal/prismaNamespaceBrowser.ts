@@ -60,6 +60,7 @@ export const ModelName = {
   Account: 'Account',
   Activity: 'Activity',
   Project: 'Project',
+  AnalyticsContext: 'AnalyticsContext',
   IpMap: 'IpMap'
 } as const
 
@@ -190,6 +191,7 @@ export const ActivityScalarFieldEnum = {
   pageUrl: 'pageUrl',
   referral: 'referral',
   contextId: 'contextId',
+  traceId: 'traceId',
   geoLocation: 'geoLocation',
   activityOn: 'activityOn',
   projectId: 'projectId'
@@ -210,6 +212,17 @@ export const ProjectScalarFieldEnum = {
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const AnalyticsContextScalarFieldEnum = {
+  id: 'id',
+  contextId: 'contextId',
+  traceId: 'traceId',
+  projectId: 'projectId',
+  createdOn: 'createdOn'
+} as const
+
+export type AnalyticsContextScalarFieldEnum = (typeof AnalyticsContextScalarFieldEnum)[keyof typeof AnalyticsContextScalarFieldEnum]
 
 
 export const IpMapScalarFieldEnum = {

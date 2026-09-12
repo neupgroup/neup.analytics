@@ -124,6 +124,7 @@ model Activity {
   pageUrl      String?
   referral     String?
   contextId    String?
+  traceId      String?
   geoLocation  String?
   activityOn   DateTime @default(now())
   projectId    String
@@ -148,6 +149,19 @@ model Project {
   createdOn   DateTime @default(now())
 
   activities Activity[]
+  contexts   AnalyticsContext[]
+}
+
+model AnalyticsContext {
+  id        String   @id @default(cuid())
+  contextId String   @unique
+  traceId   String
+  projectId String
+  createdOn DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id])
+
+  @@index([projectId])
+  @@index([traceId])
 }
 
 model IpMap {
