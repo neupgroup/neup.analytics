@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { NextJsSetupGuidelines } from '@/components/nextjs-setup-guidelines';
-import { LanguageSetupGuidelines } from '@/components/language-setup-guidelines';
+import { SetupGuidelines } from '@/components/setup-guidelines';
 import { defaultTrackingOptions, type TrackingOptions } from '@/components/tracking-options';
 
 export function TrackingSetup({ projectId }: { projectId: string }) {
@@ -77,8 +76,7 @@ export function TrackingSetup({ projectId }: { projectId: string }) {
     {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
     </>}
     <div className="border-t pt-6">
-      <NextJsSetupGuidelines projectId={projectId} tracking={activeOptions} startStep={trackMore ? 4 : 2} />
-      <LanguageSetupGuidelines projectId={projectId} tracking={activeOptions} startStep={trackMore ? 4 : 2} />
+      <SetupGuidelines projectId={projectId} tracking={activeOptions} startStep={trackMore ? 4 : 2} />
     </div>
   </div>;
 }

@@ -7,12 +7,16 @@ const ts = require('typescript');
 function load(path, dependencies = {}) {
   const exports = {};
   vm.runInNewContext(ts.transpileModule(fs.readFileSync(path, 'utf8'), {
-    compilerOptions: { module: ts.ModuleKind.CommonJS },
+    compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX },
   }).outputText, { exports, encodeURIComponent, require: (name) => dependencies[name] ?? require(name) });
   return exports;
 }
 const options = load('components/tracking-options.ts');
-const examples = load('components/analytics-language-examples.ts', { '@/components/tracking-options': options });
+const examples = load('components/setup-guidelines.tsx', {
+  '@/components/tracking-options': options,
+  // Snippet generation does not render icons; avoid loading their browser bundle.
+  'lucide-react': {},
+});
 
 test('language snippets embed cookie choices and named server placeholders', () => {
   const selected = { essentials: true, allCookies: false, cookies: ['language', 'theme'], serverFields: ['account_plan'] };

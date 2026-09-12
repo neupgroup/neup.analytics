@@ -1,4 +1,121 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { Check, Clipboard } from 'lucide-react';
 import { defaultTrackingOptions, trackingFields, type TrackingOptions } from '@/components/tracking-options';
+
+function buildAnalyticsCode(projectId: string, tracking: TrackingOptions) {
+  return `import crypto from "node:crypto";
+import { cookies, headers } from "next/headers";
+
+async function getTrackedServerCookies(): Promise<Record<string, string>> {
+  const selected: string[] = ${JSON.stringify(tracking.serverCookies ?? [])};
+  const all = ${Boolean(tracking.allServerCookies)};
+  const cookieStore = await cookies();
+  return Object.fromEntries(cookieStore.getAll().filter(({ name }) => all || selected.includes(name)).map(({ name, value }) => [name, value]));
+}
+
+function generateTraceId(): string {
+  return \`\${Date.now()}.\${crypto.randomBytes(24).toString("hex")}\`;
+}
+
+function projectSecret(): Buffer {
+  const secret = process.env.NEUP_ANALYTICS_PROJECT_KEY;
+  if (!secret || !/^[a-f0-9]{64}$/.test(secret)) throw new Error("Configure NEUP_ANALYTICS_PROJECT_KEY with a generated project secret.");
+  return Buffer.from(secret, "hex");
+}
+function generateContextId(traceId: string): string {
+  return crypto.createHmac("sha256", projectSecret()).update(traceId).digest("hex");
+}
+function signContextId(contextId: string): string {
+  const signature = crypto.createHmac("sha256", projectSecret()).update("neup-context:v1:" + contextId).digest("hex");
+  return "v1." + contextId + "." + signature;
+}
+
+export async function getAnalyticsContext() {
+  const cookieStore = await cookies();
+  let traceId = cookieStore.get("_neuptraceid")?.value;
+  if (!traceId) {
+    traceId = generateTraceId();
+    cookieStore.set({ name: "_neuptraceid", value: traceId, httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/" });
+  }
+  const contextId = generateContextId(traceId);
+  return { traceId, contextId, signedContextId: signContextId(contextId), projectId: "${projectId}" };
+}
+
+export async function logPageActivity(contextId: string, pageUrl: string): Promise<void> {
+  const projectKey = process.env.NEUP_ANALYTICS_PROJECT_KEY;
+  if (!projectKey) return;
+  const { traceId } = await getAnalyticsContext();
+  const requestHeaders = await headers();
+  try {
+    await fetch("https://neupgroup.com/analytics/bridge/api.v1/activity?project=${encodeURIComponent(projectId)}", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ _neuptraceid: traceId, contextId: signContextId(contextId), moreDetails: { serverCookies: await getTrackedServerCookies() }, pageUrl, agent: requestHeaders.get("user-agent") ?? "", ipAddress: requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ?? requestHeaders.get("x-real-ip") ?? "" }),
+      cache: "no-store",
+    });
+  } catch {
+    // Analytics failures must never break the application.
+  }
+}
+
+export async function logActivity(activity: string, data?: Record<string, unknown>): Promise<void> {
+  const projectKey = process.env.NEUP_ANALYTICS_PROJECT_KEY;
+  if (!projectKey) return;
+  const { contextId, traceId } = await getAnalyticsContext();
+  const requestHeaders = await headers();
+  await fetch(
+    "https://neupgroup.com/analytics/bridge/api.v1/activity?project=${encodeURIComponent(projectId)}",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ activity, data, contextId: signContextId(contextId), _neuptraceid: traceId, moreDetails: { serverCookies: await getTrackedServerCookies() }, agent: requestHeaders.get("user-agent") ?? "", ipAddress: requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ?? requestHeaders.get("x-real-ip") ?? "" }),
+      cache: "no-store",
+    },
+  );
+}
+
+export async function logClientActivity(activity: string, data?: Record<string, unknown>): Promise<void> {
+  if (typeof window === "undefined") return;
+  await fetch("https://neupgroup.com/analytics/bridge/api.v1/activity?project=${encodeURIComponent(projectId)}", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ activity, data, agent: navigator.userAgent, pageUrl: window.location.href }),
+    keepalive: true,
+  });
+}
+`;
+}
+
+function buildLayoutCode(projectId: string, tracking: TrackingOptions) {
+  return `import { headers } from "next/headers";
+import { getAnalyticsContext, logPageActivity } from "@/analytics";
+
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const { contextId, signedContextId } = await getAnalyticsContext();
+  const requestHeaders = await headers();
+  const pagePath = requestHeaders.get("x-invoke-path") ?? requestHeaders.get("next-url") ?? "/";
+  await logPageActivity(contextId, pagePath);
+
+  return (
+    <html lang="en">
+      <body>
+        {children}
+        <script
+          src="https://neupgroup.com/analytics/bridge/sdk.v1/tracker"
+          data-context-id={signedContextId}
+          data-project-id="${projectId}"
+          data-collect="${tracking.essentials ? 'pageview' : 'none'}"
+          data-cookie-keys={${JSON.stringify(JSON.stringify(tracking.allCookies ? '*' : tracking.cookies))}}
+          data-server-fields={JSON.stringify(${JSON.stringify(trackingFields(tracking), null, 2)})}
+          defer
+        />
+      </body>
+    </html>
+  );
+}`;
+}
 
 export type SetupExample = { title: string; description: string; code: string };
 
@@ -229,4 +346,42 @@ Route::get('/analytics-context', function (Request $request) {
 7. After a successful response, set the HttpOnly, Secure, SameSite=Lax trace cookie.
 8. Respond to the browser with {"signedContextId":token,"serverFields":${fields}}.
 On upstream failure, return 503. Never return the secret or raw trace ID.` }, client(`async function startAnalytics() {\n${browser}\n}\nvoid startAnalytics().catch(console.error);`)];
+}
+
+export function SetupGuidelines({ projectId, tracking = defaultTrackingOptions, startStep = 1 }: { projectId: string; tracking?: TrackingOptions; startStep?: number }) {
+  const [language, setLanguage] = useState('');
+  const [copied, setCopied] = useState<number>();
+  const [error, setError] = useState('');
+  useEffect(() => {
+    const update = () => {
+      setLanguage(window.localStorage.getItem('neup-config-framework') ?? '');
+      setCopied(undefined);
+      setError('');
+    };
+    update();
+    window.addEventListener('neup-config-framework-change', update);
+    return () => window.removeEventListener('neup-config-framework-change', update);
+  }, []);
+  if (!language) return <p className="text-sm text-muted-foreground">Choose a language or framework above to see its setup scripts.</p>;
+  const examples: SetupExample[] = language === 'nextjs' ? [
+    { title: 'Add the following file to your application', description: 'Create analytics.ts in the folder mapped to @/*. Keep this file server-side.', code: buildAnalyticsCode(projectId, tracking) },
+    { title: 'Add the following to your RootLayout or Main Layout.tsx', description: 'Add this to the layout that runs on the server.', code: buildLayoutCode(projectId, tracking) },
+  ] : buildLanguageExamples(language, projectId, tracking);
+  return <div className="space-y-6">
+    {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+    {examples.map((example, index) => <section key={example.title} className="space-y-2">
+      <h3 className="text-base font-semibold">{startStep + index}. {example.title.replace(/^\d+\.\s*/, '')}</h3>
+      <p className="text-sm text-muted-foreground">{example.description}</p>
+      <div className="relative">
+      <button type="button" aria-label={copied === index ? 'Code copied' : 'Copy code'} title={copied === index ? 'Copied' : 'Copy code'} className="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-md border bg-background text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" onClick={async () => {
+        try {
+          await navigator.clipboard.writeText(example.code);
+          setCopied(index);
+          setError('');
+        } catch { setError('Clipboard unavailable. Select and copy the code below.'); }
+      }}>{copied === index ? <Check className="h-4 w-4" aria-hidden="true" /> : <Clipboard className="h-4 w-4" aria-hidden="true" />}</button>
+      <pre className="max-h-96 overflow-auto whitespace-pre-wrap break-words rounded-xl border bg-muted/20 p-4 pr-16 font-mono text-xs leading-6 text-muted-foreground">{example.code}</pre>
+      </div>
+    </section>)}
+  </div>;
 }

@@ -27,7 +27,7 @@ test('HMAC derivation matches independent Node computation and tokens reject cha
 });
 test('both distributed SDK snippets produce server-compatible tokens', () => {
   const secret = auth.generateProjectSecret();
-  const sources = [fs.readFileSync('setup/nextjs/analytics.block', 'utf8'), fs.readFileSync('components/nextjs-setup-guidelines.tsx', 'utf8')];
+  const sources = [fs.readFileSync('setup/nextjs/analytics.block', 'utf8'), fs.readFileSync('components/setup-guidelines.tsx', 'utf8')];
   for (const source of sources) {
     const helpers = source.slice(source.indexOf('function projectSecret'), source.indexOf('export async function getAnalyticsContext'));
     const sdk = load('import crypto from "node:crypto";\n' + helpers + '\nexport { generateContextId, signContextId };', { process: { env: { NEUP_ANALYTICS_PROJECT_KEY: secret } } });
