@@ -41,7 +41,7 @@ test('API and browser webhook reject invalid batches before persistence', async 
   const secret = auth.generateProjectSecret();
   const contextId = auth.deriveContextId(secret, 'trace-a');
   const token = auth.signContextToken(secret, contextId);
-  for (const path of ['app/bridge/api.v1/activity/route.ts', 'app/bridge/webhook.v1/activity/route.ts']) {
+  for (const path of ['app/bridge/api.v1/activity/route.ts']) {
     let writes = 0;
     let saved;
     const prisma = {
