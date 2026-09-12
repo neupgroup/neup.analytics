@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { HeatmapDisplay } from '@/components/dashboard/heatmap-display';
 import { Skeleton } from '@neup/components/ui/skeleton';
 import { Search } from 'lucide-react';
+import { makeAppPath } from '@neup/core/appconfig';
 
 type Page = {
     id: string;
@@ -29,7 +30,7 @@ export default function HeatmapsPage() {
         const fetchPages = async () => {
             setIsLoading(true);
             try {
-                const res = await fetch('/bridge/api.v1/pages');
+                const res = await fetch(makeAppPath('/bridge/api.v1/pages'));
                 if (!res.ok) throw new Error('Failed to load pages');
                 const data = await res.json();
                 setUniquePages(data || []);

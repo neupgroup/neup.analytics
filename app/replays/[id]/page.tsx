@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@neup/components/ui/card';
+import { makeAppPath } from '@neup/core/appconfig';
 import {
   Monitor,
   Smartphone,
@@ -96,7 +97,7 @@ export default function ReplayDetailPage() {
       setIsLoadingInteraction(true);
       setError(null);
       try {
-        const res = await fetch(`/bridge/api.v1/replays/${id}`);
+        const res = await fetch(makeAppPath(`/bridge/api.v1/replays/${id}`));
         if (!res.ok) throw new Error('Failed to load replay');
         const data = await res.json();
         setInteraction(data.interaction ?? data);

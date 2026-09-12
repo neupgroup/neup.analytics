@@ -8,6 +8,7 @@ import h337 from 'heatmap.js';
 import { Skeleton } from '@neup/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@neup/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from '@neup/components/ui/alert';
+import { makeAppPath } from '@neup/core/appconfig';
 
 type InteractionEvent =
   | { type: 'mousemove'; x?: number | null; y?: number | null; timestamp: number }
@@ -84,7 +85,7 @@ export function HeatmapDisplay({ pageId }: { pageId: string }) {
         const fetchPage = async () => {
             setIsLoadingPage(true);
             try {
-                const res = await fetch(`/bridge/api.v1/pages/${pageId}`);
+                const res = await fetch(makeAppPath(`/bridge/api.v1/pages/${pageId}`));
                 if (!res.ok) throw new Error('Failed to load page');
                 const data = await res.json();
                 setPage(data);
@@ -98,7 +99,7 @@ export function HeatmapDisplay({ pageId }: { pageId: string }) {
         const fetchInteractions = async () => {
             setIsLoadingInteractions(true);
             try {
-                const res = await fetch(`/bridge/api.v1/pages/${pageId}/interactions`);
+                const res = await fetch(makeAppPath(`/bridge/api.v1/pages/${pageId}/interactions`));
                 if (!res.ok) throw new Error('Failed to load interactions');
                 const data = await res.json();
                 setInteractions(data);

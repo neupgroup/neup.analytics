@@ -13,6 +13,7 @@ import { Skeleton } from '@neup/components/ui/skeleton';
 import { cn } from '@neup/core/utils';
 import { Avatar, AvatarFallback } from '@neup/components/ui/avatar';
 import { timestampToDate, type Timestamp } from '@neup/core/data/timestamp';
+import { makeAppPath } from '@neup/core/appconfig';
 
 type User = {
   id: string;
@@ -199,7 +200,7 @@ export default function LiveViewPage() {
   useEffect(() => {
     const fetchLive = async () => {
       try {
-        const res = await fetch('/bridge/api.v1/live');
+        const res = await fetch(makeAppPath('/bridge/api.v1/live'));
         if (!res.ok) throw new Error('Failed to fetch live users');
         const data = await res.json();
         setUsers(data);

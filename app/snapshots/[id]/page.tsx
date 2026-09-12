@@ -8,6 +8,7 @@ import { LinkButton } from '@neup/components/ui/link-button';
 import { Button } from '@neup/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@neup/components/ui/card';
 import { Skeleton } from '@neup/components/ui/skeleton';
+import { makeAppPath } from '@neup/core/appconfig';
 
 type Snapshot = {
   id: string;
@@ -180,7 +181,7 @@ export default function SnapshotDetailPage() {
       setError(null);
 
       try {
-        const response = await fetch(`/bridge/api.v1/snapshots/${id}`);
+        const response = await fetch(makeAppPath(`/bridge/api.v1/snapshots/${id}`));
         const data = await response.json();
 
         if (!response.ok) {

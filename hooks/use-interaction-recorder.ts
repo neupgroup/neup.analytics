@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { makeAppPath } from '@neup/core/appconfig';
 
 type InteractionEvent =
   | { type: 'mousemove'; x: number; y: number; timestamp: number }
@@ -107,7 +108,7 @@ export function useInteractionRecorder() {
     interactionsRef.current = [];
 
     try {
-      await fetch('/bridge/api.v1/collect', {
+      await fetch(makeAppPath('/bridge/api.v1/collect'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

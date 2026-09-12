@@ -10,6 +10,7 @@ import { Input } from '@neup/components/ui/input';
 import { Label } from '@neup/components/ui/label';
 import { Skeleton } from '@neup/components/ui/skeleton';
 import { useToast } from '@neup/core/hooks/useToast';
+import { makeAppPath } from '@neup/core/appconfig';
 
 type Snapshot = {
   id: string;
@@ -47,7 +48,7 @@ export default function SnapshotsPage() {
     setError(null);
 
     try {
-      const response = await fetch('/bridge/api.v1/snapshots');
+      const response = await fetch(makeAppPath('/bridge/api.v1/snapshots'));
       const data = await response.json();
 
       if (!response.ok) {
@@ -71,7 +72,7 @@ export default function SnapshotsPage() {
     setIsCapturing(true);
 
     try {
-      const response = await fetch('/bridge/api.v1/snapshots', {
+      const response = await fetch(makeAppPath('/bridge/api.v1/snapshots'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url }),

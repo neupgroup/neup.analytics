@@ -8,6 +8,7 @@ import { Skeleton } from "@neup/components/ui/skeleton";
 import { PlaySquare, Clock, Laptop, Smartphone, User, ArrowLeft, ArrowRight } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@neup/components/ui/button";
+import { makeAppPath } from '@neup/core/appconfig';
 
 // Define interaction type
 type Interaction = {
@@ -35,7 +36,7 @@ export default function ReplaysPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/bridge/api.v1/replays?page=${page}&limit=${REPLAYS_PER_PAGE}`);
+      const res = await fetch(makeAppPath(`/bridge/api.v1/replays?page=${page}&limit=${REPLAYS_PER_PAGE}`));
       if (!res.ok) throw new Error('Failed to load replays');
       const data = await res.json();
       setInteractions(data.interactions || []);

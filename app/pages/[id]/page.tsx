@@ -5,6 +5,7 @@ import { Alert, AlertDescription, AlertTitle } from '@neup/components/ui/alert';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@neup/components/ui/card';
 import { Skeleton } from '@neup/components/ui/skeleton';
 import { Monitor, Smartphone, Tablet } from 'lucide-react';
+import { makeAppPath } from '@neup/core/appconfig';
 
 type PageSnapshot = {
   pagePath: string;
@@ -47,7 +48,7 @@ export default function PageDetailPage({ params }: { params: Promise<{ id: strin
 
     async function fetchPage() {
       try {
-        const response = await fetch(`/bridge/api.v1/pages/${encodeURIComponent(id)}`);
+        const response = await fetch(makeAppPath(`/bridge/api.v1/pages/${encodeURIComponent(id)}`));
         if (!response.ok) throw new Error(response.status === 404 ? 'Page snapshot not found.' : 'Failed to load page snapshot.');
         const data = await response.json() as PageSnapshot;
         if (!cancelled) setPage(data);
