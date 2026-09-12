@@ -151,6 +151,21 @@ model Project {
 
   activities Activity[]
   contexts   AnalyticsContext[]
+  pages      Page[]
+}
+
+model Page {
+  id          String   @id @default(cuid())
+  pageName    String   @db.VarChar(48)
+  description String   @db.VarChar(128)
+  iteration   String   @db.VarChar(8)
+  projectId   String
+  moreDetails Json?
+  createdOn   DateTime @default(now())
+  project     Project  @relation(fields: [projectId], references: [id])
+
+  @@index([projectId])
+  @@map("pages")
 }
 
 model AnalyticsContext {

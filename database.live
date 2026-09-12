@@ -9,6 +9,16 @@ Fields:
 > ipAddress: string(48), nullable, server IP address or comma-separated IP addresses;
 > createdOn: timestamp, default: now();
 
+Table: pages, Model: Page
+Fields:
+> id: string, cuid, primary key;
+> pageName: string(48);
+> description: string(128);
+> iteration: string(8);
+> projectId: string, references Project.id;
+> moreDetails: json, nullable;
+> createdOn: timestamp, default: now();
+
 Table: Activity, Model: Activity
 Fields:
 > id: string, cuid, primary key;

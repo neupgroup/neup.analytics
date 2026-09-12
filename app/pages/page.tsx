@@ -1,10 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@neup/components/ui/card';
 import { LinkButton } from '@neup/components/ui/link-button';
 import { Skeleton } from '@neup/components/ui/skeleton';
-import { FileText, Search, ArrowRight } from 'lucide-react';
+import { FileText, Search, ArrowRight, Plus } from 'lucide-react';
 import { Button } from '@neup/components/ui/button';
 import { makeAppPath } from '@neup/core/appconfig';
 
@@ -16,6 +17,8 @@ type Page = {
     version: number;
     siteId: string;
 };
+
+type ConfiguredPage = { id: string; pageName: string; description: string; iteration: string };
 
 export function PagesSkeleton() {
     return (
@@ -32,14 +35,19 @@ export default function PagesPage() {
     const [pages, setPages] = useState<Page[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
+    const [recommendations, setRecommendations] = useState<string[]>([]);
+    const [configuredPages, setConfiguredPages] = useState<ConfiguredPage[]>([]);
+    const selectedProject = useSearchParams().get('selectedProject');
 
     useEffect(() => {
         const fetchPages = async () => {
             try {
-                const res = await fetch(makeAppPath('/bridge/api.v1/pages'));
+                const res = await fetch(makeAppPath(`/bridge/api.v1/pages?selectedProject=${encodeURIComponent(selectedProject ?? '')}`));
                 if (!res.ok) throw new Error('Failed to load pages');
                 const data = await res.json();
-                setPages(data);
+                setPages(data.pages ?? []);
+                setRecommendations(data.recommendations ?? []);
+                setConfiguredPages(data.configuredPages ?? []);
             } catch (err: any) {
                 setError(err);
             } finally {
@@ -47,7 +55,19 @@ export default function PagesPage() {
             }
         };
         fetchPages();
-    }, []);
+    }, [selectedProject]);
+
+    const addPage = async (pageName: string) => {
+        if (!selectedProject) return;
+        const response = await fetch(makeAppPath('/bridge/api.v1/pages'), {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ projectId: selectedProject, pageName }),
+        });
+        if (!response.ok) return;
+        const page = await response.json();
+        setConfiguredPages((current) => [page, ...current]);
+        setRecommendations((current) => current.filter((item) => item !== pageName));
+    };
 
     const formatTimestamp = (timestamp: string | null | undefined) => (timestamp ? new Date(timestamp).toLocaleString() : 'N/A');
 
@@ -55,9 +75,19 @@ export default function PagesPage() {
         <Card>
             <CardHeader>
                 <CardTitle className="font-headline">Page Management</CardTitle>
-                <CardDescription>View and manage the page snapshots recorded for session replays.</CardDescription>
+            <CardDescription>View and manage the page snapshots recorded for session replays.</CardDescription>
             </CardHeader>
             <CardContent>
+                {recommendations.length > 0 && (
+                    <div className="mb-6 rounded-lg border border-dashed p-4">
+                        <h2 className="font-semibold">Recommended pages</h2>
+                        <p className="mb-3 text-sm text-muted-foreground">Pages found in recent activity.</p>
+                        <div className="space-y-2">
+                            {recommendations.map((pageName) => <div key={pageName} className="flex items-center justify-between gap-3 rounded-md border p-3"><span className="truncate text-sm">{pageName}</span><Button size="sm" variant="tinted" onClick={() => addPage(pageName)}><Plus className="mr-1 h-4 w-4" />Add</Button></div>)}
+                        </div>
+                    </div>
+                )}
+                {configuredPages.length > 0 && <div className="mb-6"><h2 className="mb-2 font-semibold">Added pages</h2><div className="space-y-1 text-sm text-muted-foreground">{configuredPages.map((page) => <div key={page.id}>{page.pageName}</div>)}</div></div>}
                 {isLoading && (
                     <div className="overflow-hidden rounded-lg border">
                         {[...Array(3)].map((_, i) => (
