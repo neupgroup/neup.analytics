@@ -2,6 +2,7 @@
 CREATE TABLE "pages" (
     "id" TEXT NOT NULL,
     "pageName" VARCHAR(48) NOT NULL,
+    "pageTitle" VARCHAR(128) NOT NULL,
     "description" VARCHAR(128) NOT NULL,
     "iteration" VARCHAR(8) NOT NULL,
     "projectId" TEXT NOT NULL,

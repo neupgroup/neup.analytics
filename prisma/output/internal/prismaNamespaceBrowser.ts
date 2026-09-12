@@ -219,6 +219,7 @@ export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeo
 export const PageScalarFieldEnum = {
   id: 'id',
   pageName: 'pageName',
+  pageTitle: 'pageTitle',
   description: 'description',
   iteration: 'iteration',
   projectId: 'projectId',

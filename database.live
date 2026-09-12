@@ -13,6 +13,7 @@ Table: pages, Model: Page
 Fields:
 > id: string, cuid, primary key;
 > pageName: string(48);
+> pageTitle: string(128);
 > description: string(128);
 > iteration: string(8);
 > projectId: string, references Project.id;

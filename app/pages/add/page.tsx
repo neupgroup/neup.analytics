@@ -36,11 +36,10 @@ export default async function AddPage({ searchParams }: PageAddProps) {
 
     const projectId = String(formData.get('projectId') ?? '').trim();
     const name = String(formData.get('pageName') ?? '').trim();
+    const pageTitle = String(formData.get('pageTitle') ?? '').trim();
     const description = String(formData.get('description') ?? '').trim();
-    const iteration = String(formData.get('iteration') ?? '1').trim();
-    const moreDetails = String(formData.get('moreDetails') ?? '').trim();
 
-    if (!projectId || !name || !iteration) throw new Error('Project, page name, and iteration are required.');
+    if (!projectId || !name || !pageTitle) throw new Error('Project, page path, and title are required.');
 
     const project = await prisma.project.findUnique({ where: { id: projectId }, select: { path: true } });
     if (!project || !belongsToProject(name, project.path)) {
@@ -51,9 +50,9 @@ export default async function AddPage({ searchParams }: PageAddProps) {
       data: {
         projectId,
         pageName: name.slice(0, 48),
+        pageTitle: pageTitle.slice(0, 128),
         description: description.slice(0, 128),
-        iteration: iteration.slice(0, 8),
-        ...(moreDetails ? { moreDetails } : {}),
+        iteration: '1',
       },
     });
 
@@ -75,16 +74,12 @@ export default async function AddPage({ searchParams }: PageAddProps) {
           <PagePathInput projectPath={project?.path ?? ''} defaultValue={pageName} serverError={error === 'outside-project'} />
         </div>
         <div className="space-y-2">
+          <label htmlFor="pageTitle" className="text-sm font-medium">Page title</label>
+          <Input id="pageTitle" name="pageTitle" maxLength={128} required />
+        </div>
+        <div className="space-y-2">
           <label htmlFor="description" className="text-sm font-medium">Description</label>
           <Textarea id="description" name="description" maxLength={128} rows={3} />
-        </div>
-        <div className="space-y-2">
-          <label htmlFor="iteration" className="text-sm font-medium">Iteration</label>
-          <Input id="iteration" name="iteration" defaultValue="1" maxLength={8} required />
-        </div>
-        <div className="space-y-2">
-          <label htmlFor="moreDetails" className="text-sm font-medium">More details</label>
-          <Textarea id="moreDetails" name="moreDetails" rows={4} />
         </div>
         <div className="flex gap-3">
           <Button htmlType="submit" variant="solid">Add page</Button>

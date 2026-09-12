@@ -17,7 +17,7 @@ type Page = {
     siteId: string;
 };
 
-type ConfiguredPage = { id: string; pageName: string; description: string; iteration: string };
+type ConfiguredPage = { id: string; pageName: string; pageTitle: string; description: string; iteration: string };
 
 export function PagesSkeleton() {
     return (
@@ -55,8 +55,6 @@ export default function PagesPage() {
         };
         fetchPages();
     }, [selectedProject]);
-
-    const formatTimestamp = (timestamp: string | null | undefined) => (timestamp ? new Date(timestamp).toLocaleString() : 'N/A');
 
     return (
         <div className="space-y-6">
@@ -112,9 +110,12 @@ export default function PagesPage() {
                             </div>
                         ))}
                         {configuredPages.map((page) => (
-                            <div key={`configured-${page.id}`} className="flex items-center gap-4 border-b p-4 transition-colors last:border-b-0 hover:bg-muted/40">
-                                <div className="flex h-20 w-32 shrink-0 items-center justify-center rounded-md border bg-muted"><FileText className="h-6 w-6 text-muted-foreground" /></div>
-                                <div className="min-w-0 flex-1"><p className="truncate text-sm font-medium">{page.pageName}</p><p className="mt-1 text-xs text-muted-foreground">Added page · Iteration {page.iteration}</p></div>
+                            <div key={`configured-${page.id}`} className="border-b">
+                                <LinkButton variant="plain" href={`/pages/${page.id}?selectedProject=${encodeURIComponent(selectedProject ?? '')}`} className="flex h-auto w-full items-center gap-4 rounded-none border-0 p-4 text-left transition-colors hover:bg-muted/40">
+                                    <div className="flex h-20 w-32 shrink-0 items-center justify-center rounded-md border bg-muted"><FileText className="h-6 w-6 text-muted-foreground" /></div>
+                                    <div className="min-w-0 flex-1"><p className="truncate text-sm font-medium">{page.pageTitle || 'Unnamed Page'}</p><p className="mt-1 truncate text-xs text-muted-foreground">{page.pageName} · v{page.iteration}</p></div>
+                                    <ArrowRight className="h-5 w-5 shrink-0 text-muted-foreground" />
+                                </LinkButton>
                             </div>
                         ))}
                         {pages.map((page) => (
@@ -135,10 +136,8 @@ export default function PagesPage() {
                                 <div className="flex min-w-0 flex-1 items-start gap-3">
                                     <FileText className="mt-0.5 hidden h-5 w-5 shrink-0 text-muted-foreground sm:block" />
                                     <div className="min-w-0">
-                                        <p className="truncate text-sm font-medium">{page.pagePath}</p>
-                                        <p className="mt-1 text-xs text-muted-foreground">
-                                            Version {page.version} - Recorded on {formatTimestamp(page.recordedOn)}
-                                        </p>
+                                        <p className="truncate text-sm font-medium">Unnamed Page</p>
+                                        <p className="mt-1 truncate text-xs text-muted-foreground">{page.pagePath} · v{page.version}</p>
                                     </div>
                                 </div>
 

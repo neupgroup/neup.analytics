@@ -16,7 +16,20 @@ export async function GET(
   });
 
   if (!page) {
-    return NextResponse.json({ error: 'Page not found' }, { status: 404 });
+    const configuredPage = await prisma.page.findUnique({ where: { id } });
+    if (!configuredPage) return NextResponse.json({ error: 'Page not found' }, { status: 404 });
+
+    return NextResponse.json({
+      id: configuredPage.id,
+      pagePath: configuredPage.pageName,
+      siteId: configuredPage.projectId,
+      version: Number(configuredPage.iteration) || 1,
+      recordedOn: configuredPage.createdOn,
+      content: '',
+      interactionsCount: 0,
+      pageTitle: configuredPage.pageTitle,
+      description: configuredPage.description,
+    });
   }
 
   const interactionsCount = await prisma.interaction.count({

@@ -50,7 +50,7 @@ export async function POST(request: Request) {
   if (!projectId || !pageName) return NextResponse.json({ error: 'projectId and pageName are required' }, { status: 400 });
 
   const page = await prisma.page.create({
-    data: { projectId, pageName: pageName.slice(0, 48), description: '', iteration: '1' },
+    data: { projectId, pageName: pageName.slice(0, 48), pageTitle: pageName.slice(0, 128), description: '', iteration: '1' },
   });
   return NextResponse.json(page, { status: 201 });
 }

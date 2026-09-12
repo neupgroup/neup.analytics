@@ -157,6 +157,7 @@ model Project {
 model Page {
   id          String   @id @default(cuid())
   pageName    String   @db.VarChar(48)
+  pageTitle   String   @db.VarChar(128)
   description String   @db.VarChar(128)
   iteration   String   @db.VarChar(8)
   projectId   String
