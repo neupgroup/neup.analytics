@@ -72,12 +72,12 @@ export default function PagesPage() {
     const formatTimestamp = (timestamp: string | null | undefined) => (timestamp ? new Date(timestamp).toLocaleString() : 'N/A');
 
     return (
-        <Card>
-            <CardHeader>
+        <div className="space-y-6">
+            <div>
                 <CardTitle className="font-headline">Page Management</CardTitle>
-            <CardDescription>View and manage the page snapshots recorded for session replays.</CardDescription>
-            </CardHeader>
-            <CardContent>
+                <CardDescription>View and manage the page snapshots recorded for session replays.</CardDescription>
+            </div>
+            <div>
                 {recommendations.length > 0 && (
                     <div className="mb-6 rounded-lg border border-dashed p-4">
                         <h2 className="font-semibold">Recommended pages</h2>
@@ -153,7 +153,7 @@ export default function PagesPage() {
                         ))}
                     </div>
                 )}
-            </CardContent>
-        </Card>
+            </div>
+        </div>
     );
 }

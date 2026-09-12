@@ -87,6 +87,11 @@ export type Activity = Prisma.ActivityModel
  */
 export type Project = Prisma.ProjectModel
 /**
+ * Model Page
+ * 
+ */
+export type Page = Prisma.PageModel
+/**
  * Model AnalyticsContext
  * 
  */

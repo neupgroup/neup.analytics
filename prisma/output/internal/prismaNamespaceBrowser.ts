@@ -60,6 +60,7 @@ export const ModelName = {
   Account: 'Account',
   Activity: 'Activity',
   Project: 'Project',
+  Page: 'Page',
   AnalyticsContext: 'AnalyticsContext',
   IpMap: 'IpMap'
 } as const
@@ -213,6 +214,19 @@ export const ProjectScalarFieldEnum = {
 } as const
 
 export type ProjectScalarFieldEnum = (typeof ProjectScalarFieldEnum)[keyof typeof ProjectScalarFieldEnum]
+
+
+export const PageScalarFieldEnum = {
+  id: 'id',
+  pageName: 'pageName',
+  description: 'description',
+  iteration: 'iteration',
+  projectId: 'projectId',
+  moreDetails: 'moreDetails',
+  createdOn: 'createdOn'
+} as const
+
+export type PageScalarFieldEnum = (typeof PageScalarFieldEnum)[keyof typeof PageScalarFieldEnum]
 
 
 export const AnalyticsContextScalarFieldEnum = {
