@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@neup
 import { LinkButton } from '@neup/components/ui/link-button';
 import { Skeleton } from '@neup/components/ui/skeleton';
 import { FileText, Search, ArrowRight, Plus } from 'lucide-react';
-import { Button } from '@neup/components/ui/button';
 import { makeAppPath } from '@neup/core/appconfig';
 
 type Page = {
@@ -57,18 +56,6 @@ export default function PagesPage() {
         fetchPages();
     }, [selectedProject]);
 
-    const addPage = async (pageName: string) => {
-        if (!selectedProject) return;
-        const response = await fetch(makeAppPath('/bridge/api.v1/pages'), {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ projectId: selectedProject, pageName }),
-        });
-        if (!response.ok) return;
-        const page = await response.json();
-        setConfiguredPages((current) => [page, ...current]);
-        setRecommendations((current) => current.filter((item) => item !== pageName));
-    };
-
     const formatTimestamp = (timestamp: string | null | undefined) => (timestamp ? new Date(timestamp).toLocaleString() : 'N/A');
 
     return (
@@ -78,16 +65,6 @@ export default function PagesPage() {
                 <CardDescription>View and manage the page snapshots recorded for session replays.</CardDescription>
             </div>
             <div>
-                {recommendations.length > 0 && (
-                    <div className="mb-6 rounded-lg border border-dashed p-4">
-                        <h2 className="font-semibold">Recommended pages</h2>
-                        <p className="mb-3 text-sm text-muted-foreground">Pages found in recent activity.</p>
-                        <div className="space-y-2">
-                            {recommendations.map((pageName) => <div key={pageName} className="flex items-center justify-between gap-3 rounded-md border p-3"><span className="truncate text-sm">{pageName}</span><Button size="sm" variant="tinted" onClick={() => addPage(pageName)}><Plus className="mr-1 h-4 w-4" />Add</Button></div>)}
-                        </div>
-                    </div>
-                )}
-                {configuredPages.length > 0 && <div className="mb-6"><h2 className="mb-2 font-semibold">Added pages</h2><div className="space-y-1 text-sm text-muted-foreground">{configuredPages.map((page) => <div key={page.id}>{page.pageName}</div>)}</div></div>}
                 {isLoading && (
                     <div className="overflow-hidden rounded-lg border">
                         {[...Array(3)].map((_, i) => (
@@ -110,16 +87,36 @@ export default function PagesPage() {
                     </div>
                 )}
 
-                {!isLoading && !error && pages.length === 0 && (
-                    <div className="flex min-h-[40vh] flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/30 text-center text-muted-foreground">
-                        <Search className="h-16 w-16 mb-4" />
-                        <h3 className="text-xl font-bold font-headline mb-2">No Pages Recorded</h3>
-                        <p>As users visit pages on your site, snapshots will be automatically captured and displayed here.</p>
-                    </div>
-                )}
-
-                {!isLoading && !error && pages.length > 0 && (
+                {!isLoading && !error && (
                     <div className="overflow-hidden rounded-lg border bg-card">
+                        {recommendations.length === 0 && configuredPages.length === 0 && pages.length === 0 && (
+                            <div className="flex items-center gap-4 border-b p-4">
+                                <div className="flex h-20 w-32 shrink-0 items-center justify-center rounded-md border bg-muted"><Search className="h-6 w-6 text-muted-foreground" /></div>
+                                <div className="min-w-0 flex-1"><p className="text-sm font-medium">No pages found</p><p className="mt-1 text-xs text-muted-foreground">Pages will appear here after activity is recorded.</p></div>
+                            </div>
+                        )}
+                        <div className="border-b">
+                            <LinkButton variant="plain" href={`/pages/add?selectedProject=${encodeURIComponent(selectedProject ?? '')}`} className="flex h-auto w-full flex-col items-stretch gap-3 border-0 p-4 text-left hover:bg-muted/40 sm:flex-row sm:items-center">
+                                <div className="flex h-20 w-32 shrink-0 items-center justify-center rounded-md border bg-muted"><Plus className="h-6 w-6 text-muted-foreground" /></div>
+                                <div className="min-w-0 flex-1"><p className="text-sm font-medium">Create new page</p><p className="mt-1 text-xs text-muted-foreground">Add a page manually to this project.</p></div>
+                                <Plus className="h-5 w-5 shrink-0 text-muted-foreground" />
+                            </LinkButton>
+                        </div>
+                        {recommendations.map((pageName) => (
+                            <div key={`recommendation-${pageName}`} className="border-b">
+                                <LinkButton variant="plain" href={`/pages/add?page=${encodeURIComponent(pageName)}&selectedProject=${encodeURIComponent(selectedProject ?? '')}`} className="flex h-auto w-full items-center gap-4 rounded-none border-0 p-4 text-left transition-colors hover:bg-muted/40">
+                                    <div className="flex h-20 w-32 shrink-0 items-center justify-center rounded-md border bg-muted"><FileText className="h-6 w-6 text-muted-foreground" /></div>
+                                    <div className="min-w-0 flex-1"><p className="truncate text-sm font-medium">{pageName}</p><p className="mt-1 text-xs text-muted-foreground">Found in Activity. Click on the card to add</p></div>
+                                    <Plus className="h-5 w-5 shrink-0 text-muted-foreground" />
+                                </LinkButton>
+                            </div>
+                        ))}
+                        {configuredPages.map((page) => (
+                            <div key={`configured-${page.id}`} className="flex items-center gap-4 border-b p-4 transition-colors last:border-b-0 hover:bg-muted/40">
+                                <div className="flex h-20 w-32 shrink-0 items-center justify-center rounded-md border bg-muted"><FileText className="h-6 w-6 text-muted-foreground" /></div>
+                                <div className="min-w-0 flex-1"><p className="truncate text-sm font-medium">{page.pageName}</p><p className="mt-1 text-xs text-muted-foreground">Added page · Iteration {page.iteration}</p></div>
+                            </div>
+                        ))}
                         {pages.map((page) => (
                             <div key={page.id} className="group flex flex-col gap-4 border-b p-4 transition-colors last:border-b-0 hover:bg-muted/40 sm:flex-row sm:items-center">
                                 <div className="relative h-20 w-full shrink-0 overflow-hidden rounded-md border bg-muted sm:w-32">
