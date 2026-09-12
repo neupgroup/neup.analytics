@@ -4,7 +4,8 @@ const sdkSource = String.raw`(function () {
     var SESSION_STARTED_AT_KEY = 'session_started_at';
     var EVENT_BUFFER_KEY = 'session_event_buffer';
     var SNAPSHOT_CAPTURED_PREFIX = 'snapshot_web_captured_at:';
-    var FIRST_WINDOW_INTERVAL_MS = 5000;
+    var DURATION_SCHEDULE = [500, 1000, 2000, 4000, 8000, 12000, 16000, 20000, 25000, 30000, 35000, 40000];
+    var FIRST_WINDOW_INTERVAL_MS = 500;
     var MAX_WINDOW_MS = 30000;
     var SCROLL_SAMPLE_INTERVAL_MS = 500;
     var nextFlushElapsedMs = FIRST_WINDOW_INTERVAL_MS;
@@ -143,6 +144,11 @@ const sdkSource = String.raw`(function () {
     var pageUrl = window.location.href;
     var snapshotSentThisPage = false;
     var durationStartedAt = document.visibilityState === 'hidden' ? null : Date.now();
+    var viewStartedAt = Date.now();
+    var viewId = uuid();
+    var viewDuration = 0;
+    var durationStopped = false;
+    var durationTick = 0;
     var sending = false;
 
     function send(payload, unloading) {
@@ -193,6 +199,7 @@ const sdkSource = String.raw`(function () {
         projectId: siteId,
         type: event.type || 'activity',
         timeSpent: typeof event.elapsedMs === 'number' ? Math.max(0, Math.round(event.elapsedMs)) : undefined,
+        duration: event.type === 'duration' ? event.duration : undefined,
         pageUrl: event.pageUrl || pageUrl,
         url: event.pageUrl || pageUrl,
         path: event.pagePath || location.pathname,
@@ -204,6 +211,7 @@ const sdkSource = String.raw`(function () {
           cookies: trackedCookies(),
           serverFields: serverFields,
           siteId: siteId,
+          viewId: event.viewId,
           pagePath: event.pagePath || location.pathname + location.search + location.hash,
           x: event.x,
           y: event.y,
@@ -308,8 +316,10 @@ const sdkSource = String.raw`(function () {
 
     function recordDuration() {
       var now = Date.now();
+      if (durationStopped) return;
       if (collect.indexOf('pageview') !== -1 && durationStartedAt !== null && now > durationStartedAt) {
-        enqueue({ type: 'duration', timestamp: now, elapsedMs: now - durationStartedAt });
+        viewDuration += now - durationStartedAt;
+        enqueue({ type: 'duration', timestamp: now, duration: viewDuration });
       }
       durationStartedAt = document.visibilityState === 'hidden' ? null : now;
     }
@@ -336,6 +346,7 @@ const sdkSource = String.raw`(function () {
     }
 
     function enqueue(event) {
+      event.viewId = viewId;
       event.pageUrl = pageUrl;
       event.pagePath = new URL(pageUrl).pathname + new URL(pageUrl).search + new URL(pageUrl).hash;
       eventBuffer.push(event);
@@ -347,20 +358,14 @@ const sdkSource = String.raw`(function () {
         window.clearTimeout(flushTimerId);
       }
 
-      var elapsed = getElapsedMs();
-      var targetElapsed = nextFlushElapsedMs;
-      if (elapsed >= MAX_WINDOW_MS) {
-        targetElapsed = elapsed + MAX_WINDOW_MS;
-      }
-
-      var nextDelay = Math.max(0, targetElapsed - elapsed);
+      if (durationStopped || collect.indexOf('pageview') === -1) return;
+      var targetElapsed = durationTick < DURATION_SCHEDULE.length
+        ? DURATION_SCHEDULE[durationTick]
+        : 40000 + (durationTick - DURATION_SCHEDULE.length + 1) * 5000;
+      var nextDelay = Math.max(0, viewStartedAt + targetElapsed - Date.now());
       flushTimerId = window.setTimeout(function () {
         flush(true);
-        if (nextFlushElapsedMs < MAX_WINDOW_MS) {
-          nextFlushElapsedMs += FIRST_WINDOW_INTERVAL_MS;
-        } else {
-          nextFlushElapsedMs = getElapsedMs() + MAX_WINDOW_MS;
-        }
+        durationTick++;
         scheduleNextFlush();
       }, nextDelay);
     }
@@ -507,6 +512,7 @@ const sdkSource = String.raw`(function () {
       if (collect.indexOf('pageview') !== -1) {
         recordDuration();
         pageUrl = window.location.href;
+        startView();
         enqueue({ type: 'pageview', timestamp: Date.now(), elapsedMs: 0 });
         flush(true);
       }
@@ -520,10 +526,30 @@ const sdkSource = String.raw`(function () {
       flush(true);
     };
 
+    function startView() {
+      viewId = uuid();
+      viewStartedAt = Date.now();
+      viewDuration = 0;
+      durationTick = 0;
+      durationStopped = false;
+      durationStartedAt = document.visibilityState === 'hidden' ? null : Date.now();
+      scheduleNextFlush();
+    }
+    document.addEventListener('click', function (event) {
+      var target = event.target;
+      if (target && target.nodeType === 3) target = target.parentElement;
+      if (!target || !target.closest || !target.closest('a[href],area[href]')) return;
+      flush(true, true);
+      durationStopped = true;
+      durationStartedAt = null;
+      window.clearTimeout(flushTimerId);
+    }, true);
+
     function onNavigation() {
       if (window.location.href === pageUrl) return;
       recordDuration();
       pageUrl = window.location.href;
+      startView();
       if (collect.indexOf('pageview') !== -1) {
         enqueue({ type: 'pageview', timestamp: Date.now(), elapsedMs: 0 });
         flush(true);

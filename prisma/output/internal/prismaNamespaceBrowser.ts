@@ -184,6 +184,7 @@ export const ActivityScalarFieldEnum = {
   identifierId: 'identifierId',
   type: 'type',
   timeSpent: 'timeSpent',
+  duration: 'duration',
   agent: 'agent',
   moreDetails: 'moreDetails',
   ip: 'ip',

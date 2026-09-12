@@ -7,6 +7,7 @@ type ActivityEventInput = {
   identifierId?: string;
   type?: string;
   timeSpent?: number;
+  duration?: number;
   timespent?: number;
   activityOn?: Date | string;
   moreDetails?: Prisma.InputJsonValue | null;
@@ -206,6 +207,7 @@ export function parseActivityEvents(input: unknown): ActivityEventInput[] {
       identifierId: readString(record.identifierId),
       type: readString(record.type) ?? readString(record.event),
       timeSpent: readInteger(record.timeSpent),
+      duration: readInteger(record.duration),
       timespent: readInteger(record.timespent),
       activityOn: readDate(record.activityOn),
       moreDetails: readJsonValue(record.moreDetails),
@@ -254,11 +256,36 @@ export async function createActivities(projectId: string, data: ActivityEventInp
 
   await getFreshIpMapsByAddress(normalizedEvents.map((item) => item.ip));
 
-  return prisma.$transaction(
-    normalizedEvents.map((item) =>
-      prisma.activity.create({
-        data: item,
-      })
-    )
-  );
+  return prisma.$transaction(async (tx) => {
+    const results = [];
+    for (let index = 0; index < normalizedEvents.length; index++) {
+      const item = normalizedEvents[index];
+      if (item.type?.toLowerCase() !== 'duration') {
+        results.push(await tx.activity.create({ data: item }));
+        continue;
+      }
+      const duration = recordableEvents[index].duration;
+      if (!item.contextId || !item.pageUrl || !Number.isSafeInteger(duration) || duration! < 0 || duration! > 2147483647) continue;
+      let origin: string;
+      try { origin = new URL(item.pageUrl).origin; } catch { continue; }
+      // Inspect the latest activity, not merely the latest pageview: another
+      // activity ends the view's eligibility for duration updates.
+      const latest = await tx.activity.findFirst({
+        where: { projectId, contextId: item.contextId, OR: [
+          { pageUrl: origin }, { pageUrl: { startsWith: origin + '/' } },
+        ] },
+        orderBy: [{ activityOn: 'desc' }, { id: 'desc' }],
+      });
+      if (!latest || latest.type?.toLowerCase() !== 'pageview') continue;
+      const viewId = asRecord(item.moreDetails)?.viewId;
+      if (viewId && asRecord(latest.moreDetails)?.viewId !== viewId) continue;
+      // Cumulative values make retries harmless and prevent older packets from
+      // lowering a duration already recorded by a newer packet.
+      await tx.activity.updateMany({
+        where: { id: latest.id, duration: { lt: duration! } },
+        data: { duration: duration! },
+      });
+    }
+    return results;
+  });
 }

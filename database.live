@@ -15,6 +15,7 @@ Fields:
 > identifierId: string;
 > type: string, nullable;
 > timeSpent: int, nullable;
+> duration: int, default: 0, cumulative pageview duration in milliseconds;
 > agent: json, nullable;
 > moreDetails: json, nullable;
 > ip: string, nullable;
