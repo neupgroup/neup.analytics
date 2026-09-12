@@ -71,7 +71,7 @@ export async function proxy(request: NextRequest) {
   if (
     normalizedPathname === '/bridge/api.v1/activity'
     || normalizedPathname === '/bridge/webhook.v1/activity'
-    || normalizedPathname === '/bridge/sdk.v1/interactions'
+    || normalizedPathname === '/bridge/sdk.v1/tracker'
   ) {
     return NextResponse.next();
   }

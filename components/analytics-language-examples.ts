@@ -2,7 +2,7 @@ export type SetupExample = { title: string; description: string; code: string };
 
 export function buildLanguageExamples(language: string, projectId: string): SetupExample[] {
   const endpoint = `https://neupgroup.com/analytics/bridge/api.v1/activity?project=${encodeURIComponent(projectId)}`;
-  const sdk = 'https://neupgroup.com/analytics/bridge/sdk.v1/interactions';
+  const sdk = 'https://neupgroup.com/analytics/bridge/sdk.v1/tracker';
   const browser = `const response = await fetch("/analytics-context", { credentials: "same-origin", cache: "no-store" });
 if (!response.ok) throw new Error("Analytics context unavailable");
 const { signedContextId } = await response.json();

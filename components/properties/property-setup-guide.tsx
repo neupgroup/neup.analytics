@@ -36,7 +36,7 @@ function buildSnippet(propertyId: string, collectorEndpoint: string, selected: R
     .filter(([, value]) => value)
     .map(([key]) => key);
   // Derive hosted sdk URL from the collector endpoint (same origin)
-  let sdkUrl = collectorEndpoint.replace(/\/api\/collect.*$/i, '/bridge/sdk.v1/interactions');
+  let sdkUrl = collectorEndpoint.replace(/\/api\/collect.*$/i, '/bridge/sdk.v1/tracker');
   if (sdkUrl.startsWith('/')) {
     // Make absolute using current app origin (this runs client-side)
     try {

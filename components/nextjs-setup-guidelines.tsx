@@ -96,7 +96,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <body>
         {children}
         <script
-          src="https://neupgroup.com/analytics/bridge/sdk.v1/interactions"
+          src="https://neupgroup.com/analytics/bridge/sdk.v1/tracker"
           data-context-id={signedContextId}
           data-project-id="${projectId}"
           defer
