@@ -12,6 +12,7 @@ import {
 } from '@neup/components/ui/card';
 import { makeAppPath } from '@neup/core/appconfig';
 import { ProjectKeyGenerator } from '@/components/project-key-generator';
+import { LanguageSetupGuidelines } from '@/components/language-setup-guidelines';
 import { ServerAddressForm } from '@/components/server-address-form';
 import { FrameworkSelector } from '@/components/framework-selector';
 import { NextJsSetupGuidelines } from '@/components/nextjs-setup-guidelines';
@@ -180,6 +181,7 @@ export default async function ConfigPage({ searchParams }: ConfigPageProps) {
         </CardHeader>
         <CardContent className="space-y-4 p-0 pt-4">
           <NextJsSetupGuidelines projectId={project.id} />
+          <LanguageSetupGuidelines projectId={project.id} />
         </CardContent>
       </Card>
 

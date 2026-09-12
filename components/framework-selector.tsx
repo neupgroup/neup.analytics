@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Atom, Braces, Boxes, Code2, Component, FileCode2, Layers3, Terminal, Triangle } from 'lucide-react';
 
 const frameworks = [
@@ -11,12 +11,18 @@ const frameworks = [
   ['vue', 'Vue', Layers3],
   ['angular', 'Angular', Component],
   ['python', 'Python', Terminal],
-  ['php', 'PHP', Code2],
+  ['php', 'PHP Native', Code2],
+  ['laravel', 'PHP Laravel', Code2],
+  ['ruby', 'Ruby', Terminal],
   ['other', 'Other', Boxes],
 ] as const;
 
 export function FrameworkSelector() {
   const [framework, setFramework] = useState('');
+
+  useEffect(() => {
+    setFramework(window.localStorage.getItem('neup-config-framework') ?? '');
+  }, []);
 
   function selectFramework(value: string) {
     setFramework(value);
