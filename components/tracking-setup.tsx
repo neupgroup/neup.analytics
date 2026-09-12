@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Checkbox } from '@neup/components/ui/checkbox';
 import { SetupGuidelines } from '@/components/setup-guidelines';
 import { defaultTrackingOptions, type TrackingOptions } from '@/components/tracking-options';
 
@@ -46,7 +47,7 @@ export function TrackingSetup({ projectId }: { projectId: string }) {
       <h3 className="font-semibold">2. Add the cookie fields to track</h3>
       <div className="space-y-3 rounded-xl border p-4">
       <h4 className="text-sm font-medium">Browser-readable cookies</h4>
-      <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={options.allCookies} onChange={(event) => setOptions({ ...options, allCookies: event.target.checked })} />Track all browser-readable cookies</label>
+      <label className="flex cursor-pointer items-center gap-2 text-sm"><Checkbox className="cursor-pointer" checked={options.allCookies} onCheckedChange={(checked) => setOptions({ ...options, allCookies: checked === true })} />Track all browser-readable cookies</label>
       <p className="text-sm text-muted-foreground">HttpOnly cookies cannot be read by the tracker. Do not select authentication or session secrets; “all” sends every cookie JavaScript can read.</p>
       {!options.allCookies && <form className="flex gap-2" onSubmit={(event) => { event.preventDefault(); add('cookies', cookie); }}>
         <input aria-label="Cookie key" value={cookie} onChange={(event) => setCookie(event.target.value)} placeholder="Cookie key, e.g. preferred_language" className="min-w-0 flex-1 rounded-md border bg-background px-3 py-2 text-sm" />
@@ -56,7 +57,7 @@ export function TrackingSetup({ projectId }: { projectId: string }) {
       </div>
       <div className="space-y-3 rounded-xl border p-4">
         <h4 className="text-sm font-medium">Server-readable cookies</h4>
-        <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={options.allServerCookies} onChange={(event) => setOptions({ ...options, allServerCookies: event.target.checked })} />Track all server-readable cookies</label>
+        <label className="flex cursor-pointer items-center gap-2 text-sm"><Checkbox className="cursor-pointer" checked={options.allServerCookies} onCheckedChange={(checked) => setOptions({ ...options, allServerCookies: checked === true })} />Track all server-readable cookies</label>
         <p className="text-sm text-muted-foreground">Read from requests on your server, including HttpOnly cookies. Values are sent directly to analytics for storage and are not added to the browser snippet.</p>
         {options.allServerCookies && <p role="alert" className="rounded-md border border-amber-500/50 bg-amber-500/10 p-3 text-sm">Account and authentication cookies might also be sent and stored if you choose all.</p>}
         {!options.allServerCookies && <form className="flex gap-2" onSubmit={(event) => { event.preventDefault(); add('serverCookies', serverCookie); }}>
