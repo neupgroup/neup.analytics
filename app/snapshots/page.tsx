@@ -47,7 +47,7 @@ export default function SnapshotsPage() {
     setError(null);
 
     try {
-      const response = await fetch('/api/snapshots');
+      const response = await fetch('/bridge/api.v1/snapshots');
       const data = await response.json();
 
       if (!response.ok) {
@@ -71,7 +71,7 @@ export default function SnapshotsPage() {
     setIsCapturing(true);
 
     try {
-      const response = await fetch('/api/snapshots', {
+      const response = await fetch('/bridge/api.v1/snapshots', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url }),

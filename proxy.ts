@@ -37,8 +37,6 @@ function canAccessWithoutSelectedProject(pathname: string): boolean {
   return (
     normalizedPathname === '/projects'
     || normalizedPathname.startsWith('/projects/')
-    || normalizedPathname === '/api'
-    || normalizedPathname.startsWith('/api/')
     || normalizedPathname === '/bridge'
     || normalizedPathname.startsWith('/bridge/')
   );
@@ -49,7 +47,7 @@ function isKnownApplicationPath(pathname: string): boolean {
   const knownPrefixes = [
     '/home', '/activity', '/config', '/heatmaps', '/journeys',
     '/live', '/logs', '/pages', '/projects', '/replays',
-    '/reports', '/snapshots', '/users', '/api', '/bridge',
+    '/reports', '/snapshots', '/users', '/bridge',
   ];
 
   return knownPrefixes.some((prefix) => normalizedPathname === prefix || normalizedPathname.startsWith(`${prefix}/`));

@@ -180,7 +180,7 @@ export default function SnapshotDetailPage() {
       setError(null);
 
       try {
-        const response = await fetch(`/api/snapshots/${id}`);
+        const response = await fetch(`/bridge/api.v1/snapshots/${id}`);
         const data = await response.json();
 
         if (!response.ok) {

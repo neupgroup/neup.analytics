@@ -199,7 +199,7 @@ export default function LiveViewPage() {
   useEffect(() => {
     const fetchLive = async () => {
       try {
-        const res = await fetch('/api/live');
+        const res = await fetch('/bridge/api.v1/live');
         if (!res.ok) throw new Error('Failed to fetch live users');
         const data = await res.json();
         setUsers(data);

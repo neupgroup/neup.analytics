@@ -47,7 +47,7 @@ export default function PageDetailPage({ params }: { params: Promise<{ id: strin
 
     async function fetchPage() {
       try {
-        const response = await fetch(`/api/pages/${encodeURIComponent(id)}`);
+        const response = await fetch(`/bridge/api.v1/pages/${encodeURIComponent(id)}`);
         if (!response.ok) throw new Error(response.status === 404 ? 'Page snapshot not found.' : 'Failed to load page snapshot.');
         const data = await response.json() as PageSnapshot;
         if (!cancelled) setPage(data);

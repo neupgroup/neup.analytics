@@ -35,7 +35,7 @@ export default function ReplaysPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/replays?page=${page}&limit=${REPLAYS_PER_PAGE}`);
+      const res = await fetch(`/bridge/api.v1/replays?page=${page}&limit=${REPLAYS_PER_PAGE}`);
       if (!res.ok) throw new Error('Failed to load replays');
       const data = await res.json();
       setInteractions(data.interactions || []);

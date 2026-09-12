@@ -85,7 +85,7 @@ export function ActivityFeed({ selectedProject, filters }: ActivityFeedProps) {
       const params = new URLSearchParams({ selectedProject, offset: String(nextOffset) });
       Object.entries(filters).forEach(([key, value]) => { if (value) params.set(key, value); });
       const activityApiPath = makeAppPath(
-        '/api/activity',
+        '/bridge/api.v1/activity/dashboard',
         process.env.NEXT_PUBLIC_APP_BASEPATH || null,
       );
       const response = await fetch(`${activityApiPath}?${params.toString()}`, { cache: 'no-store' });

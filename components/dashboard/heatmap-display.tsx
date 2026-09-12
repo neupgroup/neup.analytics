@@ -84,7 +84,7 @@ export function HeatmapDisplay({ pageId }: { pageId: string }) {
         const fetchPage = async () => {
             setIsLoadingPage(true);
             try {
-                const res = await fetch(`/api/pages/${pageId}`);
+                const res = await fetch(`/bridge/api.v1/pages/${pageId}`);
                 if (!res.ok) throw new Error('Failed to load page');
                 const data = await res.json();
                 setPage(data);
@@ -98,7 +98,7 @@ export function HeatmapDisplay({ pageId }: { pageId: string }) {
         const fetchInteractions = async () => {
             setIsLoadingInteractions(true);
             try {
-                const res = await fetch(`/api/pages/${pageId}/interactions`);
+                const res = await fetch(`/bridge/api.v1/pages/${pageId}/interactions`);
                 if (!res.ok) throw new Error('Failed to load interactions');
                 const data = await res.json();
                 setInteractions(data);

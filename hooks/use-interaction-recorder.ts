@@ -107,7 +107,7 @@ export function useInteractionRecorder() {
     interactionsRef.current = [];
 
     try {
-      await fetch('/api/collect', {
+      await fetch('/bridge/api.v1/collect', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
