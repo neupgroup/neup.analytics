@@ -151,11 +151,11 @@ export default async function ConfigPage({ searchParams }: ConfigPageProps) {
         <CardHeader className="p-0">
           <CardTitle className="font-headline text-2xl"><span className="mr-2">2.</span>Setup Project credentials</CardTitle>
           <CardDescription>
-            Generate an encryption key for authenticated analytics trace IDs. The private key is generated locally and is never saved here.
+            Generate a project secret to authenticate analytics contexts. Store it in your server environment; analytics stores the matching secret for verification.
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0 pt-4">
-          <ProjectKeyGenerator projectId={project.id} hasVerifierKey={Boolean(project.verifierKey)} />
+          <ProjectKeyGenerator projectId={project.id} hasProjectKey={Boolean(project.projectSecret)} />
         </CardContent>
       </Card>
 

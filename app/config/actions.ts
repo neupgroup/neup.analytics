@@ -1,22 +1,26 @@
 'use server';
 
+import { generateProjectSecret } from '@/services/activity/context-token';
 import { prisma } from '@neup/core/database/prisma';
+import { cookies } from 'next/headers';
+import account from '@neup/logica/account';
 
-export async function saveProjectVerifierKey(projectId: string, verifierKey: string) {
-  const normalizedProjectId = projectId.trim();
-  const normalizedVerifierKey = verifierKey.trim();
-
-  if (!normalizedProjectId || !normalizedVerifierKey) {
-    throw new Error('Project ID and verifier key are required.');
-  }
-
-  await prisma.project.update({
-    where: { id: normalizedProjectId },
-    data: { verifierKey: normalizedVerifierKey },
-  });
+async function requireAuthentication() {
+  const auth = await account.self.isAuthenticated('remote', (await cookies()).get('auth_account')?.value);
+  if (!auth.authenticated) throw new Error('Authentication required');
 }
 
-export async function revokeProjectVerifierKey(projectId: string) {
+export async function generateProjectKey(projectId: string) {
+  await requireAuthentication();
+  if (!projectId.trim()) throw new Error('Project ID is required.');
+  const projectSecret = generateProjectSecret();
+  const result = await prisma.project.updateMany({ where: { id: projectId.trim(), projectSecret: null }, data: { projectSecret } });
+  if (result.count !== 1) throw new Error('Project key already exists or project was not found.');
+  return projectSecret;
+}
+
+export async function revokeProjectKey(projectId: string) {
+  await requireAuthentication();
   const normalizedProjectId = projectId.trim();
 
   if (!normalizedProjectId) {
@@ -25,7 +29,7 @@ export async function revokeProjectVerifierKey(projectId: string) {
 
   await prisma.project.update({
     where: { id: normalizedProjectId },
-    data: { verifierKey: null },
+    data: { projectSecret: null },
   });
 }
 

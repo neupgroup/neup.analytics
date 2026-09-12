@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@neup/core/database/prisma';
+import { verifyContextToken } from '@/services/activity/context-token';
 import {
   createActivities,
   getRecordableActivityEvents,
@@ -56,6 +57,7 @@ export async function POST(request: Request) {
       select: {
         id: true,
         path: true,
+        projectSecret: true,
       },
     });
 
@@ -89,6 +91,14 @@ export async function POST(request: Request) {
     const body = await request.json();
     const events = parseActivityEvents(body);
 
+    for (const record of (Array.isArray(body) ? body : [body])) {
+      const tokens = ['signed_context_id', 'signedContextId', 'contextId']
+        .filter((name) => record[name] !== undefined).map((name) => record[name]);
+      if (new Set(tokens).size > 1 || tokens.some((token) => typeof token !== 'string' || !verifyContextToken(project.projectSecret, token))) {
+        return NextResponse.json({ message: 'Invalid signed context' }, { status: 403, headers: getCorsHeaders(allowedOrigin) });
+      }
+    }
+
     if (events.length === 0) {
       return NextResponse.json(
         {
@@ -101,10 +111,18 @@ export async function POST(request: Request) {
 
     const ip = getRequestIp(request);
     const userAgent = request.headers.get('user-agent')?.trim() || undefined;
-    const activityEvents = events.map((event) => ({
-      ...event,
-      ip: event.ip ?? ip,
-      userAgent: event.userAgent ?? userAgent,
+    const activityEvents = await Promise.all(events.map(async (event) => {
+      const contextId = event.contextId ? verifyContextToken(project.projectSecret, event.contextId) : null;
+      const context = contextId ? await prisma.analyticsContext.findFirst({
+        where: { contextId, projectId: project.id }, select: { traceId: true },
+      }) : null;
+      return {
+        ...event,
+        contextId: contextId ?? undefined,
+        traceId: context?.traceId,
+        ip: event.ip ?? ip,
+        userAgent: event.userAgent ?? userAgent,
+      };
     }));
     const recordableEvents = getRecordableActivityEvents(activityEvents);
 

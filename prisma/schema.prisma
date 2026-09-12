@@ -144,7 +144,7 @@ model Project {
   type        String
   moreDetails Json?
   token       String   @unique
-  verifierKey String?
+  projectSecret String?
   ipAddress   String?  @db.VarChar(48)
   createdOn   DateTime @default(now())
 

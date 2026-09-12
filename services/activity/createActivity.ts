@@ -214,7 +214,7 @@ export function parseActivityEvents(input: unknown): ActivityEventInput[] {
       userAgent: readString(record.userAgent) ?? readString(record.user_agent),
       pageUrl: readString(record.pageUrl) ?? readString(record.page_url) ?? readString(record.url),
       referral: readString(record.referral) ?? readString(record.referrer),
-      contextId: readString(record.contextId),
+      contextId: readString(record.signed_context_id) ?? readString(record.signedContextId) ?? readString(record.contextId),
       geoLocation: readString(record.geoLocation),
       url: readString(record.url),
       path: readString(record.path),

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import crypto from 'node:crypto';
+import { verifyContextToken, matchesTrace } from '@/services/activity/context-token';
 import { prisma } from '@neup/core/database/prisma';
 import {
   createActivities,
@@ -38,26 +39,6 @@ function isValidServerIp(configured: string | null, requestIp?: string) {
   return configured.split(',').map((value) => value.trim()).filter(Boolean).includes(requestIp);
 }
 
-function decryptContext(value: string | undefined) {
-  const privateKey = process.env.NEUP_ANALYTICS_PROJECT_KEY;
-  if (!value || !privateKey) return null;
-  const parts = value.split('.');
-  if (parts.length !== 4) return null;
-  try {
-    const [ephemeralPublic, iv, authTag, ciphertext] = parts.map((part) => Buffer.from(part, 'base64url'));
-    const sharedSecret = crypto.diffieHellman({
-      privateKey: crypto.createPrivateKey({ key: Buffer.from(privateKey, 'base64'), format: 'der', type: 'pkcs8' }),
-      publicKey: crypto.createPublicKey({ key: ephemeralPublic, format: 'der', type: 'spki' }),
-    });
-    const decipher = crypto.createDecipheriv('aes-256-gcm', crypto.createHash('sha256').update(sharedSecret).digest(), iv);
-    decipher.setAuthTag(authTag);
-    const payload = JSON.parse(Buffer.concat([decipher.update(ciphertext), decipher.final()]).toString('utf8')) as { contextId?: unknown };
-    return typeof payload.contextId === 'string' ? payload.contextId : null;
-  } catch {
-    return null;
-  }
-}
-
 export async function POST(request: Request) {
   let allowedOrigin: string | undefined;
 
@@ -85,6 +66,7 @@ export async function POST(request: Request) {
         id: true,
         path: true,
         ipAddress: true,
+        projectSecret: true,
       },
     });
 
@@ -116,6 +98,15 @@ export async function POST(request: Request) {
 
     const events = parseActivityEvents(body);
 
+    // Validate before parsing can discard malformed or empty tokens.
+    for (const record of (Array.isArray(body) ? body : [body])) {
+      const tokens = ['signed_context_id', 'signedContextId', 'contextId']
+        .filter((name) => record[name] !== undefined).map((name) => record[name]);
+      if (new Set(tokens).size > 1 || tokens.some((token) => typeof token !== 'string' || !verifyContextToken(project.projectSecret, token))) {
+        return NextResponse.json({ message: 'Invalid signed context' }, { status: 403, headers: getCorsHeaders(allowedOrigin) });
+      }
+    }
+
     if (events.length === 0) {
       return NextResponse.json(
         {
@@ -126,34 +117,38 @@ export async function POST(request: Request) {
       );
     }
 
-    const signedContext = typeof bodyRecord?.contextId === 'string' ? bodyRecord.contextId : typeof bodyRecord?.signedContextId === 'string' ? bodyRecord.signedContextId : undefined;
-    const verifiedContextId = serverRequest ? decryptContext(signedContext) : null;
-    if (serverRequest && signedContext && !verifiedContextId) {
-      return NextResponse.json({ success: false, message: 'Invalid signed context' }, { status: 403, headers: getCorsHeaders(allowedOrigin) });
+    const aliases = ['signed_context_id', 'signedContextId', 'contextId'];
+    const supplied = aliases.filter((name) => bodyRecord?.[name] !== undefined).map((name) => bodyRecord![name]);
+    if (supplied.some((value) => typeof value !== 'string') || new Set(supplied).size > 1) {
+      return NextResponse.json({ message: 'Invalid signed context' }, { status: 403, headers: getCorsHeaders(allowedOrigin) });
     }
-    if (serverRequest && !signedContext) {
-      return NextResponse.json({ success: false, message: 'Signed context is required for server requests' }, { status: 403, headers: getCorsHeaders(allowedOrigin) });
+    const topToken = supplied[0] as string | undefined;
+    const suppliedTraceId = bodyRecord?._neuptraceid;
+    const verified = events.map((event) => {
+      const token = event.contextId ?? topToken;
+      return { event, token, contextId: token === undefined ? null : verifyContextToken(project.projectSecret, token) };
+    });
+    if (verified.some(({ token, contextId }) => (token !== undefined || serverRequest) && !contextId)
+      || (topToken !== undefined && !verifyContextToken(project.projectSecret, topToken))) {
+      return NextResponse.json({ message: 'Invalid or missing signed context' }, { status: 403, headers: getCorsHeaders(allowedOrigin) });
     }
-    const suppliedTraceId = typeof bodyRecord?._neuptraceid === 'string' ? bodyRecord._neuptraceid.trim() : undefined;
-    if (verifiedContextId && suppliedTraceId) {
-      await prisma.analyticsContext.upsert({
-        where: { contextId: verifiedContextId },
-        create: { contextId: verifiedContextId, traceId: suppliedTraceId, projectId: project.id },
-        update: { traceId: suppliedTraceId },
-      });
+    if (suppliedTraceId !== undefined && (typeof suppliedTraceId !== 'string' || !suppliedTraceId || suppliedTraceId.length > 512
+      || verified.some(({ contextId }) => !contextId || !project.projectSecret || !matchesTrace(project.projectSecret, contextId, suppliedTraceId)))) {
+      return NextResponse.json({ message: 'Trace ID does not match signed context' }, { status: 403, headers: getCorsHeaders(allowedOrigin) });
     }
-    const storedContext = verifiedContextId
-      ? await prisma.analyticsContext.findUnique({ where: { contextId: verifiedContextId }, select: { traceId: true } })
-      : null;
-    const ip = requestIp;
-    const userAgent = request.headers.get('user-agent')?.trim() || undefined;
-    const activityEvents = events.map((event) => ({
-      ...event,
-      identifierId: event.identifierId ?? event.identifier ?? verifiedContextId ?? event.contextId ?? crypto.randomUUID(),
-      contextId: verifiedContextId ?? event.contextId,
-      traceId: suppliedTraceId ?? storedContext?.traceId,
-      ip: event.ip ?? ip,
-      userAgent: event.userAgent ?? userAgent,
+    const activityEvents = await Promise.all(verified.map(async ({ event, contextId }) => {
+      if (contextId && typeof suppliedTraceId === 'string') {
+        await prisma.analyticsContext.upsert({ where: { contextId }, create: { contextId, traceId: suppliedTraceId, projectId: project.id }, update: {} });
+      }
+      const storedContext = contextId ? await prisma.analyticsContext.findFirst({ where: { contextId, projectId: project.id }, select: { traceId: true } }) : null;
+      return {
+        ...event,
+        identifierId: event.identifierId ?? event.identifier ?? contextId ?? crypto.randomUUID(),
+        contextId: contextId ?? undefined,
+        traceId: storedContext?.traceId,
+        ip: event.ip ?? requestIp,
+        userAgent: event.userAgent ?? request.headers.get('user-agent')?.trim(),
+      };
     }));
     const recordableEvents = getRecordableActivityEvents(activityEvents);
 

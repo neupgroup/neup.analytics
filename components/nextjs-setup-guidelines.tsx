@@ -11,19 +11,20 @@ import { cookies, headers } from "next/headers";
 const projectId = "${projectId}";
 
 function generateTraceId(): string {
-  return \`${Date.now()}.\${crypto.randomBytes(24).toString("hex")}\`;
+  return \`\${Date.now()}.\${crypto.randomBytes(24).toString("hex")}\`;
 }
 
+function projectSecret(): Buffer {
+  const secret = process.env.NEUP_ANALYTICS_PROJECT_KEY;
+  if (!secret || !/^[a-f0-9]{64}$/.test(secret)) throw new Error("Configure NEUP_ANALYTICS_PROJECT_KEY with a generated project secret.");
+  return Buffer.from(secret, "hex");
+}
 function generateContextId(traceId: string): string {
-  const projectKey = process.env.NEUP_ANALYTICS_PROJECT_KEY;
-  if (!projectKey) throw new Error("NEUP_ANALYTICS_PROJECT_KEY is not configured.");
-  return crypto.createHmac("sha256", projectKey).update(traceId).digest("hex");
+  return crypto.createHmac("sha256", projectSecret()).update(traceId).digest("hex");
 }
-
-function signContextId(contextId: string) {
-  const projectKey = process.env.NEUP_ANALYTICS_PROJECT_KEY;
-  if (!projectKey) throw new Error("NEUP_ANALYTICS_PROJECT_KEY is not configured.");
-  return \`\${contextId}.\${crypto.sign(null, Buffer.from(contextId), crypto.createPrivateKey({ key: Buffer.from(projectKey, "base64"), format: "der", type: "pkcs8" })).toString("base64url")}\`;
+function signContextId(contextId: string): string {
+  const signature = crypto.createHmac("sha256", projectSecret()).update("neup-context:v1:" + contextId).digest("hex");
+  return "v1." + contextId + "." + signature;
 }
 
 export async function getAnalyticsContext() {
@@ -68,6 +69,7 @@ export async function logActivity(activity: string, data?: Record<string, unknow
       cache: "no-store",
     },
   );
+}
 
 export async function logClientActivity(activity: string, data?: Record<string, unknown>): Promise<void> {
   if (typeof window === "undefined") return;

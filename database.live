@@ -5,7 +5,7 @@ Fields:
 > type: string;
 > moreDetails: json, nullable;
 > token: string, unique;
-> verifierKey: string, nullable, X25519 public key in base64 SPKI format for encrypting signed_context_id payloads;
+> projectSecret: string, nullable, secret 256-bit HMAC key encoded as lowercase hex;
 > ipAddress: string(48), nullable, server IP address or comma-separated IP addresses;
 > createdOn: timestamp, default: now();
 

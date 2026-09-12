@@ -1406,7 +1406,7 @@ export const ProjectScalarFieldEnum = {
   type: 'type',
   moreDetails: 'moreDetails',
   token: 'token',
-  verifierKey: 'verifierKey',
+  projectSecret: 'projectSecret',
   ipAddress: 'ipAddress',
   createdOn: 'createdOn'
 } as const

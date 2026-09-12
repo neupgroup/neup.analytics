@@ -13,17 +13,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@neup/components/ui/alert-dialog';
-import { revokeProjectVerifierKey, saveProjectVerifierKey } from '@/app/config/actions';
+import { revokeProjectKey, generateProjectKey } from '@/app/config/actions';
 
-function toBase64(bytes: ArrayBuffer) {
-  const binary = Array.from(new Uint8Array(bytes), (byte) => String.fromCharCode(byte)).join('');
-  return btoa(binary);
-}
-
-export function ProjectKeyGenerator({ projectId, hasVerifierKey }: { projectId: string; hasVerifierKey: boolean }) {
-  const [privateKey, setPrivateKey] = useState<string>();
-  const [publicKey, setPublicKey] = useState<string>();
-  const [keyExists, setKeyExists] = useState(hasVerifierKey);
+export function ProjectKeyGenerator({ projectId, hasProjectKey }: { projectId: string; hasProjectKey: boolean }) {
+  const [projectKey, setProjectKey] = useState<string>();
+  const [keyExists, setKeyExists] = useState(hasProjectKey);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string>();
   const [revokeDialogOpen, setRevokeDialogOpen] = useState(false);
@@ -33,24 +27,16 @@ export function ProjectKeyGenerator({ projectId, hasVerifierKey }: { projectId: 
     setCopied(false);
 
     try {
-      const keyPair = await crypto.subtle.generateKey(
-        { name: 'X25519' },
-        true,
-        ['deriveBits'],
-      ) as CryptoKeyPair;
-      const pkcs8 = await crypto.subtle.exportKey('pkcs8', keyPair.privateKey);
-      const spki = await crypto.subtle.exportKey('spki', keyPair.publicKey);
-      await saveProjectVerifierKey(projectId, toBase64(spki));
-      setPrivateKey(toBase64(pkcs8));
-      setPublicKey(toBase64(spki));
+      const secret = await generateProjectKey(projectId);
+      setProjectKey(secret);
       setKeyExists(true);
     } catch {
-      setError('This browser could not generate an X25519 key. Try the latest version of Chrome, Edge, or Firefox.');
+      setError('The project key could not be generated.');
     }
   }
 
-  const config = privateKey
-    ? `NEUP_ANALYTICS_PROJECT_ID="${projectId}"\nNEUP_ANALYTICS_PROJECT_KEY="${privateKey}"\nNEXT_PUBLIC_NEUP_ANALYTICS_PROJECT_PUBLIC_KEY="${publicKey ?? ''}"`
+  const config = projectKey
+    ? `NEUP_ANALYTICS_PROJECT_ID="${projectId}"\nNEUP_ANALYTICS_PROJECT_KEY="${projectKey}"`
     : '';
 
   async function copyConfig() {
@@ -63,9 +49,8 @@ export function ProjectKeyGenerator({ projectId, hasVerifierKey }: { projectId: 
   async function revokeKey() {
     setError(undefined);
     try {
-      await revokeProjectVerifierKey(projectId);
-      setPrivateKey(undefined);
-      setPublicKey(undefined);
+      await revokeProjectKey(projectId);
+      setProjectKey(undefined);
       setKeyExists(false);
       setCopied(false);
       setRevokeDialogOpen(false);
@@ -77,41 +62,41 @@ export function ProjectKeyGenerator({ projectId, hasVerifierKey }: { projectId: 
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-3">
-        {privateKey ? (
+        {projectKey ? (
           <Button variant="tinted" preIcon={copied ? <Check className="h-4 w-4" /> : <Clipboard className="h-4 w-4" />} onClick={copyConfig}>
             {copied ? 'Copied' : 'Copy config'}
           </Button>
         ) : !keyExists ? (
           <Button variant="solid" preIcon={<KeyRound className="h-4 w-4" />} onClick={generateKey}>
-            Generate X25519 encryption key
+            Generate project key
           </Button>
         ) : null}
         {keyExists && (
           <Button variant="solid" convey="danger" preIcon={<ShieldOff className="h-4 w-4" />} onClick={() => setRevokeDialogOpen(true)}>
-            Revoke encryption key
+            Revoke project key
           </Button>
         )}
       </div>
 
-      {privateKey && (
+      {projectKey && (
         <div className="rounded-xl border bg-muted/20 p-4">
           <pre className="overflow-x-auto whitespace-pre-wrap break-all font-mono text-xs leading-6 text-muted-foreground">{config}</pre>
         </div>
       )}
       {error && <p className="text-sm text-destructive">{error}</p>}
-      {!keyExists && !privateKey && (
+      {!keyExists && !projectKey && (
         <p className="text-xs text-muted-foreground">Generate a key to create project credentials.</p>
       )}
-      {privateKey && (
-        <p className="text-xs text-muted-foreground">The private key is shown only once in this browser session. Save it in your environment or config file before leaving this page.</p>
+      {projectKey && (
+        <p className="text-xs text-muted-foreground">Save this secret in your server environment before leaving this page. Never put it in a NEXT_PUBLIC variable or browser code.</p>
       )}
 
       <AlertDialog open={revokeDialogOpen} onOpenChange={setRevokeDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Revoke this encryption key?</AlertDialogTitle>
+            <AlertDialogTitle>Revoke this project key?</AlertDialogTitle>
             <AlertDialogDescription>
-              Existing encrypted trace IDs created with this key will no longer decrypt. You will need to generate a new key for this project.
+              Existing context tokens signed with this key will no longer be accepted. You will need to generate a new key for this project.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
