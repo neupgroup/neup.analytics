@@ -18,7 +18,8 @@ function generateTraceId(): string { return crypto.randomBytes(32).toString("hex
 
 /**
  * Gets the existing analytics trace cookie.
- * Creates it when it does not exist.
+ * The cookie is created by middleware/proxy, because Server Components (including
+ * the root layout) can read cookies but cannot modify the response headers.
  *
  * Server-side only.
  */
@@ -27,18 +28,7 @@ export async function getAnalyticsContext() {
 
   let traceId = cookieStore.get("_neuptraceid")?.value;
 
-  if (!traceId) {
-    traceId = generateTraceId();
-
-    cookieStore.set({
-      name: "_neuptraceid",
-      value: traceId,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-    });
-  }
+  if (!traceId) traceId = generateTraceId();
 
   const contextId = generateContextId(traceId);
   const signedContextId = signContextId(contextId);

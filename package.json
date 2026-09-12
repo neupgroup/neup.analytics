@@ -6,7 +6,7 @@
     "setup": "chmod +x ./setup.sh && ./setup.sh",
     "predev": "npm run setup",
     "prebuild": "npm run setup",
-    "dev": "next dev --port 26259 --experimental-https",
+    "dev": "next dev --hostname dev.neupgroup.com --port 26259 --experimental-https",
     "build": "next build",
     "start": "next start --port 26259",
     "lint": "eslint"

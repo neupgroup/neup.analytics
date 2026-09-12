@@ -68,6 +68,9 @@ const sdkSource = String.raw`(function () {
     }
 
     if (!siteId) return;
+    SESSION_ID_KEY += ':' + siteId;
+    SESSION_STARTED_AT_KEY += ':' + siteId;
+    EVENT_BUFFER_KEY += ':' + siteId;
 
     function uuid() {
       if (window.crypto && window.crypto.randomUUID) {
@@ -139,14 +142,16 @@ const sdkSource = String.raw`(function () {
     var transportMode = modeAttr || 'activity';
     var pageUrl = window.location.href;
     var snapshotSentThisPage = false;
+    var durationStartedAt = document.visibilityState === 'hidden' ? null : Date.now();
+    var sending = false;
 
-    function send(payload) {
+    function send(payload, unloading) {
+      var body = JSON.stringify(payload);
       try {
-        var body = JSON.stringify(payload);
-        if (navigator.sendBeacon) {
-          var blob = new Blob([body], { type: 'application/json' });
+        if (unloading && navigator.sendBeacon) {
+          var blob = new Blob([body], { type: 'text/plain;charset=UTF-8' });
           if (navigator.sendBeacon(endpoint, blob)) {
-            return;
+            return Promise.resolve(true);
           }
         }
       } catch (e) {
@@ -155,15 +160,18 @@ const sdkSource = String.raw`(function () {
 
       // fallback to fetch
       try {
-        fetch(endpoint, {
+        return fetch(endpoint, {
           method: 'POST',
           mode: 'cors',
           credentials: 'omit',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
           body: body,
           keepalive: true,
-        }).catch(function () {});
-      } catch (e) {}
+        }).then(function (response) {
+          if (!response.ok) console.warn('neup.sdk: collection rejected', response.status);
+          return response.ok;
+        }).catch(function () { return false; });
+      } catch (e) { return Promise.resolve(false); }
     }
 
     function normalizeTrackedUrl(value) {
@@ -185,9 +193,9 @@ const sdkSource = String.raw`(function () {
         projectId: siteId,
         type: event.type || 'activity',
         timeSpent: typeof event.elapsedMs === 'number' ? Math.max(0, Math.round(event.elapsedMs)) : undefined,
-        pageUrl: pageUrl,
-        url: pageUrl,
-        path: location.pathname,
+        pageUrl: event.pageUrl || pageUrl,
+        url: event.pageUrl || pageUrl,
+        path: event.pagePath || location.pathname,
         referral: document.referrer || undefined,
         referrer: document.referrer || undefined,
         geoLocation: geoLocation || undefined,
@@ -196,7 +204,7 @@ const sdkSource = String.raw`(function () {
           cookies: trackedCookies(),
           serverFields: serverFields,
           siteId: siteId,
-          pagePath: location.pathname + location.search + location.hash,
+          pagePath: event.pagePath || location.pathname + location.search + location.hash,
           x: event.x,
           y: event.y,
           scrollX: event.scrollX,
@@ -269,17 +277,6 @@ const sdkSource = String.raw`(function () {
 
     function buildActivityBatch(includeHeartbeat) {
       var events = eventBuffer.slice();
-
-      if (includeHeartbeat) {
-        var elapsedMs = getElapsedMs();
-        events.push({
-          type: 'heartbeat',
-          timestamp: Date.now(),
-          elapsedMs: elapsedMs,
-          value: String(Math.min(elapsedMs, MAX_WINDOW_MS)),
-        });
-      }
-
       return events.map(buildActivityEvent);
     }
 
@@ -309,7 +306,17 @@ const sdkSource = String.raw`(function () {
       send(payload);
     }
 
-    function flush(includeHeartbeat) {
+    function recordDuration() {
+      var now = Date.now();
+      if (collect.indexOf('pageview') !== -1 && durationStartedAt !== null && now > durationStartedAt) {
+        enqueue({ type: 'duration', timestamp: now, elapsedMs: now - durationStartedAt });
+      }
+      durationStartedAt = document.visibilityState === 'hidden' ? null : now;
+    }
+
+    function flush(includeHeartbeat, unloading) {
+      recordDuration();
+      if (sending && !unloading) return;
       var payload = transportMode === 'activity'
         ? buildActivityBatch(includeHeartbeat !== false)
         : buildBatchPayload(includeHeartbeat !== false);
@@ -317,12 +324,20 @@ const sdkSource = String.raw`(function () {
       if (transportMode === 'activity' && !payload.length) return;
       if (transportMode !== 'activity' && !payload.events.length) return;
 
-      send(payload);
-      eventBuffer = [];
-      persistBuffer();
+      var sentEvents = eventBuffer.slice();
+      sending = true;
+      send(payload, unloading).then(function (accepted) {
+        if (accepted) {
+          eventBuffer = eventBuffer.filter(function (event) { return sentEvents.indexOf(event) === -1; });
+          persistBuffer();
+        }
+        sending = false;
+      });
     }
 
     function enqueue(event) {
+      event.pageUrl = pageUrl;
+      event.pagePath = new URL(pageUrl).pathname + new URL(pageUrl).search + new URL(pageUrl).hash;
       eventBuffer.push(event);
       persistBuffer();
     }
@@ -490,7 +505,9 @@ const sdkSource = String.raw`(function () {
     window.neupAnalytics.mode = transportMode;
     window.neupAnalytics.pageview = function () {
       if (collect.indexOf('pageview') !== -1) {
-        enqueue({ type: 'pageview', timestamp: Date.now(), elapsedMs: getElapsedMs() });
+        recordDuration();
+        pageUrl = window.location.href;
+        enqueue({ type: 'pageview', timestamp: Date.now(), elapsedMs: 0 });
         flush(true);
       }
     };
@@ -503,12 +520,36 @@ const sdkSource = String.raw`(function () {
       flush(true);
     };
 
-    window.addEventListener('pagehide', function () {
-      flush(true);
+    function onNavigation() {
+      if (window.location.href === pageUrl) return;
+      recordDuration();
+      pageUrl = window.location.href;
+      if (collect.indexOf('pageview') !== -1) {
+        enqueue({ type: 'pageview', timestamp: Date.now(), elapsedMs: 0 });
+        flush(true);
+      }
+    }
+    ['pushState', 'replaceState'].forEach(function (name) {
+      var original = window.history[name];
+      window.history[name] = function () {
+        var result = original.apply(this, arguments);
+        onNavigation();
+        return result;
+      };
+    });
+    window.addEventListener('popstate', onNavigation);
+    window.addEventListener('hashchange', onNavigation);
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') flush(true, true);
+      else durationStartedAt = Date.now();
     });
 
-    window.addEventListener('beforeunload', function () {
-      flush(true);
+    window.addEventListener('pagehide', function () {
+      flush(true, true);
+      durationStartedAt = null;
+    });
+    window.addEventListener('pageshow', function () {
+      durationStartedAt = document.visibilityState === 'hidden' ? null : Date.now();
     });
   } catch (e) {
     // Do not throw in host pages

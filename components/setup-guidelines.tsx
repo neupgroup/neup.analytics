@@ -36,10 +36,9 @@ function signContextId(contextId: string): string {
 export async function getAnalyticsContext() {
   const cookieStore = await cookies();
   let traceId = cookieStore.get("_neuptraceid")?.value;
-  if (!traceId) {
-    traceId = generateTraceId();
-    cookieStore.set({ name: "_neuptraceid", value: traceId, httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/" });
-  }
+  // Root layouts are Server Components; cookies() is read-only here. Create
+  // _neuptraceid in middleware/proxy before this function is called.
+  if (!traceId) traceId = generateTraceId();
   const contextId = generateContextId(traceId);
   return { traceId, contextId, signedContextId: signContextId(contextId), projectId: "${projectId}" };
 }
