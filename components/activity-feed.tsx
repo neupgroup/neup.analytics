@@ -7,11 +7,11 @@ import { ActivitySet } from '@/components/activity-set';
 import { Card, CardContent } from '@neup/components/ui/card';
 import { Skeleton } from '@neup/components/ui/skeleton';
 import { makeAppPath } from '@neup/core/appconfig';
-import { formatReadableDateTime } from '@neup/core/helpers/date';
 
 type ActivityItem = {
-  id: string; pageUrl: string | null; activityOn: string; type: string; typeLabel: string;
+  id: string; pageUrl: string | null; activityOn: string; type: string; typeLabel: string; duration: number;
   agentType: string; agentTypeLabel: string; locationLabel: string | null;
+  country: string | null; region: string | null; area: string | null;
 };
 
 type ActivityFeedProps = { selectedProject: string; filters: Record<string, string | undefined> };
@@ -20,6 +20,24 @@ function activityHref(projectId: string, filters: Record<string, string | undefi
   const params = new URLSearchParams({ selectedProject: projectId });
   Object.entries(filters).forEach(([key, value]) => { if (value) params.set(key, value); });
   return `/activity?${params.toString()}`;
+}
+
+function formatDuration(durationMs: number) {
+  const totalSeconds = Math.max(0, Math.round(durationMs / 1000));
+  if (totalSeconds < 60) return `${totalSeconds}s`;
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return seconds ? `${minutes}m ${seconds}s` : `${minutes}m`;
+}
+
+function formatRelativeTime(value: string) {
+  const seconds = Math.max(0, Math.floor((Date.now() - new Date(value).getTime()) / 1000));
+  if (seconds < 60) return 'now';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  return `${Math.floor(hours / 24)}d ago`;
 }
 
 function ActivitySkeletonRows({ count = 6 }: { count?: number }) {
@@ -102,14 +120,22 @@ export function ActivityFeed({ selectedProject, filters }: ActivityFeedProps) {
         {index === triggerIndex && nextOffset !== null ? <LoadTrigger onVisible={loadMore} /> : null}
         <ActivityCard
           className={`border-2 ${index > 0 ? 'border-t-0' : ''} ${index === 0 ? 'rounded-tl-xl rounded-tr-xl' : ''} ${index === items.length - 1 ? 'rounded-bl-xl rounded-br-xl' : ''}`}
-          title={activity.typeLabel}
+          title={activity.type === 'pageview' ? 'PageView' : activity.typeLabel}
           titleHref={getHref({ activityType: activity.type })}
           pageLabel={activity.pageUrl ?? 'Unknown page'}
           pageHref={getHref({ pageUrl: activity.pageUrl ?? undefined })}
           agentLabel={activity.agentTypeLabel}
           agentHref={getHref({ agentType: activity.agentType })}
           locationLabel={activity.locationLabel}
-          timestamp={formatReadableDateTime(activity.activityOn)}
+          locationParts={[
+            ...(activity.area && activity.area.split(', ')[0] ? [{ label: activity.area.split(', ')[0], href: getHref({ country: activity.country ?? undefined, region: activity.region ?? undefined, area: activity.area }) }] : []),
+            ...(activity.region ? [{ label: activity.region, href: getHref({ country: activity.country ?? undefined, region: activity.region }) }] : []),
+            ...(activity.country ? [{ label: activity.country, href: getHref({ country: activity.country }) }] : []),
+          ]}
+          metadata={activity.type === 'pageview' && activity.duration > 0 ? formatDuration(activity.duration) : null}
+          locationInFooter
+          hideAgent
+          timestamp={formatRelativeTime(activity.activityOn)}
           detailHref={`/activity/${activity.id}?selectedProject=${encodeURIComponent(selectedProject)}`}
         />
       </div>)}

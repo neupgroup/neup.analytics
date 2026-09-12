@@ -16,6 +16,9 @@ type ActivityPageProps = {
     userAgent?: string;
     referral?: string;
     ip?: string;
+    country?: string;
+    region?: string;
+    area?: string;
   }>;
 };
 
@@ -41,6 +44,9 @@ export default async function ActivityPage({ searchParams }: ActivityPageProps) 
     userAgent: params.userAgent?.trim(),
     referral: params.referral?.trim(),
     ip: params.ip?.trim(),
+    country: params.country?.trim(),
+    region: params.region?.trim(),
+    area: params.area?.trim(),
   };
   const activeFilters = Object.entries(filters)
     .filter(([, value]) => Boolean(value))

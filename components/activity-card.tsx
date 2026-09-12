@@ -1,4 +1,5 @@
 import { Link } from '@neup/components/ui/link';
+import { Clock3, MapPin } from 'lucide-react';
 import { cn } from '@neup/core/utils';
 
 type ActivityCardProps = {
@@ -9,6 +10,9 @@ type ActivityCardProps = {
   agentLabel: string;
   agentHref?: string;
   locationLabel?: string | null;
+  locationParts?: Array<{ label: string; href: string }>;
+  locationInFooter?: boolean;
+  hideAgent?: boolean;
   timestamp: string;
   detailHref?: string;
   metadata?: string | null;
@@ -23,6 +27,9 @@ export function ActivityCard({
   agentLabel,
   agentHref,
   locationLabel,
+  locationParts,
+  locationInFooter = false,
+  hideAgent = false,
   timestamp,
   detailHref,
   metadata,
@@ -77,15 +84,16 @@ export function ActivityCard({
       ) : null}
 
       <p className="pointer-events-none relative z-[1] break-all text-sm text-slate-950">
-        {titleContent} on {pageContent} by {agentContent}
-        {locationLabel ? <> from <span>{locationLabel}</span></> : null}
+        {titleContent} on {pageContent}{hideAgent ? null : <> by {agentContent}</>}
+        {!locationInFooter && locationLabel ? <> from {locationParts?.length ? locationParts.map((part, index) => <span key={`${part.label}-${index}`}>{index ? ', ' : ''}<Link href={part.href} className="pointer-events-auto text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4">{part.label}</Link></span>) : <span>{locationLabel}</span>}</> : null}
       </p>
 
       <p className="pointer-events-none relative z-[1] mt-1 text-sm text-slate-500">
-        {timestamp}
+        {metadata ? <><Clock3 aria-hidden="true" className="mr-1 inline-block h-3.5 w-3.5 align-[-0.15em]" />{metadata}, {timestamp}</> : timestamp}
+        {locationInFooter && locationLabel ? <> <MapPin aria-hidden="true" className="mx-1 inline-block h-3.5 w-3.5 align-[-0.15em]" />{locationParts?.length ? locationParts.map((part, index) => <span key={`${part.label}-${index}`}>{index ? ', ' : ''}<Link href={part.href} className="pointer-events-auto text-inherit transition-colors hover:text-sky-700 hover:underline hover:underline-offset-4">{part.label}</Link></span>) : <span>{locationLabel}</span>}</> : null}
       </p>
 
-      {metadata ? (
+      {!locationInFooter && metadata ? (
         <p className="pointer-events-none relative z-[1] mt-1 text-xs text-slate-500">
           {metadata}
         </p>
