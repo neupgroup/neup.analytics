@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react';
 import { Check, Clipboard } from 'lucide-react';
 import { buildLanguageExamples } from '@/components/analytics-language-examples';
+import { defaultTrackingOptions, type TrackingOptions } from '@/components/tracking-options';
 
-export function LanguageSetupGuidelines({ projectId }: { projectId: string }) {
+export function LanguageSetupGuidelines({ projectId, tracking = defaultTrackingOptions, startStep = 1 }: { projectId: string; tracking?: TrackingOptions; startStep?: number }) {
   const [language, setLanguage] = useState('');
   const [copied, setCopied] = useState<number>();
   const [error, setError] = useState('');
@@ -20,12 +21,11 @@ export function LanguageSetupGuidelines({ projectId }: { projectId: string }) {
   }, []);
   if (language === 'nextjs') return null;
   if (!language) return <p className="text-sm text-muted-foreground">Choose a language or framework above to see its setup scripts.</p>;
-  const examples = buildLanguageExamples(language, projectId);
+  const examples = buildLanguageExamples(language, projectId, tracking);
   return <div className="space-y-6">
-    <p className="text-sm text-muted-foreground">Install the project secret in your server environment. The browser receives only a signed context token. Add the browser example to a JavaScript module or a module script in your page.</p>
     {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
     {examples.map((example, index) => <section key={example.title} className="space-y-2">
-      <h3 className="text-base font-semibold">{example.title}</h3>
+      <h3 className="text-base font-semibold">{startStep + index}. {example.title.replace(/^\d+\.\s*/, '')}</h3>
       <p className="text-sm text-muted-foreground">{example.description}</p>
       <div className="relative">
       <button type="button" aria-label={copied === index ? 'Code copied' : 'Copy code'} title={copied === index ? 'Copied' : 'Copy code'} className="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-md border bg-background text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" onClick={async () => {

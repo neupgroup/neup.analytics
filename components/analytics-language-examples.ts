@@ -1,17 +1,27 @@
+import { defaultTrackingOptions, trackingFields, type TrackingOptions } from '@/components/tracking-options';
+
 export type SetupExample = { title: string; description: string; code: string };
 
-export function buildLanguageExamples(language: string, projectId: string): SetupExample[] {
+export function buildLanguageExamples(language: string, projectId: string, tracking: TrackingOptions = defaultTrackingOptions): SetupExample[] {
+  const fields = JSON.stringify(trackingFields(tracking));
+  const phpFields = '[' + tracking.serverFields.map((name) => `'${name}' => '--valuegoeshere--'`).join(', ') + ']';
+  const serverCookieKeys = JSON.stringify(tracking.serverCookies ?? []);
+  const allServerCookies = Boolean(tracking.allServerCookies);
+  const phpCookieKeys = '[' + (tracking.serverCookies ?? []).map((name) => `'${name}'`).join(', ') + ']';
   const endpoint = `https://neupgroup.com/analytics/bridge/api.v1/activity?project=${encodeURIComponent(projectId)}`;
   const sdk = 'https://neupgroup.com/analytics/bridge/sdk.v1/tracker';
   const browser = `const response = await fetch("/analytics-context", { credentials: "same-origin", cache: "no-store" });
 if (!response.ok) throw new Error("Analytics context unavailable");
-const { signedContextId } = await response.json();
+const { signedContextId, serverFields } = await response.json();
 if (!document.querySelector('script[data-neup-sdk]')) {
   const script = document.createElement("script");
   script.src = "${sdk}";
   script.dataset.neupSdk = "true";
   script.dataset.projectId = "${projectId}";
   script.dataset.contextId = signedContextId;
+  script.dataset.collect = "${tracking.essentials ? 'pageview' : 'none'}";
+  script.dataset.cookieKeys = ${JSON.stringify(JSON.stringify(tracking.allCookies ? '*' : tracking.cookies))};
+  script.dataset.serverFields = JSON.stringify(serverFields || {});
   script.defer = true;
   document.body.appendChild(script);
 }`;
@@ -39,11 +49,12 @@ app.get("/analytics-context", async (req, res) => {
     const signedContextId = "v1." + contextId + "." + signature;
     const response = await fetch("${endpoint}", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type: "pageview", contextId: signedContextId, _neuptraceid: traceId }),
+      body: JSON.stringify({ type: "pageview", contextId: signedContextId, _neuptraceid: traceId,
+        moreDetails: { serverCookies: Object.fromEntries(Object.entries(req.cookies).filter(([name]) => ${allServerCookies} || ${serverCookieKeys}.includes(name))) } }),
       signal: AbortSignal.timeout(5000),
     });
     if (!response.ok) throw new Error("Analytics registration failed");
-    res.json({ signedContextId });
+    res.json({ signedContextId, serverFields: ${fields} });
   } catch {
     res.status(503).json({ error: "Analytics unavailable" });
   }
@@ -111,11 +122,12 @@ def analytics_context():
     signature = hmac.new(key, ("neup-context:v1:" + context).encode(), hashlib.sha256).hexdigest()
     token = "v1." + context + "." + signature
     try:
-        upstream = requests.post("${endpoint}", json={"type": "pageview", "contextId": token, "_neuptraceid": trace}, timeout=5)
+        server_cookies = {name: value for name, value in request.cookies.items() if ${allServerCookies ? 'True' : 'False'} or name in ${serverCookieKeys}}
+        upstream = requests.post("${endpoint}", json={"type": "pageview", "contextId": token, "_neuptraceid": trace, "moreDetails": {"serverCookies": server_cookies}}, timeout=5)
         upstream.raise_for_status()
     except requests.RequestException:
         return jsonify(error="Analytics unavailable"), 503
-    response = jsonify(signedContextId=token)
+    response = jsonify(signedContextId=token, serverFields=${fields})
     response.headers["Cache-Control"] = "no-store"
     response.set_cookie("_neuptraceid", trace, httponly=True, secure=True, samesite="Lax", path="/")
     return response
@@ -141,11 +153,12 @@ get '/analytics-context' do
     uri = URI('${endpoint}')
     message = Net::HTTP::Post.new(uri)
     message['Content-Type'] = 'application/json'
-    message.body = JSON.generate(type: 'pageview', contextId: token, _neuptraceid: trace)
+    server_cookies = request.cookies.select { |name, _value| ${allServerCookies} || ${serverCookieKeys}.include?(name) }
+    message.body = JSON.generate(type: 'pageview', contextId: token, _neuptraceid: trace, moreDetails: { serverCookies: server_cookies })
     upstream = Net::HTTP.start(uri.host, uri.port, use_ssl: true, open_timeout: 5, read_timeout: 5) { |http| http.request(message) }
     raise 'Registration failed' unless upstream.is_a?(Net::HTTPSuccess)
     response.set_cookie('_neuptraceid', value: trace, path: '/', httponly: true, secure: true, same_site: :lax)
-    JSON.generate(signedContextId: token)
+    JSON.generate(signedContextId: token, serverFields: JSON.parse('${fields}'))
   rescue StandardError
     halt 503, JSON.generate(error: 'Analytics unavailable')
   end
@@ -164,16 +177,17 @@ header('Content-Type: application/json');
 header('Cache-Control: no-store');
 try {
 ${phpCore}
+$serverCookies = ${allServerCookies ? '$_COOKIE' : `array_intersect_key($_COOKIE, array_flip(${phpCookieKeys}))`};
 $curl = curl_init('${endpoint}');
 curl_setopt_array($curl, [CURLOPT_POST => true, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 5,
     CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-    CURLOPT_POSTFIELDS => json_encode(['type' => 'pageview', 'contextId' => $token, '_neuptraceid' => $trace], JSON_THROW_ON_ERROR)]);
+    CURLOPT_POSTFIELDS => json_encode(['type' => 'pageview', 'contextId' => $token, '_neuptraceid' => $trace, 'moreDetails' => ['serverCookies' => (object) $serverCookies]], JSON_THROW_ON_ERROR)]);
 $result = curl_exec($curl);
 $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 curl_close($curl);
 if ($result === false || $status < 200 || $status >= 300) throw new RuntimeException('Registration failed');
 setcookie('_neuptraceid', $trace, ['path' => '/', 'secure' => true, 'httponly' => true, 'samesite' => 'Lax']);
-echo json_encode(['signedContextId' => $token], JSON_THROW_ON_ERROR);
+echo json_encode(['signedContextId' => $token, 'serverFields' => (object) ${phpFields}], JSON_THROW_ON_ERROR);
 } catch (Throwable $error) {
     http_response_code(503);
     echo json_encode(['error' => 'Analytics unavailable']);
@@ -193,8 +207,9 @@ Route::get('/analytics-context', function (Request $request) {
         $token = 'v1.' . $context . '.' . hash_hmac('sha256', 'neup-context:v1:' . $context, $key);
         Http::timeout(5)->post('${endpoint}', [
             'type' => 'pageview', 'contextId' => $token, '_neuptraceid' => $trace,
+            'moreDetails' => ['serverCookies' => (object) ${allServerCookies ? '$request->cookies->all()' : `array_intersect_key($request->cookies->all(), array_flip(${phpCookieKeys}))`}],
         ])->throw();
-        return response()->json(['signedContextId' => $token])->header('Cache-Control', 'no-store')
+        return response()->json(['signedContextId' => $token, 'serverFields' => (object) ${phpFields}])->header('Cache-Control', 'no-store')
             ->cookie('_neuptraceid', $trace, 0, '/', null, true, true, false, 'lax');
     } catch (\\Throwable $error) {
         return response()->json(['error' => 'Analytics unavailable'], 503);
@@ -208,8 +223,10 @@ Route::get('/analytics-context', function (Request $request) {
 5. token = "v1." + contextId + "." + signature
 6. POST ${endpoint}
    Content-Type: application/json
-   {"type":"pageview","contextId":token,"_neuptraceid":traceId}
+   {"type":"pageview","contextId":token,"_neuptraceid":traceId,"moreDetails":{"serverCookies":serverCookies}}
+   serverCookies = ${allServerCookies ? 'all cookies available on the incoming server request' : `only existing request cookies with keys in ${serverCookieKeys}`}
+   Never include serverCookies in the response to the browser.
 7. After a successful response, set the HttpOnly, Secure, SameSite=Lax trace cookie.
-8. Respond to the browser with {"signedContextId":token}.
+8. Respond to the browser with {"signedContextId":token,"serverFields":${fields}}.
 On upstream failure, return 503. Never return the secret or raw trace ID.` }, client(`async function startAnalytics() {\n${browser}\n}\nvoid startAnalytics().catch(console.error);`)];
 }

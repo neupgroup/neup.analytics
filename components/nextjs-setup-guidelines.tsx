@@ -3,10 +3,18 @@
 import { useEffect, useState } from 'react';
 import { Check, Clipboard } from 'lucide-react';
 import { Button } from '@neup/components/ui/button';
+import { defaultTrackingOptions, trackingFields, type TrackingOptions } from '@/components/tracking-options';
 
-function buildAnalyticsCode(projectId: string) {
+function buildAnalyticsCode(projectId: string, tracking: TrackingOptions) {
   return `import crypto from "node:crypto";
 import { cookies, headers } from "next/headers";
+
+async function getTrackedServerCookies(): Promise<Record<string, string>> {
+  const selected: string[] = ${JSON.stringify(tracking.serverCookies ?? [])};
+  const all = ${Boolean(tracking.allServerCookies)};
+  const cookieStore = await cookies();
+  return Object.fromEntries(cookieStore.getAll().filter(({ name }) => all || selected.includes(name)).map(({ name, value }) => [name, value]));
+}
 
 function generateTraceId(): string {
   return \`\${Date.now()}.\${crypto.randomBytes(24).toString("hex")}\`;
@@ -45,7 +53,7 @@ export async function logPageActivity(contextId: string, pageUrl: string): Promi
     await fetch("https://neupgroup.com/analytics/bridge/api.v1/activity?project=${encodeURIComponent(projectId)}", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ _neuptraceid: traceId, contextId: signContextId(contextId), pageUrl, agent: requestHeaders.get("user-agent") ?? "", ipAddress: requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ?? requestHeaders.get("x-real-ip") ?? "" }),
+      body: JSON.stringify({ _neuptraceid: traceId, contextId: signContextId(contextId), moreDetails: { serverCookies: await getTrackedServerCookies() }, pageUrl, agent: requestHeaders.get("user-agent") ?? "", ipAddress: requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ?? requestHeaders.get("x-real-ip") ?? "" }),
       cache: "no-store",
     });
   } catch {
@@ -63,7 +71,7 @@ export async function logActivity(activity: string, data?: Record<string, unknow
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ activity, data, contextId: signContextId(contextId), _neuptraceid: traceId, agent: requestHeaders.get("user-agent") ?? "", ipAddress: requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ?? requestHeaders.get("x-real-ip") ?? "" }),
+      body: JSON.stringify({ activity, data, contextId: signContextId(contextId), _neuptraceid: traceId, moreDetails: { serverCookies: await getTrackedServerCookies() }, agent: requestHeaders.get("user-agent") ?? "", ipAddress: requestHeaders.get("x-forwarded-for")?.split(",")[0]?.trim() ?? requestHeaders.get("x-real-ip") ?? "" }),
       cache: "no-store",
     },
   );
@@ -81,7 +89,7 @@ export async function logClientActivity(activity: string, data?: Record<string, 
 `;
 }
 
-function buildLayoutCode(projectId: string) {
+function buildLayoutCode(projectId: string, tracking: TrackingOptions) {
   return `import { headers } from "next/headers";
 import { getAnalyticsContext, logPageActivity } from "@/analytics";
 
@@ -99,6 +107,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           src="https://neupgroup.com/analytics/bridge/sdk.v1/tracker"
           data-context-id={signedContextId}
           data-project-id="${projectId}"
+          data-collect="${tracking.essentials ? 'pageview' : 'none'}"
+          data-cookie-keys={${JSON.stringify(JSON.stringify(tracking.allCookies ? '*' : tracking.cookies))}}
+          data-server-fields={JSON.stringify(${JSON.stringify(trackingFields(tracking), null, 2)})}
           defer
         />
       </body>
@@ -107,7 +118,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
 }`;
 }
 
-export function NextJsSetupGuidelines({ projectId }: { projectId: string }) {
+export function NextJsSetupGuidelines({ projectId, tracking = defaultTrackingOptions, startStep = 1 }: { projectId: string; tracking?: TrackingOptions; startStep?: number }) {
   const [isNextJs, setIsNextJs] = useState(false);
   const [copied, setCopied] = useState<string>();
 
@@ -123,8 +134,8 @@ export function NextJsSetupGuidelines({ projectId }: { projectId: string }) {
 
   if (!isNextJs) return null;
 
-  const analyticsCode = buildAnalyticsCode(projectId);
-  const layoutCode = buildLayoutCode(projectId);
+  const analyticsCode = buildAnalyticsCode(projectId, tracking);
+  const layoutCode = buildLayoutCode(projectId, tracking);
 
   async function copyCode(code: string, key: string) {
     await navigator.clipboard.writeText(code);
@@ -135,7 +146,7 @@ export function NextJsSetupGuidelines({ projectId }: { projectId: string }) {
   return (
     <div className="space-y-6">
       <div className="space-y-2">
-        <h3 className="text-base font-semibold">1. Add the following file to your application</h3>
+        <h3 className="text-base font-semibold">{startStep}. Add the following file to your application</h3>
         <p className="text-sm text-muted-foreground">Create <code>analytics.ts</code> inside <code>src</code>, the folder mapped to <code>@/*</code>, or another location you use for custom utilities.</p>
         <div className="relative">
           <Button variant="tinted" size="icon" className="absolute right-3 top-3" onClick={() => copyCode(analyticsCode, 'analytics')} aria-label="Copy analytics.ts code">
@@ -145,7 +156,7 @@ export function NextJsSetupGuidelines({ projectId }: { projectId: string }) {
         </div>
       </div>
       <div className="space-y-2">
-        <h3 className="text-base font-semibold">2. Add the following to your RootLayout or Main Layout.tsx</h3>
+        <h3 className="text-base font-semibold">{startStep + 1}. Add the following to your RootLayout or Main Layout.tsx</h3>
         <p className="text-sm text-muted-foreground">Add this to the layout that runs on the server. If your application has no server-side layout, skip this step.</p>
         <div className="relative">
           <Button variant="tinted" size="icon" className="absolute right-3 top-3" onClick={() => copyCode(layoutCode, 'layout')} aria-label="Copy layout code">

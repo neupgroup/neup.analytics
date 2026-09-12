@@ -34,8 +34,34 @@ const sdkSource = String.raw`(function () {
     var endpointAttr = script && (script.getAttribute('data-endpoint') || script.dataset.endpoint || '');
     var modeAttr = script && (script.getAttribute('data-mode') || script.dataset.mode || '');
     var contextId = script && (script.getAttribute('data-context-id') || script.dataset.contextId || '');
+    var cookieKeys = [];
+    var serverFields = {};
+    try { cookieKeys = JSON.parse(script.getAttribute('data-cookie-keys') || '[]'); } catch (_) {}
+    if (cookieKeys !== '*' && !Array.isArray(cookieKeys)) cookieKeys = [];
+    try { serverFields = JSON.parse(script.getAttribute('data-server-fields') || '{}'); } catch (_) {}
+    if (!serverFields || typeof serverFields !== 'object' || Array.isArray(serverFields)) serverFields = {};
+    // Omit untouched example placeholders from events.
+    Object.keys(serverFields).forEach(function (name) {
+      if (serverFields[name] === '--valuegoeshere--') delete serverFields[name];
+    });
+    function trackedCookies() {
+      var result = Object.create(null);
+      if (cookieKeys !== '*' && cookieKeys.length === 0) return result;
+      try {
+        document.cookie.split(';').forEach(function (entry) {
+          var separator = entry.indexOf('=');
+          if (separator < 0) return;
+          var name = entry.slice(0, separator).trim();
+          if (cookieKeys !== '*' && cookieKeys.indexOf(name) === -1) return;
+          var value = entry.slice(separator + 1);
+          try { value = decodeURIComponent(value); } catch (_) {}
+          result[name] = value;
+        });
+      } catch (_) {}
+      return result;
+    }
     var geoLocation = '';
-    if (navigator.geolocation) {
+    if (collect.indexOf('geolocation') !== -1 && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function (position) {
         geoLocation = position.coords.latitude + ',' + position.coords.longitude;
       }, function () {}, { maximumAge: 300000, timeout: 3000 });
@@ -167,6 +193,8 @@ const sdkSource = String.raw`(function () {
         geoLocation: geoLocation || undefined,
         userAgent: navigator.userAgent,
         moreDetails: {
+          cookies: trackedCookies(),
+          serverFields: serverFields,
           siteId: siteId,
           pagePath: location.pathname + location.search + location.hash,
           x: event.x,
