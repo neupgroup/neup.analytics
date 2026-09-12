@@ -1,15 +1,21 @@
 "use client"
 
 import { useCallback, type MouseEvent } from "react"
-import { useRouter } from "next/navigation"
+import { useToast } from '@neup/core/hooks/useToast'
 
 export function useProjectNavigationGuard(projectId: string | null) {
-  const router = useRouter()
+  const { toast } = useToast()
 
-  return useCallback((event: MouseEvent<HTMLElement>, _sectionName = 'this section') => {
+  return useCallback((event: MouseEvent<HTMLElement>, sectionName = 'this section') => {
     if (projectId) return
 
     event.preventDefault()
-    router.push('/projects')
-  }, [projectId, router])
+    toast({
+      name: 'openPage.project.notSelected',
+      state: 'info',
+      autoDismiss: 10,
+      title: 'Project not selected',
+      description: `Please select a project to open ${sectionName}`,
+    })
+  }, [projectId, toast])
 }
