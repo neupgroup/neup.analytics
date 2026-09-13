@@ -33,7 +33,7 @@ export default function HeatmapsPage() {
                 const res = await fetch(makeAppPath('/bridge/api.v1/pages'));
                 if (!res.ok) throw new Error('Failed to load pages');
                 const data = await res.json();
-                setUniquePages(data || []);
+                setUniquePages(Array.isArray(data?.pages) ? data.pages : []);
             } catch (err: any) {
                 setError(err);
             } finally {
