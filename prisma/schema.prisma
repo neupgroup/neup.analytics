@@ -179,6 +179,7 @@ model AnalyticsContext {
 
   @@index([projectId])
   @@index([traceId])
+  @@map("trace_map")
 }
 
 model IpMap {

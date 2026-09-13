@@ -39,7 +39,7 @@ Fields:
 > activityOn: timestamp, default: now();
 > projectId: string, references Project.id;
 
-Table: AnalyticsContext, Model: AnalyticsContext
+Table: trace_map, Model: AnalyticsContext
 Fields:
 > id: string, cuid, primary key;
 > contextId: string, unique;
