@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Checkbox } from '@neup/components/ui/checkbox';
 import { SetupGuidelines } from '@/components/setup-guidelines';
-import { defaultTrackingOptions, type TrackingOptions } from '@/components/tracking-options';
+import { defaultTrackingOptions, trackingEventTypes, type TrackingOptions } from '@/components/tracking-options';
 
 export function TrackingSetup({ projectId }: { projectId: string }) {
   const [options, setOptions] = useState<TrackingOptions>(defaultTrackingOptions);
@@ -38,7 +38,7 @@ export function TrackingSetup({ projectId }: { projectId: string }) {
       <button type="button" aria-pressed={trackMore} onClick={() => setTrackMore(true)}
         className={`w-full rounded-xl border-2 p-5 text-left transition-colors ${trackMore ? 'border-foreground bg-muted/40' : 'border-border hover:border-foreground/50'}`}>
         <span className="block font-medium">Track more than essentials</span>
-        <span className="mt-1 block text-sm text-muted-foreground">Page views and session duration, plus the cookies and dynamic server fields you choose below.</span>
+        <span className="mt-1 block text-sm text-muted-foreground">Page views and session duration, plus the events, cookies and dynamic server fields you choose below.</span>
       </button>
       </div>
     </section>
@@ -76,10 +76,36 @@ export function TrackingSetup({ projectId }: { projectId: string }) {
       </form>
       <div className="flex flex-wrap gap-2">{options.serverFields.map((name) => <button key={name} type="button" aria-label={`Remove server field ${name}`} onClick={() => setOptions({ ...options, serverFields: options.serverFields.filter((key) => key !== name) })} className="rounded-full border px-3 py-1 text-sm">{name} ×</button>)}</div>
     </section>
+    <section className="space-y-3">
+      <h3 className="font-semibold">4. Choose event types to track</h3>
+      <p className="text-sm text-muted-foreground">Check the events you want to collect. Your setup code below updates automatically.</p>
+      <div className="flex items-center justify-between gap-3">
+        <label className="flex cursor-pointer items-center gap-2 text-sm font-medium">
+          <Checkbox checked={(options.eventTypes ?? ['pageview']).length === trackingEventTypes.length ? true : (options.eventTypes ?? ['pageview']).length ? 'indeterminate' : false}
+            onCheckedChange={(checked) => setOptions((current) => ({ ...current, eventTypes: checked === true ? trackingEventTypes.map(({ id }) => id) : [] }))} />
+          Select all event types
+        </label>
+        <span className="text-xs text-muted-foreground" aria-live="polite">{(options.eventTypes ?? ['pageview']).length} of {trackingEventTypes.length} selected</span>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {trackingEventTypes.map(({ id, label, description }) => {
+          const selected = options.eventTypes ?? ['pageview'];
+          const checked = selected.includes(id);
+          return <label key={id} className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-colors ${checked ? 'border-foreground bg-muted/40' : 'border-border hover:bg-muted/20'}`}>
+            <Checkbox className="mt-0.5" checked={checked} onCheckedChange={(value) => setOptions((current) => {
+              const events = current.eventTypes ?? ['pageview'];
+              return { ...current, eventTypes: value === true ? [...events, id] : events.filter((event) => event !== id) };
+            })} />
+            <span><span className="block text-sm font-medium">{label}</span><span className="mt-1 block text-xs text-muted-foreground">{description}</span></span>
+          </label>;
+        })}
+      </div>
+      {options.eventTypes?.length === 0 && <p className="text-sm text-muted-foreground">No browser events selected. Server context registration still runs.</p>}
+    </section>
     {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
     </>}
     <div className="pt-6">
-      <SetupGuidelines projectId={projectId} tracking={activeOptions} startStep={trackMore ? 4 : 2} />
+      <SetupGuidelines projectId={projectId} tracking={activeOptions} startStep={trackMore ? 5 : 2} />
     </div>
   </div>;
 }

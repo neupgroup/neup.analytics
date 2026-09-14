@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { buildAnalyticsCode } from '@/app/bridge/sdk.v1/tracker/expanded.server';
 import { Check, Clipboard } from 'lucide-react';
 import styles from './setup-guidelines.module.css';
-import { defaultTrackingOptions, trackingFields, type TrackingOptions } from '@/components/tracking-options';
+import { defaultTrackingOptions, trackingCollect, trackingFields, type TrackingOptions } from '@/components/tracking-options';
 
-function buildLayoutCode(projectId: string, tracking: TrackingOptions) {
+export function buildLayoutCode(projectId: string, tracking: TrackingOptions) {
   return `import { headers } from "next/headers";
 import { getAnalyticsContext, logPageActivity } from "@/analytics";
 
@@ -21,10 +21,10 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <body>
         {children}
         <script
-          src="https://neupgroup.com/analytics/bridge/sdk.v1/tracker?collect=${tracking.essentials ? 'pageview' : 'none'}"
+          src="https://neupgroup.com/analytics/bridge/sdk.v1/tracker?collect=${trackingCollect(tracking)}"
           data-context-id={signedContextId}
           data-project-id="${projectId}"
-          data-collect="${tracking.essentials ? 'pageview' : 'none'}"
+          data-collect="${trackingCollect(tracking)}"
           data-cookie-keys={${JSON.stringify(JSON.stringify(tracking.allCookies ? '*' : tracking.cookies))}}
           data-server-fields={JSON.stringify(${JSON.stringify(trackingFields(tracking), null, 2)})}
           defer
@@ -44,7 +44,7 @@ export function buildLanguageExamples(language: string, projectId: string, track
   const allServerCookies = Boolean(tracking.allServerCookies);
   const phpCookieKeys = '[' + (tracking.serverCookies ?? []).map((name) => `'${name}'`).join(', ') + ']';
   const endpoint = `https://neupgroup.com/analytics/bridge/api.v1/activity?project=${encodeURIComponent(projectId)}`;
-  const sdk = `https://neupgroup.com/analytics/bridge/sdk.v1/tracker?collect=${tracking.essentials ? 'pageview' : 'none'}`;
+  const sdk = `https://neupgroup.com/analytics/bridge/sdk.v1/tracker?collect=${trackingCollect(tracking)}`;
   const browser = `const response = await fetch("/analytics-context", { credentials: "same-origin", cache: "no-store" });
 if (!response.ok) throw new Error("Analytics context unavailable");
 const { signedContextId, serverFields } = await response.json();
@@ -54,7 +54,7 @@ if (!document.querySelector('script[data-neup-sdk]')) {
   script.dataset.neupSdk = "true";
   script.dataset.projectId = "${projectId}";
   script.dataset.contextId = signedContextId;
-  script.dataset.collect = "${tracking.essentials ? 'pageview' : 'none'}";
+  script.dataset.collect = "${trackingCollect(tracking)}";
   script.dataset.cookieKeys = ${JSON.stringify(JSON.stringify(tracking.allCookies ? '*' : tracking.cookies))};
   script.dataset.serverFields = JSON.stringify(serverFields || {});
   script.defer = true;

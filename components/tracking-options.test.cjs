@@ -14,6 +14,7 @@ function load(path, dependencies = {}) {
 const options = load('components/tracking-options.ts');
 const examples = load('components/setup-guidelines.tsx', {
   '@/components/tracking-options': options,
+  '@/app/bridge/sdk.v1/tracker/expanded.server': load('app/bridge/sdk.v1/tracker/expanded.server.ts', { '@/components/tracking-options': options }),
   // Snippet generation does not render icons; avoid loading their browser bundle.
   'lucide-react': {},
   './setup-guidelines.module.css': {},
@@ -34,7 +35,7 @@ test('language snippets embed cookie choices and named server placeholders', () 
 });
 
 test('tracker reads only selected cookies, handles values and all-cookie selection', () => {
-  const source = fs.readFileSync('app/bridge/sdk.v1/tracker/route.ts', 'utf8');
+  const source = require('../scripts/load-tracker.cjs').loadTrackerModule('app/bridge/sdk.v1/tracker/expanded.client.ts').clientSource;
   const helper = source.slice(source.indexOf('    function trackedCookies()'), source.indexOf("    var geoLocation ="));
   const sandbox = { cookieKeys: ['theme'], document: { cookie: 'theme=dark%20mode; auth=secret; equals=a=b' } };
   vm.createContext(sandbox);
@@ -82,4 +83,23 @@ test('server-cookie selections are independent and never enter browser responses
       assert.ok(source.includes('moreDetails'), language);
     }
   }
+});
+
+
+test('every event selection reaches both SDK URL and collection attributes in all frameworks', () => {
+  const { eventModules } = require('../scripts/load-tracker.cjs').loadTrackerModule('app/bridge/sdk.v1/tracker/expanded.client.ts');
+  for (const id of Object.keys(eventModules)) assert.ok(options.trackingEventTypes.some((event) => event.id === id), id);
+  for (const eventTypes of [[], ...options.trackingEventTypes.map(({ id }) => [id]), options.trackingEventTypes.map(({ id }) => id)]) {
+    const selected = { ...options.defaultTrackingOptions, eventTypes };
+    const collect = eventTypes.join(',') || 'none';
+    for (const language of ['javascript', 'typescript', 'react', 'vue', 'angular', 'python', 'php', 'laravel', 'ruby', 'other']) {
+      const code = examples.buildLanguageExamples(language, 'project-123', selected).map((part) => part.code).join('\n');
+      assert.ok(code.includes('?collect=' + collect), language);
+      assert.ok(code.includes('script.dataset.collect = "' + collect + '"'), language);
+    }
+    const layout = examples.buildLayoutCode('project-123', selected);
+    assert.ok(layout.includes('?collect=' + collect));
+    assert.ok(layout.includes('data-collect="' + collect + '"'));
+  }
+  assert.equal(options.trackingCollect(options.defaultTrackingOptions), 'pageview');
 });
