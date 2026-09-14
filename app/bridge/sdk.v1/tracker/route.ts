@@ -69,6 +69,17 @@ const sdkSource = String.raw`(function () {
     }
 
     if (!siteId) return;
+    var instances = window.__neupAnalyticsInstances = window.__neupAnalyticsInstances || Object.create(null);
+    if (instances[siteId]) return;
+    instances[siteId] = true;
+    var transportState = window.__neupAnalyticsTransport = window.__neupAnalyticsTransport || { pendingBytes: 0 };
+    var MAX_BATCH_BYTES = 48 * 1024;
+    var MAX_BUFFER_BYTES = 256 * 1024;
+    var MAX_BUFFER_EVENTS = 500;
+    var batchEventLimit = 20;
+    var retryCount = 0;
+    var retryAt = 0;
+    var deliveryTimerId = null;
     SESSION_ID_KEY += ':' + siteId;
     SESSION_STARTED_AT_KEY += ':' + siteId;
     EVENT_BUFFER_KEY += ':' + siteId;
@@ -123,9 +134,19 @@ const sdkSource = String.raw`(function () {
       eventBuffer = [];
     }
 
+    function byteSize(value) {
+      return new Blob([JSON.stringify(value)]).size;
+    }
+
     function persistBuffer() {
+      while (eventBuffer.length > MAX_BUFFER_EVENTS || byteSize(eventBuffer) > MAX_BUFFER_BYTES) {
+        eventBuffer.shift();
+      }
       safeSessionStorageSet(EVENT_BUFFER_KEY, JSON.stringify(eventBuffer));
     }
+    if (!Array.isArray(eventBuffer)) eventBuffer = [];
+    eventBuffer = eventBuffer.filter(function (event) { return event && typeof event === 'object'; });
+    persistBuffer();
 
     function getElapsedMs() {
       return Math.max(0, Date.now() - sessionStartedAt);
@@ -153,18 +174,17 @@ const sdkSource = String.raw`(function () {
 
     function send(payload, unloading) {
       var body = JSON.stringify(payload);
-      try {
-        if (unloading && navigator.sendBeacon) {
-          var blob = new Blob([body], { type: 'text/plain;charset=UTF-8' });
-          if (navigator.sendBeacon(endpoint, blob)) {
-            return Promise.resolve(true);
-          }
-        }
-      } catch (e) {
-        // fallthrough
+      var bytes = new Blob([body]).size;
+      // Share the exit budget across tracker projects on this page. Use fetch so
+      // the lock lasts until completion, rather than merely beacon acceptance.
+      if (unloading && transportState.pendingBytes + bytes > MAX_BATCH_BYTES) {
+        return Promise.resolve({ ok: false, status: 0 });
       }
-
-      // fallback to fetch
+      if (unloading) transportState.pendingBytes += bytes;
+      function finish(result) {
+        if (unloading) transportState.pendingBytes -= bytes;
+        return result;
+      }
       try {
         return fetch(endpoint, {
           method: 'POST',
@@ -172,12 +192,12 @@ const sdkSource = String.raw`(function () {
           credentials: 'omit',
           headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
           body: body,
-          keepalive: true,
+          keepalive: !!unloading,
         }).then(function (response) {
           if (!response.ok) console.warn('neup.sdk: collection rejected', response.status);
-          return response.ok;
-        }).catch(function () { return false; });
-      } catch (e) { return Promise.resolve(false); }
+          return finish({ ok: response.ok, status: response.status });
+        }).catch(function () { return finish({ ok: false, status: 0 }); });
+      } catch (e) { return Promise.resolve(finish({ ok: false, status: 0 })); }
     }
 
     function normalizeTrackedUrl(value) {
@@ -266,9 +286,9 @@ const sdkSource = String.raw`(function () {
       };
     }
 
-    function buildBatchPayload(includeHeartbeat) {
+    function buildBatchPayload(includeHeartbeat, events) {
       var payload = makeBasePayload();
-      payload.events = eventBuffer.slice();
+      payload.events = events.slice();
 
       if (includeHeartbeat) {
         var elapsedMs = getElapsedMs();
@@ -283,9 +303,18 @@ const sdkSource = String.raw`(function () {
       return payload;
     }
 
-    function buildActivityBatch(includeHeartbeat) {
-      var events = eventBuffer.slice();
-      return events.map(buildActivityEvent);
+    function buildPayload(events, includeHeartbeat) {
+      return transportMode === 'activity'
+        ? events.map(buildActivityEvent)
+        : buildBatchPayload(includeHeartbeat, events);
+    }
+
+    function scheduleDelivery(delay) {
+      if (deliveryTimerId) window.clearTimeout(deliveryTimerId);
+      deliveryTimerId = window.setTimeout(function () {
+        deliveryTimerId = null;
+        if (document.visibilityState !== 'hidden') flush(false);
+      }, delay);
     }
 
     function sendHourlySnapshot() {
@@ -326,22 +355,43 @@ const sdkSource = String.raw`(function () {
 
     function flush(includeHeartbeat, unloading) {
       recordDuration();
-      if (sending && !unloading) return;
-      var payload = transportMode === 'activity'
-        ? buildActivityBatch(includeHeartbeat !== false)
-        : buildBatchPayload(includeHeartbeat !== false);
-
-      if (transportMode === 'activity' && !payload.length) return;
-      if (transportMode !== 'activity' && !payload.events.length) return;
-
-      var sentEvents = eventBuffer.slice();
+      if (sending || Date.now() < retryAt) return;
+      if (!unloading && document.visibilityState === 'hidden') return;
+      var sentEvents = [];
+      var payload;
+      while (sentEvents.length < batchEventLimit && sentEvents.length < eventBuffer.length) {
+        var candidate = sentEvents.concat([eventBuffer[sentEvents.length]]);
+        var candidatePayload = buildPayload(candidate, includeHeartbeat !== false);
+        if (byteSize(candidatePayload) > MAX_BATCH_BYTES) {
+          if (sentEvents.length) break;
+          // A single oversized event cannot be split without changing its meaning.
+          eventBuffer.shift();
+          persistBuffer();
+          console.warn('neup.sdk: oversized event discarded');
+          continue;
+        }
+        sentEvents = candidate;
+        payload = candidatePayload;
+      }
+      if (!sentEvents.length) return;
       sending = true;
-      send(payload, unloading).then(function (accepted) {
-        if (accepted) {
+      send(payload, unloading).then(function (result) {
+        var permanent = result.status >= 400 && result.status < 500
+          && [408, 413, 429].indexOf(result.status) === -1;
+        var discard = result.ok || permanent || (result.status === 413 && sentEvents.length === 1);
+        if (discard) {
           eventBuffer = eventBuffer.filter(function (event) { return sentEvents.indexOf(event) === -1; });
           persistBuffer();
         }
+        if (result.status === 413 && sentEvents.length > 1) {
+          batchEventLimit = Math.max(1, Math.floor(sentEvents.length / 2));
+        }
+        retryCount = result.ok ? 0 : Math.min(retryCount + 1, 5);
+        retryAt = result.ok ? 0 : Date.now() + Math.min(60000, 5000 * Math.pow(2, retryCount - 1));
         sending = false;
+        if (eventBuffer.length && document.visibilityState !== 'hidden') {
+          scheduleDelivery(result.ok ? 0 : retryAt - Date.now());
+        }
       });
     }
 
@@ -349,6 +399,12 @@ const sdkSource = String.raw`(function () {
       event.viewId = viewId;
       event.pageUrl = pageUrl;
       event.pagePath = new URL(pageUrl).pathname + new URL(pageUrl).search + new URL(pageUrl).hash;
+      // Copy caller data so later mutations cannot grow or corrupt the queue.
+      try { event = JSON.parse(JSON.stringify(event)); } catch (_) { return; }
+      if (byteSize(event) > MAX_BATCH_BYTES) {
+        console.warn('neup.sdk: oversized event discarded');
+        return;
+      }
       eventBuffer.push(event);
       persistBuffer();
     }
@@ -567,7 +623,10 @@ const sdkSource = String.raw`(function () {
     window.addEventListener('hashchange', onNavigation);
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState === 'hidden') flush(true, true);
-      else durationStartedAt = Date.now();
+      else {
+        durationStartedAt = Date.now();
+        if (eventBuffer.length) scheduleDelivery(Math.max(0, retryAt - Date.now()));
+      }
     });
 
     window.addEventListener('pagehide', function () {
