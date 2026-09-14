@@ -5,11 +5,13 @@
   "scripts": {
     "setup": "chmod +x ./setup.sh && ./setup.sh",
     "predev": "npm run setup",
-    "prebuild": "npm run setup",
+    "prebuild": "npm run setup && npm run tracker:build",
     "dev": "next dev --hostname dev.neupgroup.com --port 26259 --experimental-https",
     "build": "next build",
     "start": "next start --port 26259",
-    "lint": "eslint"
+    "lint": "eslint",
+    "tracker:build": "node scripts/build-tracker.cjs",
+    "tracker:check": "node scripts/build-tracker.cjs --check"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.3",

@@ -43,7 +43,7 @@ function buildSnippet({
 }) {
   return `<script
   async
-  src="${sdkUrl}"
+  src="${sdkUrl}?collect=pageview,requests"
   data-project-id="${projectId}"
   data-endpoint="${activityEndpoint}"
   data-mode="activity"

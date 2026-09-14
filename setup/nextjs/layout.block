@@ -24,9 +24,10 @@ export default async function RootLayout({
         {children}
 
         <script
-          src="https://neupgroup.com/analytics/bridge/sdk.v1/tracker"
+          src="https://neupgroup.com/analytics/bridge/sdk.v1/tracker?collect=pageview"
           data-context-id={signedContextId}
           data-project-id="cmtx8ocvh0000bup9m18a09z1"
+          data-collect="pageview"
           defer
         />
       </body>
