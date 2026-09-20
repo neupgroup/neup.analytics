@@ -139,6 +139,23 @@ model Activity {
   @@index([contextId])
 }
 
+model Session {
+  id             String   @id @default(cuid())
+  identifierId   String
+  projectId      String
+  startedAt      DateTime @default(now())
+  lastActivityAt DateTime @default(now())
+  endedAt        DateTime?
+  duration       Int?
+
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@index([identifierId])
+  @@index([projectId])
+  @@index([lastActivityAt])
+  @@index([startedAt])
+}
+
 model Project {
   id          String   @id @default(cuid())
   path        String
@@ -150,6 +167,7 @@ model Project {
   createdOn   DateTime @default(now())
 
   activities Activity[]
+  sessions   Session[]
   contexts   AnalyticsContext[]
   pages      Page[]
 }

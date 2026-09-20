@@ -59,6 +59,7 @@ export const ModelName = {
   Application: 'Application',
   Account: 'Account',
   Activity: 'Activity',
+  Session: 'Session',
   Project: 'Project',
   Page: 'Page',
   AnalyticsContext: 'AnalyticsContext',
@@ -200,6 +201,19 @@ export const ActivityScalarFieldEnum = {
 } as const
 
 export type ActivityScalarFieldEnum = (typeof ActivityScalarFieldEnum)[keyof typeof ActivityScalarFieldEnum]
+
+
+export const SessionScalarFieldEnum = {
+  id: 'id',
+  identifierId: 'identifierId',
+  projectId: 'projectId',
+  startedAt: 'startedAt',
+  lastActivityAt: 'lastActivityAt',
+  endedAt: 'endedAt',
+  duration: 'duration'
+} as const
+
+export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
 
 
 export const ProjectScalarFieldEnum = {

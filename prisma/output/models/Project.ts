@@ -203,6 +203,7 @@ export type ProjectWhereInput = {
   ipAddress?: Prisma.StringNullableFilter<"Project"> | string | null
   createdOn?: Prisma.DateTimeFilter<"Project"> | Date | string
   activities?: Prisma.ActivityListRelationFilter
+  sessions?: Prisma.SessionListRelationFilter
   contexts?: Prisma.AnalyticsContextListRelationFilter
   pages?: Prisma.PageListRelationFilter
 }
@@ -217,6 +218,7 @@ export type ProjectOrderByWithRelationInput = {
   ipAddress?: Prisma.SortOrderInput | Prisma.SortOrder
   createdOn?: Prisma.SortOrder
   activities?: Prisma.ActivityOrderByRelationAggregateInput
+  sessions?: Prisma.SessionOrderByRelationAggregateInput
   contexts?: Prisma.AnalyticsContextOrderByRelationAggregateInput
   pages?: Prisma.PageOrderByRelationAggregateInput
 }
@@ -234,6 +236,7 @@ export type ProjectWhereUniqueInput = Prisma.AtLeast<{
   ipAddress?: Prisma.StringNullableFilter<"Project"> | string | null
   createdOn?: Prisma.DateTimeFilter<"Project"> | Date | string
   activities?: Prisma.ActivityListRelationFilter
+  sessions?: Prisma.SessionListRelationFilter
   contexts?: Prisma.AnalyticsContextListRelationFilter
   pages?: Prisma.PageListRelationFilter
 }, "id" | "token">
@@ -276,6 +279,7 @@ export type ProjectCreateInput = {
   ipAddress?: string | null
   createdOn?: Date | string
   activities?: Prisma.ActivityCreateNestedManyWithoutProjectInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutProjectInput
   contexts?: Prisma.AnalyticsContextCreateNestedManyWithoutProjectInput
   pages?: Prisma.PageCreateNestedManyWithoutProjectInput
 }
@@ -290,6 +294,7 @@ export type ProjectUncheckedCreateInput = {
   ipAddress?: string | null
   createdOn?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProjectInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutProjectInput
   contexts?: Prisma.AnalyticsContextUncheckedCreateNestedManyWithoutProjectInput
   pages?: Prisma.PageUncheckedCreateNestedManyWithoutProjectInput
 }
@@ -304,6 +309,7 @@ export type ProjectUpdateInput = {
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUpdateManyWithoutProjectNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutProjectNestedInput
   contexts?: Prisma.AnalyticsContextUpdateManyWithoutProjectNestedInput
   pages?: Prisma.PageUpdateManyWithoutProjectNestedInput
 }
@@ -318,6 +324,7 @@ export type ProjectUncheckedUpdateInput = {
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutProjectNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutProjectNestedInput
   contexts?: Prisma.AnalyticsContextUncheckedUpdateManyWithoutProjectNestedInput
   pages?: Prisma.PageUncheckedUpdateManyWithoutProjectNestedInput
 }
@@ -405,6 +412,20 @@ export type ProjectUpdateOneRequiredWithoutActivitiesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutActivitiesInput, Prisma.ProjectUpdateWithoutActivitiesInput>, Prisma.ProjectUncheckedUpdateWithoutActivitiesInput>
 }
 
+export type ProjectCreateNestedOneWithoutSessionsInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutSessionsInput, Prisma.ProjectUncheckedCreateWithoutSessionsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutSessionsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+}
+
+export type ProjectUpdateOneRequiredWithoutSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProjectCreateWithoutSessionsInput, Prisma.ProjectUncheckedCreateWithoutSessionsInput>
+  connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutSessionsInput
+  upsert?: Prisma.ProjectUpsertWithoutSessionsInput
+  connect?: Prisma.ProjectWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProjectUpdateToOneWithWhereWithoutSessionsInput, Prisma.ProjectUpdateWithoutSessionsInput>, Prisma.ProjectUncheckedUpdateWithoutSessionsInput>
+}
+
 export type ProjectCreateNestedOneWithoutPagesInput = {
   create?: Prisma.XOR<Prisma.ProjectCreateWithoutPagesInput, Prisma.ProjectUncheckedCreateWithoutPagesInput>
   connectOrCreate?: Prisma.ProjectCreateOrConnectWithoutPagesInput
@@ -442,6 +463,7 @@ export type ProjectCreateWithoutActivitiesInput = {
   projectSecret?: string | null
   ipAddress?: string | null
   createdOn?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutProjectInput
   contexts?: Prisma.AnalyticsContextCreateNestedManyWithoutProjectInput
   pages?: Prisma.PageCreateNestedManyWithoutProjectInput
 }
@@ -455,6 +477,7 @@ export type ProjectUncheckedCreateWithoutActivitiesInput = {
   projectSecret?: string | null
   ipAddress?: string | null
   createdOn?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutProjectInput
   contexts?: Prisma.AnalyticsContextUncheckedCreateNestedManyWithoutProjectInput
   pages?: Prisma.PageUncheckedCreateNestedManyWithoutProjectInput
 }
@@ -484,6 +507,7 @@ export type ProjectUpdateWithoutActivitiesInput = {
   projectSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutProjectNestedInput
   contexts?: Prisma.AnalyticsContextUpdateManyWithoutProjectNestedInput
   pages?: Prisma.PageUpdateManyWithoutProjectNestedInput
 }
@@ -497,6 +521,79 @@ export type ProjectUncheckedUpdateWithoutActivitiesInput = {
   projectSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutProjectNestedInput
+  contexts?: Prisma.AnalyticsContextUncheckedUpdateManyWithoutProjectNestedInput
+  pages?: Prisma.PageUncheckedUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectCreateWithoutSessionsInput = {
+  id?: string
+  path: string
+  type: string
+  moreDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  token: string
+  projectSecret?: string | null
+  ipAddress?: string | null
+  createdOn?: Date | string
+  activities?: Prisma.ActivityCreateNestedManyWithoutProjectInput
+  contexts?: Prisma.AnalyticsContextCreateNestedManyWithoutProjectInput
+  pages?: Prisma.PageCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectUncheckedCreateWithoutSessionsInput = {
+  id?: string
+  path: string
+  type: string
+  moreDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  token: string
+  projectSecret?: string | null
+  ipAddress?: string | null
+  createdOn?: Date | string
+  activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProjectInput
+  contexts?: Prisma.AnalyticsContextUncheckedCreateNestedManyWithoutProjectInput
+  pages?: Prisma.PageUncheckedCreateNestedManyWithoutProjectInput
+}
+
+export type ProjectCreateOrConnectWithoutSessionsInput = {
+  where: Prisma.ProjectWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutSessionsInput, Prisma.ProjectUncheckedCreateWithoutSessionsInput>
+}
+
+export type ProjectUpsertWithoutSessionsInput = {
+  update: Prisma.XOR<Prisma.ProjectUpdateWithoutSessionsInput, Prisma.ProjectUncheckedUpdateWithoutSessionsInput>
+  create: Prisma.XOR<Prisma.ProjectCreateWithoutSessionsInput, Prisma.ProjectUncheckedCreateWithoutSessionsInput>
+  where?: Prisma.ProjectWhereInput
+}
+
+export type ProjectUpdateToOneWithWhereWithoutSessionsInput = {
+  where?: Prisma.ProjectWhereInput
+  data: Prisma.XOR<Prisma.ProjectUpdateWithoutSessionsInput, Prisma.ProjectUncheckedUpdateWithoutSessionsInput>
+}
+
+export type ProjectUpdateWithoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  path?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  moreDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  token?: Prisma.StringFieldUpdateOperationsInput | string
+  projectSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUpdateManyWithoutProjectNestedInput
+  contexts?: Prisma.AnalyticsContextUpdateManyWithoutProjectNestedInput
+  pages?: Prisma.PageUpdateManyWithoutProjectNestedInput
+}
+
+export type ProjectUncheckedUpdateWithoutSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  path?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.StringFieldUpdateOperationsInput | string
+  moreDetails?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  token?: Prisma.StringFieldUpdateOperationsInput | string
+  projectSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  activities?: Prisma.ActivityUncheckedUpdateManyWithoutProjectNestedInput
   contexts?: Prisma.AnalyticsContextUncheckedUpdateManyWithoutProjectNestedInput
   pages?: Prisma.PageUncheckedUpdateManyWithoutProjectNestedInput
 }
@@ -511,6 +608,7 @@ export type ProjectCreateWithoutPagesInput = {
   ipAddress?: string | null
   createdOn?: Date | string
   activities?: Prisma.ActivityCreateNestedManyWithoutProjectInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutProjectInput
   contexts?: Prisma.AnalyticsContextCreateNestedManyWithoutProjectInput
 }
 
@@ -524,6 +622,7 @@ export type ProjectUncheckedCreateWithoutPagesInput = {
   ipAddress?: string | null
   createdOn?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProjectInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutProjectInput
   contexts?: Prisma.AnalyticsContextUncheckedCreateNestedManyWithoutProjectInput
 }
 
@@ -553,6 +652,7 @@ export type ProjectUpdateWithoutPagesInput = {
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUpdateManyWithoutProjectNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutProjectNestedInput
   contexts?: Prisma.AnalyticsContextUpdateManyWithoutProjectNestedInput
 }
 
@@ -566,6 +666,7 @@ export type ProjectUncheckedUpdateWithoutPagesInput = {
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutProjectNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutProjectNestedInput
   contexts?: Prisma.AnalyticsContextUncheckedUpdateManyWithoutProjectNestedInput
 }
 
@@ -579,6 +680,7 @@ export type ProjectCreateWithoutContextsInput = {
   ipAddress?: string | null
   createdOn?: Date | string
   activities?: Prisma.ActivityCreateNestedManyWithoutProjectInput
+  sessions?: Prisma.SessionCreateNestedManyWithoutProjectInput
   pages?: Prisma.PageCreateNestedManyWithoutProjectInput
 }
 
@@ -592,6 +694,7 @@ export type ProjectUncheckedCreateWithoutContextsInput = {
   ipAddress?: string | null
   createdOn?: Date | string
   activities?: Prisma.ActivityUncheckedCreateNestedManyWithoutProjectInput
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutProjectInput
   pages?: Prisma.PageUncheckedCreateNestedManyWithoutProjectInput
 }
 
@@ -621,6 +724,7 @@ export type ProjectUpdateWithoutContextsInput = {
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUpdateManyWithoutProjectNestedInput
+  sessions?: Prisma.SessionUpdateManyWithoutProjectNestedInput
   pages?: Prisma.PageUpdateManyWithoutProjectNestedInput
 }
 
@@ -634,6 +738,7 @@ export type ProjectUncheckedUpdateWithoutContextsInput = {
   ipAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdOn?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   activities?: Prisma.ActivityUncheckedUpdateManyWithoutProjectNestedInput
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutProjectNestedInput
   pages?: Prisma.PageUncheckedUpdateManyWithoutProjectNestedInput
 }
 
@@ -644,12 +749,14 @@ export type ProjectUncheckedUpdateWithoutContextsInput = {
 
 export type ProjectCountOutputType = {
   activities: number
+  sessions: number
   contexts: number
   pages: number
 }
 
 export type ProjectCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activities?: boolean | ProjectCountOutputTypeCountActivitiesArgs
+  sessions?: boolean | ProjectCountOutputTypeCountSessionsArgs
   contexts?: boolean | ProjectCountOutputTypeCountContextsArgs
   pages?: boolean | ProjectCountOutputTypeCountPagesArgs
 }
@@ -669,6 +776,13 @@ export type ProjectCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exte
  */
 export type ProjectCountOutputTypeCountActivitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ActivityWhereInput
+}
+
+/**
+ * ProjectCountOutputType without action
+ */
+export type ProjectCountOutputTypeCountSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SessionWhereInput
 }
 
 /**
@@ -696,6 +810,7 @@ export type ProjectSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   ipAddress?: boolean
   createdOn?: boolean
   activities?: boolean | Prisma.Project$activitiesArgs<ExtArgs>
+  sessions?: boolean | Prisma.Project$sessionsArgs<ExtArgs>
   contexts?: boolean | Prisma.Project$contextsArgs<ExtArgs>
   pages?: boolean | Prisma.Project$pagesArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
@@ -737,6 +852,7 @@ export type ProjectSelectScalar = {
 export type ProjectOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "path" | "type" | "moreDetails" | "token" | "projectSecret" | "ipAddress" | "createdOn", ExtArgs["result"]["project"]>
 export type ProjectInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   activities?: boolean | Prisma.Project$activitiesArgs<ExtArgs>
+  sessions?: boolean | Prisma.Project$sessionsArgs<ExtArgs>
   contexts?: boolean | Prisma.Project$contextsArgs<ExtArgs>
   pages?: boolean | Prisma.Project$pagesArgs<ExtArgs>
   _count?: boolean | Prisma.ProjectCountOutputTypeDefaultArgs<ExtArgs>
@@ -748,6 +864,7 @@ export type $ProjectPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   name: "Project"
   objects: {
     activities: Prisma.$ActivityPayload<ExtArgs>[]
+    sessions: Prisma.$SessionPayload<ExtArgs>[]
     contexts: Prisma.$AnalyticsContextPayload<ExtArgs>[]
     pages: Prisma.$PagePayload<ExtArgs>[]
   }
@@ -1155,6 +1272,7 @@ readonly fields: ProjectFieldRefs;
 export interface Prisma__ProjectClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   activities<T extends Prisma.Project$activitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$activitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ActivityPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sessions<T extends Prisma.Project$sessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   contexts<T extends Prisma.Project$contextsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$contextsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AnalyticsContextPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   pages<T extends Prisma.Project$pagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Project$pagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1608,6 +1726,30 @@ export type Project$activitiesArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.ActivityScalarFieldEnum | Prisma.ActivityScalarFieldEnum[]
+}
+
+/**
+ * Project.sessions
+ */
+export type Project$sessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Session
+   */
+  select?: Prisma.SessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Session
+   */
+  omit?: Prisma.SessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SessionInclude<ExtArgs> | null
+  where?: Prisma.SessionWhereInput
+  orderBy?: Prisma.SessionOrderByWithRelationInput | Prisma.SessionOrderByWithRelationInput[]
+  cursor?: Prisma.SessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SessionScalarFieldEnum | Prisma.SessionScalarFieldEnum[]
 }
 
 /**

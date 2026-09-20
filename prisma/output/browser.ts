@@ -58,6 +58,11 @@ export type Account = Prisma.AccountModel
  */
 export type Activity = Prisma.ActivityModel
 /**
+ * Model Session
+ * 
+ */
+export type Session = Prisma.SessionModel
+/**
  * Model Project
  * 
  */
