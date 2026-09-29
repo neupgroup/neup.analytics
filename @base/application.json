@@ -1,0 +1,11 @@
+{
+    "type": "web",
+    "exists": true,
+    "domain": "neupgroup.com",
+    "basepath": "/analytics",
+    "projectId": "",
+    "permissions": [
+        "geolocation",
+        "notifications"
+    ]
+}

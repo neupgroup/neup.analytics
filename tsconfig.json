@@ -24,8 +24,8 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "@neup/*": ["./.neup/*"],
-      "@base/*": ["./.neup/base/*"]
+      "@neup/*": ["./@neup/*"],
+      "@base/*": ["./@base/*"]
     }
   },
   "include": [
@@ -34,8 +34,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    ".neup/**/*.ts",
-    ".neup/**/*.tsx",
+    "@neup/**/*.ts",
+    "@neup/**/*.tsx",
     "base/**/*.ts", "setup/nextjs/analytics.block",
   ],
   "exclude": [

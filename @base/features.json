@@ -1,0 +1,8 @@
+{
+    "native.database": 
+    {
+        "type": "postgresql",
+        "interactionLayer": "prisma",
+        "isRequired": true
+    }
+}
