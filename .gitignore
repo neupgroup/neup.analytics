@@ -48,4 +48,5 @@ next-env.d.ts
 .neup/core
 .neup/components
 .neup/logica
+@neup
 
